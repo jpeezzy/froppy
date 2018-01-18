@@ -32,16 +32,18 @@ void fenToBoardState(char * fen, BSTATE *b)
 	{
 		for(int j = 0; j < 8; j++)
 		{
+			printf("breaks at j = %c \n", '0');
 			if((board[i][j] > '1' && board[i][j] <= '8') && blankFlag == 0)
 			{
+				printf("flag is on!!! \n");
 				blankFlag = 1;
-				numRepeat = board[i][j] - '0';
+				numRepeat = board[i][j];
 			}
 			if(blankFlag == 1 && numRepeat > 0)
 			{
 				b->boardarray[i][j] = '0'; 
 				numRepeat--;
-				if(numRepeat == 0) {printf("reset ! \n"); blankFlag = 0;}
+				if(numRepeat == 0) {blankFlag = 0;}
 				continue;
 			}
 			else
@@ -50,6 +52,7 @@ void fenToBoardState(char * fen, BSTATE *b)
 			}
 			/*chess peices between 3-6 done! */
 		}
+		printf("FINISHED  at i = %d \n", i);
 	}
 	for(int i = 0; i < 8; i++)
 	{

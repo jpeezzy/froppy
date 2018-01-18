@@ -34,8 +34,10 @@ void fenToBoardState(char * fen, BSTATE *b)
 		{
 			if((board[i][j] > '1' && board[i][j] <= '8') && blankFlag == 0)
 			{
+				printf("flag is on!!! \n");
+				printf("clears at i = %d \n", i);
 				blankFlag = 1;
-				numRepeat = board[i][j] - '0';
+				numRepeat = board[i][j];
 			}
 			if(blankFlag == 1 && numRepeat > 0)
 			{
