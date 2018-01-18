@@ -202,6 +202,12 @@ void pawnmove(MLIST *list, BSTATE *board, int pawnlocation)
     }
 }
 
+void knightmove(MLIST *list, BSTATE *board, int currentlocation)
+{
+    assert(list);
+    assert(board);
+    assert(currentlocation);
 
+}
 
 
