@@ -15,6 +15,9 @@ typedef struct
 //This will allocate the memory for the board
 BSTATE *createBstate(void);
 
+//This will delete all the pointers for the board
+void deleteBstate(BSTATE *board);
+
 //This will load the start of the game to the inputted board
 void loadStart(BSTATE *currentboard);
 
