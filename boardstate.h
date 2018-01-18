@@ -4,12 +4,13 @@
 // This is the struct that hold all the board information
 typedef struct
 {
-  int boardarray[8][8];
-  // we still have the right to castle, but may not be able to castle right now
-  int WKCFlag;
-  int WQCFLag;
-  int BQCFlag;
-  int BKCFLag;
+    // we still have the right to castle, but may not be able to castle right now
+    int boardarray[8][8];
+    int WKCFlag;
+    int WQCFLag;
+    int BQCFlag;
+    int BKCFLag;
+    int sidetomove;
 
 } BSTATE;
 
