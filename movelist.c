@@ -81,4 +81,127 @@ void appendMove(MLIST *Movelist, MENTRY *Move)
     }
 }
 
+//possible move for a pawn
+void pawnmove(MLIST *list, BSTATE *board, int pawnlocation)
+{
+    assert(list);
+    assert(board);
+    assert(pawnlocation);
+
+    //Check if it Black or White 
+    int pawnx = pawnlocation/8;
+    int pawny = pawnlocation%8;
+
+    int type = (board->boardarray[pawnx][pawny])/10;
+    int newlocation;
+    
+    //for white pawns
+    if(type == 0)
+    {
+        //double step at begining of game
+        if(pawnx == 6)
+        {   
+            newlocation = 8*(4)+pawny;
+            if(board->boardarray[4][pawny] == 0)
+            {
+                appendMove(list, createMentry(pawnlocation,newlocation));
+            }                   
+        }
+
+        //single step 
+        if(pawnx != 0)
+        {
+            newlocation = 8*(pawnx-1)+pawny;
+            if(board->boardarray[pawnx-1][pawny] == 0)
+            {
+                appendMove(list, createMentry(pawnlocation, newlocation);
+            }
+        }
+
+        //attacking to the left 
+        if(pawny != 0)
+        {
+            if(pawnx != 0)
+            {
+                if(board->boardarray[pawnx-1][pawny-1] != 0)
+                {
+                    newlocation = 8*(pawnx-1)+(pawny-1);
+                    appendMove(list, createMentry(pawnlocation, newlocation);
+                }
+            }
+        }
+
+        //attcking to the right
+        if(pawny != 7)
+        {
+            if(pawnx != 0)
+            {
+                if(board->boardarray[pawnx-1][pawny+1] != 0)
+                {
+                    newlocation = 8*(pawnx+1)+(pawny+1);
+                    appendMove(list, createMentry(pawnlocation, newlocation);
+                }
+            }
+        }
+
+        //need to add en passant later 
+
+    }
+
+    //for black pawns
+    if(type == 1)
+    {
+        //double step at begining of game
+        if(pawnx == 1)
+        {   
+            newlocation = 8*(3)+pawny;
+            if(board->boardarray[3][pawny] == 0)
+            {
+                appendMove(list, createMentry(pawnlocation,newlocation));
+            }                   
+        }
+
+        //single step
+        if(pawnx != 7)
+        {
+            newlocation = 8*(pawnx+1)+pawny;
+            if(board->boardarray[pawnx+1][pawny] == 0)
+            {
+                appendMove(list, createMentry(pawnlocation, newlocation);
+            }
+        }
+
+        //attacking to the left 
+        if(pawny != 0)
+        {
+            if(pawnx != 8)
+            {
+                if(board->boardarray[pawnx+1][pawny-1] != 0)
+                {
+                    newlocation = 8*(pawnx+1)+(pawny-1);
+                    appendMove(list, createMentry(pawnlocation, newlocation);
+                }
+            }
+        }
+
+        //attcking to the right
+        if(pawny != 7)
+        {
+            if(pawnx != 0)
+            {
+                if(board->boardarray[pawnx+1][pawny+1] != 0)
+                {
+                    newlocation = 8*(pawnx+1)+(pawny+1);
+                    appendMove(list, createMentry(pawnlocation, newlocation);
+                }
+            }
+        }
+
+        //need to add en passant later 
+
+    }
+}
+
+
+
 
