@@ -2,13 +2,15 @@
 #include <stdlib.h>
 #include <malloc.h>
 #include <string.h>
-void fenToBoardState(char * fen) //, BSTATE *b)
+#include "boardstate.h"
+void fenToBoardState(char * fen, BSTATE *b)
 {
 	/* cheess board pieces based off the positions 1-8, where black king is at board1 */
 	char* board[13];
 	int n = 0;
 	char* buf = malloc(sizeof(char*) * 30);
 	int count = 0;
+	/*tolkenizing the input */ 
 	while (count < 13)
 	{
 		if(count >= 7) {sscanf(fen, "%s%n", buf, &n);}
@@ -23,14 +25,48 @@ void fenToBoardState(char * fen) //, BSTATE *b)
 		count++;
 		fen++;
 	}
-	for(int i = 0; i < 13; i++)
+	/* now lets add the states to the array */
+	int blankFlag = 0; /*adds blankspacess when flag is 1 */
+	int numRepeat = 0; /*number of times to add blank space */
+	for(int i = 0; i < 8; i++)
 	{
-		printf("%s\n", board[i]);
+		for(int j = 0; j < 8; j++)
+		{
+			printf("breaks at j = %c \n", '0');
+			if((board[i][j] > '1' && board[i][j] <= '8') && blankFlag == 0)
+			{
+				printf("flag is on!!! \n");
+				blankFlag = 1;
+				numRepeat = board[i][j];
+			}
+			if(blankFlag == 1 && numRepeat > 1)
+			{
+				b->boardarray[i][j] = '0'; 
+				numRepeat--;
+				if(numRepeat == 0) {blankFlag = 0;}
+				continue;
+			}
+			else
+			{
+				b->boardarray[i][j] = board[i][j];
+			}
+			/*chess peices between 3-6 done! */
+		}
+		printf("FINISHED  at i = %d \n", i);
+	}
+	for(int i = 0; i < 8; i++)
+	{
+		for(int j = 0; j < 8; j++)
+		{
+			printf("%c ", b->boardarray[i][j]);
+		}
+		printf("\n");
 	}
 }
 
 int main()
 {
-	fenToBoardState("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+	BSTATE test;
+	fenToBoardState("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1", &test);
 	return 0;
 }
