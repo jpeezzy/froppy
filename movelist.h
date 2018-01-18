@@ -25,10 +25,13 @@ typedef struct MOVEENTRY
 };
 
 //Create the move List
-int MLIST *createMovelist();
+MLIST *createMovelist(int currentlocation, int newlocation);
 
 //Delete MoveList and all move
-int MLIST * 
+void deleteMovelist(MLIST *list);
+
+//This will create the struct for the new Entry
+MENTRY *createMentry(); 
 
 //This will add new moves to the movelist      
 void appendMove(MLIST *Movelist, MENTRY *Move);
