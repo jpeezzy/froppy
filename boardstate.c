@@ -15,11 +15,11 @@ BSTATE *createBstate(void)
         exit(10);
     }   
     
-    p->WQCFlag = NULL;
-    p->WKCFlag = NULL;
-    p->BQCFlag = NULL;
-    p->BKCFlag = NULL;
-    p->sidetomove = NULL;
+    p->WQCFlag = 0;
+    p->WKCFlag = 0;
+    p->BQCFlag = 0;
+    p->BKCFlag = 0;
+    p->sidetomove = 0;
 
     return p;
 }
@@ -44,7 +44,16 @@ void loadStart(BSTATE *currentboard)
     currentboard->sidetomove = 0;
 
     //put in the start of the board 
-    int i;
+    int i,j;
+
+    for(i=0; i<8; ++i)
+    {
+        for(j=0; j<8; ++j)
+        {
+            currentboard->boardarray[i][j] = 0;
+        }
+    }
+
     for(i=0; i<8; ++i)
     {
         currentboard->boardarray[6][i] = 1;

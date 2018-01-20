@@ -24,6 +24,9 @@ struct MOVEENTRY
     MENTRY *Next;
 };
 
+//move a piece no checks for error
+void mov(int barr[8][8], int ploc, int pmov);
+
 //Create the move List
 MLIST *createMovelist();
 
@@ -39,5 +42,7 @@ void appendMove(MLIST *Movelist, MENTRY *Move);
 //This will add the the possible pawn moves at that location
 void pawnmove(MLIST *list, BSTATE *board, int pawnlocation);
 
+//This will add all the possible pawn moves at that location
+void knightmove(MLIST *list, BSTATE *board, int currentlocation);
 
 #endif

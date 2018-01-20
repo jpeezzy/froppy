@@ -3,7 +3,15 @@
 #include <assert.h>
 #include "movelist.h"
 #include "boardstate.h"
-    
+ 
+//Move a piece doesnt check anything
+void mov(int barr[8][8], int ploc, int pmov)
+{
+    int temp = barr[ploc/8][ploc%8];
+    barr[ploc/8][ploc%8] = 0;
+    barr[pmov/8][pmov%8] = temp;
+}
+  
 //Create the move List
 MLIST *createMovelist()
 {
@@ -210,6 +218,53 @@ void knightmove(MLIST *list, BSTATE *board, int currentlocation)
     assert(list);
     assert(board);
     assert(currentlocation);
+
+    int knightx = currentlocation/8;
+    int knighty = currentlocation%8;
+    int newlocation;
+    int type = (board->boardarray[knightx][knighty])/10;
+
+    if(knightx>2 && knighty != 0 && ((board->boardarray[knightx-2][knighty-1])/10 != type || board->boardarray[knightx-2][knighty-1] == 0))
+    {
+        newlocation = 8*(knightx-2)+(knighty-1);
+        appendMove(list, createMentry(currentlocation, newlocation));
+    }
+    if(knightx<6 && knighty != 0 && ((board->boardarray[knightx+2][knighty-1])/10 != type || board->boardarray[knightx+2][knighty-1] == 0))
+    {
+        newlocation = 8*(knightx+2)+(knighty-1);
+        appendMove(list, createMentry(currentlocation, newlocation));
+    }
+    if(knightx<6 && knighty != 7 && ((board->boardarray[knightx+2][knighty+1])/10 != type || board->boardarray[knightx+2][knighty+1] == 0))
+    {
+        newlocation = 8*(knightx+2)+(knighty+1);
+        appendMove(list, createMentry(currentlocation, newlocation));
+    }
+    if(knightx>2 && knighty != 7 && ((board->boardarray[knightx-2][knighty+1])/10 != type || board->boardarray[knightx-2][knighty+1] == 0))
+    {
+        newlocation = 8*(knightx-2)+(knighty+1);
+        appendMove(list, createMentry(currentlocation, newlocation));
+    }
+
+    if(knightx != 0 && knighty > 2 && ((board->boardarray[knightx-1][knighty-2])/10 != type || board->boardarray[knightx-1][knighty-2] == 0))
+    {
+        newlocation = 8*(knightx-1)+(knighty-2);
+        appendMove(list, createMentry(currentlocation, newlocation));
+    }
+    if(knightx != 0 && knighty < 6 && ((board->boardarray[knightx+1][knighty-2])/10 != type || board->boardarray[knightx+1][knighty-2] == 0))
+    {
+        newlocation = 8*(knightx+1)+(knighty-2);
+        appendMove(list, createMentry(currentlocation, newlocation));
+    }
+    if(knightx != 7 && knighty < 6 && ((board->boardarray[knightx+1][knighty+2])/10 != type || board->boardarray[knightx+1][knighty+2] == 0))
+    {
+        newlocation = 8*(knightx+1)+(knighty+2);
+        appendMove(list, createMentry(currentlocation, newlocation));
+    }
+    if(knightx != 7 && knighty > 2 && ((board->boardarray[knightx-1][knighty+2])/10 != type || board->boardarray[knightx-1][knighty+2] == 0))
+    {
+        newlocation = 8*(knightx-1)+(knighty+2);
+        appendMove(list, createMentry(currentlocation, newlocation));
+    }
 
 }
 
