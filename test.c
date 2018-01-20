@@ -6,6 +6,7 @@
 #include <assert.h>
 
 void seemoves(MLIST *movelist, BSTATE *board);
+void empty(BSTATE *board);
 
 int main()
 {
@@ -17,8 +18,9 @@ int main()
     list = createMovelist();
     
     //GUI(cboard->boardarray);
-    mov(cboard->boardarray, 0, 27);
-    rookmove(list, cboard,27);
+    empty(cboard);
+    cboard->boardarray[0][0] = 3;
+    bishopmove(list, cboard, 0);
     seemoves(list,cboard);
     deleteMovelist(list);
 
@@ -42,6 +44,17 @@ void seemoves(MLIST *movelist, BSTATE *board)
     }
 }
 
+void empty(BSTATE *board)
+{
+    int i,j;
+    for(i= 0; i<8; ++i)
+    {
+        for(j=0; j<8; ++j)
+        {
+            board->boardarray[i][j] = 0;
+        }
+    }
 
+}
 
 

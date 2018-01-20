@@ -370,3 +370,142 @@ void rookmove(MLIST *list, BSTATE *board, int currentlocation)
         }
     }
 }
+
+void bishopmove(MLIST *list, BSTATE *board, int currentlocation)
+{
+    assert(board);
+    assert(list);
+
+    int bishopx = currentlocation/8;
+    int bishopy = currentlocation%8;
+    int type = board->boardarray[bishopx][bishopy]/10;
+    int newlocation;
+    int i,j;
+
+    // got up to the left
+    if(1)
+    {
+        if(bishopx < bishopy)
+        {
+            j = bishopx;
+        }
+        else
+        {
+            j = bishopy;
+        }
+
+        for(i=1; i<=j; ++i)
+        {
+            newlocation = 8*(bishopx-i)+(bishopy-i);
+            if( (board->boardarray[bishopx-i][bishopy-i]/10 != type) && (board->boardarray[bishopx-i][bishopy-i] != 0))
+            {
+                appendMove(list, createMentry(currentlocation, newlocation));
+                break;
+            }
+            else if( (board->boardarray[bishopx-i][bishopy-i]/10 == type) && (board->boardarray[bishopx-i][bishopy-i] != 0))
+            {
+                break;
+            }
+            else
+            {
+                appendMove(list, createMentry(currentlocation, newlocation));
+            }
+        }
+     }
+
+    // got up to the right
+    if(1)
+    {
+        if(bishopx < 7 - bishopy)
+        {
+            j = bishopx;
+        }
+        else
+        {
+            j = 7 - bishopy;
+        }
+
+        for(i=1; i<=j; ++i)
+        {
+            newlocation = 8*(bishopx-i)+(bishopy+i);
+            if( (board->boardarray[bishopx-i][bishopy+i]/10 != type) && (board->boardarray[bishopx-i][bishopy+i] != 0))
+            {
+                appendMove(list, createMentry(currentlocation, newlocation));
+                break;
+            }
+            else if( (board->boardarray[bishopx-i][bishopy+i]/10 == type) && (board->boardarray[bishopx-i][bishopy+i] != 0))
+            {
+                break;
+            }
+            else
+            {
+                appendMove(list, createMentry(currentlocation, newlocation));
+            }
+        }
+     }
+
+    // go down to the right
+    if(1)
+    {
+        if(7-bishopx < 7 - bishopy)
+        {
+            j = 7 - bishopx;
+        }
+        else
+        {
+            j = 7 - bishopy;
+        }
+
+        for(i=1; i<=j; ++i)
+        {
+            newlocation = 8*(bishopx+i)+(bishopy+i);
+            if( (board->boardarray[bishopx+i][bishopy+i]/10 != type) && (board->boardarray[bishopx+i][bishopy+i] != 0))
+            {
+                appendMove(list, createMentry(currentlocation, newlocation));
+                break;
+            }
+            else if( (board->boardarray[bishopx+i][bishopy+i]/10 == type) && (board->boardarray[bishopx+i][bishopy+i] != 0))
+            {
+                break;
+            }
+            else
+            {
+                appendMove(list, createMentry(currentlocation, newlocation));
+            }
+        }
+     }
+
+    // go down to the left
+    if(1)
+    {
+        if(7-bishopx <  bishopy)
+        {
+            j = 7- bishopx;
+        }
+        else
+        {
+            j = bishopy;
+        }
+
+        for(i=1; i<=j; ++i)
+        {
+            newlocation = 8*(bishopx+i)+(bishopy-i);
+            if( (board->boardarray[bishopx+i][bishopy-i]/10 != type) && (board->boardarray[bishopx+i][bishopy-i] != 0))
+            {
+                appendMove(list, createMentry(currentlocation, newlocation));
+                break;
+            }
+            else if( (board->boardarray[bishopx+i][bishopy-i]/10 == type) && (board->boardarray[bishopx+i][bishopy-i] != 0))
+            {
+                break;
+            }
+            else
+            {
+                appendMove(list, createMentry(currentlocation, newlocation));
+            }
+        }
+     }
+}
+
+
+
