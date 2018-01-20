@@ -45,4 +45,7 @@ void pawnmove(MLIST *list, BSTATE *board, int pawnlocation);
 //This will add all the possible pawn moves at that location
 void knightmove(MLIST *list, BSTATE *board, int currentlocation);
 
+//This will add all the possible rook moves at that location
+void rookmove(MLIST *list, BSTATE *board, int currentlocation);
+
 #endif

@@ -269,3 +269,104 @@ void knightmove(MLIST *list, BSTATE *board, int currentlocation)
 }
 
 
+void rookmove(MLIST *list, BSTATE *board, int currentlocation)
+{
+
+    assert(list);
+    assert(board);
+    assert(currentlocation);
+
+    int rookx = currentlocation/8;
+    int rooky = currentlocation%8;
+    int type = board->boardarray[rookx][rooky]/10;
+    int newlocation;
+    int i;
+
+    //go left
+    if(rooky != 0)
+    {
+        for(i=1; i<=(rooky); ++i)
+        {
+            newlocation = 8*(rookx)+(rooky-i);
+            if( (board->boardarray[rookx][rooky-i]/10 != type) && (board->boardarray[rookx][rooky-i] != 0))
+            {
+                appendMove(list, createMentry(currentlocation, newlocation));
+                break;
+            }
+            else if( (board->boardarray[rookx][rooky-i]/10 == type) && (board->boardarray[rookx][rooky-i] != 0))
+            {
+                break;
+            }
+            else
+            {
+                appendMove(list, createMentry(currentlocation, newlocation));
+            }
+        }
+     }
+
+    //go right
+    if(rooky != 7)
+    {
+        for(i=1; i<=7-(rooky); ++i)
+        {
+            newlocation = 8*(rookx)+(rooky+i);
+            if( (board->boardarray[rookx][rooky+i]/10 != type) && (board->boardarray[rookx][rooky+i] != 0))
+            {
+                appendMove(list, createMentry(currentlocation, newlocation));
+                break;
+            }
+            else if( (board->boardarray[rookx][rooky+i]/10 == type) && (board->boardarray[rookx][rooky+i] != 0))
+            {
+                break;
+            }
+            else
+            {
+                appendMove(list, createMentry(currentlocation, newlocation));
+            }
+        }
+    }
+
+    //go down
+    if(rookx != 7)
+    {
+        for(i=1; i<=7-(rookx); ++i)
+        {
+            newlocation = 8*(rookx+i)+(rooky);
+            if( (board->boardarray[rookx+i][rooky]/10 != type) && (board->boardarray[rookx+i][rooky] != 0))
+            {
+                appendMove(list, createMentry(currentlocation, newlocation));
+                break;
+            }
+            else if( (board->boardarray[rookx+i][rooky]/10 == type) && (board->boardarray[rookx+i][rooky] != 0))
+            {
+                break;
+            }
+            else
+            {
+                appendMove(list, createMentry(currentlocation, newlocation));
+            }
+        }
+    }
+
+    //go up
+    if(rookx != 0)
+    {
+        for(i=1; i<=(rookx); ++i)
+        {
+            newlocation = 8*(rookx-i)+(rooky);
+            if( (board->boardarray[rookx-i][rooky]/10 != type) && (board->boardarray[rookx-i][rooky] != 0))
+            {
+                appendMove(list, createMentry(currentlocation, newlocation));
+                break;
+            }
+            else if( (board->boardarray[rookx-i][rooky]/10 == type) && (board->boardarray[rookx-i][rooky] != 0))
+            {
+                break;
+            }
+            else
+            {
+                appendMove(list, createMentry(currentlocation, newlocation));
+            }
+        }
+    }
+}

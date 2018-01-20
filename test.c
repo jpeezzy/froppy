@@ -17,7 +17,8 @@ int main()
     list = createMovelist();
     
     //GUI(cboard->boardarray);
-    knightmove(list, cboard,57);
+    mov(cboard->boardarray, 0, 27);
+    rookmove(list, cboard,27);
     seemoves(list,cboard);
     deleteMovelist(list);
 
