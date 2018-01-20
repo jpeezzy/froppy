@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <assert.h>
 #include "movelist.h"
 #include "boardstate.h"
     
@@ -9,7 +10,7 @@ MLIST *createMovelist()
     MLIST *p;
     p = malloc(sizeof(MLIST));
 
-    if(p!)
+    if(!p)
     {
         perror("Out of memory aborting");
         exit(10);
@@ -27,15 +28,15 @@ void deleteMovelist(MLIST *list)
     MENTRY *e,*n;
     e = list->First;
 
-    While(e)
+    while(e)
     {
         n = e->Next;
-        free(e)
+        free(e);
         e = n;
     }
 
     free(list);
-    list->NULL;
+    list = NULL;
 }
 
 //This will create the struct for the new Entry
@@ -43,41 +44,43 @@ MENTRY *createMentry(int currentlocation, int movelocation)
 {
     MENTRY *p;
     p = malloc(sizeof(MENTRY));
-    if(p!)
+    if(!p)
     {
         perror("Memory has run out aborting");
         exit(10);
     }
-    p->LIST = NULL;
+    p->List = NULL;
     p->CLOC = currentlocation;
     p->NLOC = movelocation;
     p->Prev = NULL;
     p->Next = NULL;
+
+    return p;
 }
 
 //This will add new moves to the movelist      
 void appendMove(MLIST *Movelist, MENTRY *Move)
 {
-    assert(MoveList);
+    assert(Movelist);
     assert(Move);
     
-    if(MoveList->Last)
+    if(Movelist->Last)
     {
-        Move->List = MoveList;
-        Move->Prev = MovieList->Last;
+        Move->List = Movelist;
+        Move->Prev = Movelist->Last;
         Move->Next = NULL;
         Move->Prev->Next = Move;
-        MoveList->Last = Move;
-        MoveList->movenum++;
+        Movelist->Last = Move;
+        Movelist->movenum++;
     }
     else
     {
-        Move->List = MoveList;
+        Move->List = Movelist;
         Move->Prev = NULL;
         Move->Next = NULL;
-        MoveList->First = Move;
-        MoveList->Last = Move;
-        MoveList->movenum = 1;
+        Movelist->First = Move;
+        Movelist->Last = Move;
+        Movelist->movenum = 1;
     }
 }
 
@@ -114,7 +117,7 @@ void pawnmove(MLIST *list, BSTATE *board, int pawnlocation)
             newlocation = 8*(pawnx-1)+pawny;
             if(board->boardarray[pawnx-1][pawny] == 0)
             {
-                appendMove(list, createMentry(pawnlocation, newlocation);
+                appendMove(list, createMentry(pawnlocation, newlocation));
             }
         }
 
@@ -126,7 +129,7 @@ void pawnmove(MLIST *list, BSTATE *board, int pawnlocation)
                 if(board->boardarray[pawnx-1][pawny-1] != 0)
                 {
                     newlocation = 8*(pawnx-1)+(pawny-1);
-                    appendMove(list, createMentry(pawnlocation, newlocation);
+                    appendMove(list, createMentry(pawnlocation, newlocation));
                 }
             }
         }
@@ -139,7 +142,7 @@ void pawnmove(MLIST *list, BSTATE *board, int pawnlocation)
                 if(board->boardarray[pawnx-1][pawny+1] != 0)
                 {
                     newlocation = 8*(pawnx+1)+(pawny+1);
-                    appendMove(list, createMentry(pawnlocation, newlocation);
+                    appendMove(list, createMentry(pawnlocation, newlocation));
                 }
             }
         }
@@ -167,7 +170,7 @@ void pawnmove(MLIST *list, BSTATE *board, int pawnlocation)
             newlocation = 8*(pawnx+1)+pawny;
             if(board->boardarray[pawnx+1][pawny] == 0)
             {
-                appendMove(list, createMentry(pawnlocation, newlocation);
+                appendMove(list, createMentry(pawnlocation, newlocation));
             }
         }
 
@@ -179,7 +182,7 @@ void pawnmove(MLIST *list, BSTATE *board, int pawnlocation)
                 if(board->boardarray[pawnx+1][pawny-1] != 0)
                 {
                     newlocation = 8*(pawnx+1)+(pawny-1);
-                    appendMove(list, createMentry(pawnlocation, newlocation);
+                    appendMove(list, createMentry(pawnlocation, newlocation));
                 }
             }
         }
@@ -192,7 +195,7 @@ void pawnmove(MLIST *list, BSTATE *board, int pawnlocation)
                 if(board->boardarray[pawnx+1][pawny+1] != 0)
                 {
                     newlocation = 8*(pawnx+1)+(pawny+1);
-                    appendMove(list, createMentry(pawnlocation, newlocation);
+                    appendMove(list, createMentry(pawnlocation, newlocation));
                 }
             }
         }

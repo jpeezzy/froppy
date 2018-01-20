@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "boardcontrol.h"
+#include <assert.h>
+#include "boardstate.h"
 
 // This will allocate the memory for the board
 BSTATE *createBstate(void)
@@ -14,19 +15,20 @@ BSTATE *createBstate(void)
         exit(10);
     }   
     
-    p->boardarray[8][8] = {0};
     p->WQCFlag = NULL;
     p->WKCFlag = NULL;
     p->BQCFlag = NULL;
-    p->BKCFLag = NULL;
+    p->BKCFlag = NULL;
     p->sidetomove = NULL;
+
+    return p;
 }
 
 // This will delete all the pointers for the board
 void deleteBstate(BSTATE *board)
 {
     assert(board);
-
+    free(board);
 }
 
 // This will load the start of the game to the inputted board
@@ -35,14 +37,35 @@ void loadStart(BSTATE *currentboard)
     assert(currentboard);
 
     //setting the start of the game flags
-    currentboard->WQCFLAG = 1;
+    currentboard->WQCFlag = 1;
     currentboard->WKCFlag = 1;
     currentboard->BQCFlag = 1;
-    currentboard->BKCFLag = 1;
-    currentboard->sidetoimove = 0;
+    currentboard->BKCFlag = 1;
+    currentboard->sidetomove = 0;
 
     //put in the start of the board 
-    
+    int i;
+    for(i=0; i<8; ++i)
+    {
+        currentboard->boardarray[6][i] = 1;
+        currentboard->boardarray[1][i] = 11;
+    }
+    currentboard->boardarray[0][0] = 14;
+    currentboard->boardarray[0][1] = 12;
+    currentboard->boardarray[0][2] = 13;
+    currentboard->boardarray[0][3] = 15;
+    currentboard->boardarray[0][4] = 16;
+    currentboard->boardarray[0][5] = 13;
+    currentboard->boardarray[0][6] = 12;
+    currentboard->boardarray[0][7] = 14;
+    currentboard->boardarray[7][0] = 4;
+    currentboard->boardarray[7][1] = 2;
+    currentboard->boardarray[7][2] = 3;
+    currentboard->boardarray[7][3] = 5;
+    currentboard->boardarray[7][4] = 6;
+    currentboard->boardarray[7][5] = 3;
+    currentboard->boardarray[7][6] = 2;
+    currentboard->boardarray[7][7] = 4;
 
 }
 

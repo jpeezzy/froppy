@@ -1,11 +1,11 @@
 #ifndef MOVELIST_H
 #define MOVELIST_H
-
+#include "boardstate.h"
 typedef struct MOVELIST MLIST;
 typedef struct MOVEENTRY MENTRY;  
 
 //The struct is for the list of move
-typedef struct MOVELIST
+struct MOVELIST
 {
     int movenum;
     MENTRY *First;
@@ -13,7 +13,7 @@ typedef struct MOVELIST
 } ;
 
 //The struct that contains each move 
-typedef struct MOVEENTRY
+struct MOVEENTRY
 {
     MLIST *List;
     //Current location in the array
@@ -25,17 +25,19 @@ typedef struct MOVEENTRY
 };
 
 //Create the move List
-MLIST *createMovelist(int currentlocation, int newlocation);
+MLIST *createMovelist();
 
 //Delete MoveList and all move
 void deleteMovelist(MLIST *list);
 
 //This will create the struct for the new Entry
-MENTRY *createMentry(); 
+MENTRY *createMentry(int currentlocation, int newlocation); 
 
 //This will add new moves to the movelist      
 void appendMove(MLIST *Movelist, MENTRY *Move);
 
+//This will add the the possible pawn moves at that location
+void pawnmove(MLIST *list, BSTATE *board, int pawnlocation);
 
 
 #endif
