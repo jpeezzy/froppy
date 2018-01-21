@@ -5,7 +5,7 @@
 #include "minmax.h"
 
 /* create Node */
-NODE *createNode(float value, MENTRY *move)
+NODE *createNode(float value, MENTRY *move, BSTATE *board)
 {
     NODE *node = NULL;
     node = malloc(sizeof(NODE));
@@ -16,7 +16,7 @@ NODE *createNode(float value, MENTRY *move)
     }   
     node->value = value;
     node->move = move;
-    node->board = NULL;
+    node->board = board;
     node->parent = NULL;
     node->child = NULL;
     node->next = NULL;
@@ -24,24 +24,28 @@ NODE *createNode(float value, MENTRY *move)
 }
 
 /* create node with float value and add it to the parent node */
-NODE *addChild(NODE* parent, float value, MENTRY *move)
+NODE *addChild(NODE* parent, float value, MENTRY *move, BSTATE *board)
 {
     assert(parent);
     assert(parent->child == NULL);
+    assert(move);
+    assert(board);
     NODE *child = NULL;
-    child = createNode(value, move);
+    child = createNode(value, move, board);
     parent->child = child;
     child->parent = parent;
     return child;     
 }
 
 /* create node with float value and add it to child */
-NODE *addSibling(NODE *child, float value, MENTRY *move)
+NODE *addSibling(NODE *child, float value, MENTRY *move, BSTATE *board)
 {
     assert(child);
     assert(child->next == NULL);
+    assert(move);
+    assert(board);
     NODE *sibling = NULL;
-    sibling = createNode(value, move);
+    sibling = createNode(value, move, board);
     child->next = sibling;
     sibling->parent = child->parent;
     return sibling;
@@ -73,31 +77,12 @@ float *alphabeta(NODE *node, WEIGHTS *weights, float alpha, float beta, PLAYER m
     assert(node);
     assert(weights);
     NODE *current = NULL;
-    BSTATE *board = NULL;
-    MLIST *mlist = NULL;
-    MENTRY *move = NULL;
     float temp; 
     
     // if current node is the a node, returns its value;
     if(node->child == NULL)
     {
-        current = node;
-        mlist = createMoveList();
-        while(current-> parent != NULL)
-        {
-          appendMove(mlist, current->move);
-          current = current->parent; 
-        }
-        assert(current->board);
-        board = current->board;
-        move = mlist->last;
-        while(move != NULL)
-        {
-          board = makemove(board, move);
-          move = move->Prev;
-        }
-        node->value = basicEvaluation(board, weights);
-        deleteMoveList(mlist);
+        node->value = basicEvaluation(node->board, weights);
         return node->value;
     }
     
@@ -158,38 +143,44 @@ MENTRY *minmax(BSTATE *currentBoard, WEIGHTS *weights)
     MLIST *legalMLIST = NULL;
     MENTRY *bestMove = NULL;
     MENTRY *currentMove = NULL;
-    BSTATE *board = NULL;
     NODE *tree = NULL;
     NODE *currentNode = NULL;
-    int time = 45000; 
+    BSTATE *board = NULL;
+    
+    int time = 40000; 
     clock_t start = clock();
     clock_t time_elapsed; 
-    tree = createNode(0 ,NULL);
-    tree->board = currentBoard;
+    
+    tree = createNode(0, NULL, currentBoard);
     currentNode = tree;
     int new_layer;
-    board = currentBoard;
-    do
+    
+    // first layer of the tree
+    legalMLIST = findlegalmoves(currentNode->board);
+    currentMove = legalMLIST->start;
+    board = currentNode->board;
+    new_layer = 1;
+    while(currentMove != NULL)
     {
-        legalMLIST = findlegalmoves(board);
-        currentMove = legalMLIST->start;
-        new_layer = 1;
-        while(currentMove != NULL)
+        if(new_layer)
         {
-            if(new_layer)
-            {
-                currentNode = addChild(currentNode, 0, currentMove);
-                new_layer = 0;
-            }
-            else
-            {
-                currentNode = addSibling(currentNode, 0, currentMove);
-            }   
-            currentMove = currentMove->Next;   
+            currentNode = addChild(currentNode, 0, currentMove, makeamove(board, currentMove));
+            new_layer = 0;
         }
-        time_elapsed = clock() - start;
-    }while(time_elapsed < time);
-} 
+        else
+        {
+            currentNode = addSibling(currentNode, 0, currentMove, makeamove(board, currentMove));
+        }  
+        currentMove = currentMove->Next;       
+    }   
+    
+}   
+
+// generate a layer and a pointer to the first child
+NODE* generateLayer(NODE *parent)
+{
+
+}
 
 int main()
 {
