@@ -23,4 +23,6 @@ void deleteBstate(BSTATE *board);
 // This will load the start of the game to the inputted board
 void loadStart(BSTATE *currentboard);
 
+//sneds board to vector
+void boardToVector(BSTATE *board, int *vector);
 #endif

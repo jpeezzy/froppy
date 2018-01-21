@@ -27,6 +27,29 @@ void fenToBoardState(char * fen, BSTATE *b)
 		count++;
 		fen++;
 	}
+
+	b->sidetomove = atoi(board[8]);
+	/*parse for castling flags for 
+	 * board[9] */
+	for(int i = 0; i < sizeof(board[9])/sizeof(char); i++)
+	{
+		if(board[9][i] == 'K')
+		{
+			b->WKCFlag = 1;
+		}
+		else if(board[9][i] == 'Q')
+		{
+			b->WQCFlag = 1;
+		}
+		else if(board[9][i] == 'k')
+		{
+			b->BKCFlag = 1;
+		}
+		else if(board[9][i] == 'q')
+		{
+			b->BQCFlag = 1;
+		}
+	}
 	/* now lets add the states to the array */
 	for(int i = 0; i < 8; i++)
 	{
@@ -64,6 +87,7 @@ int charToPiece(char input)
 		//case '1': return 0;
 	}
 }
+/*
 int main()
 {
 	BSTATE test;
@@ -76,7 +100,7 @@ int main()
 	fenToBoardState("rnbqkbnr/pppppppp/8/2R5/1K2R3/1P1R2B1/5K2/2B5 w KQkq -", &test);
 	return 0;
 }
-
+*/
 char* textConverterToEight(char* stringT, BSTATE *b, int index)
 {
 	//printf("string is %s\n", stringT);
