@@ -29,6 +29,9 @@ NODE *addSibling(NODE *child, float value);
 /* remove the node along with its siblings and children */
 void removeNode(NODE *node);
 
+/* generate a layer and a pointer to the first child */
+NODE* generateLayer(NODE *parent);
+
 /* finds the best worst value in the tree*/
 NODE *alphabeta(NODE* node, float alpha, float beta, PLAYER minmax);
 

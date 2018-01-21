@@ -176,10 +176,22 @@ MENTRY *minmax(BSTATE *currentBoard, WEIGHTS *weights)
     
 }   
 
-// generate a layer and a pointer to the first child
+/* generate a layer and a pointer to the first child */
 NODE* generateLayer(NODE *parent)
 {
-
+    MLIST* legalMLIST = NULL;
+    MENTRY* currentMove = NULL; 
+    NODE* currentNode = NULL;   
+    
+    legalMLIST = findlegalmoves(parent->board);
+    currentMove = legalMLIST->start;
+    currentNode = addChild(parent, 0, currentMove, makeamove(parent->board, currentMove));
+    while(currentMove != NULL)
+    {
+        currentNode = addSibling(currentNode, 0, currentMove, makeamove(board, currentMove));  
+        currentMove = currentMove->Next;       
+    }   
+    return parent->child;
 }
 
 int main()
