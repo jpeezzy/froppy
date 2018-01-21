@@ -97,7 +97,6 @@ void pawnmove(MLIST *list, BSTATE *board, int pawnlocation)
 {
     assert(list);
     assert(board);
-    assert(pawnlocation);
 
     //Check if it Black or White 
     int pawnx = pawnlocation/8;
@@ -217,7 +216,6 @@ void knightmove(MLIST *list, BSTATE *board, int currentlocation)
 {
     assert(list);
     assert(board);
-    assert(currentlocation);
 
     int knightx = currentlocation/8;
     int knighty = currentlocation%8;
@@ -274,7 +272,6 @@ void rookmove(MLIST *list, BSTATE *board, int currentlocation)
 
     assert(list);
     assert(board);
-    assert(currentlocation);
 
     int rookx = currentlocation/8;
     int rooky = currentlocation%8;
@@ -506,6 +503,231 @@ void bishopmove(MLIST *list, BSTATE *board, int currentlocation)
         }
      }
 }
+
+void queenmove(MLIST *list, BSTATE *board, int currentlocation)
+{
+    assert(list);
+    assert(board);
+
+    int queenx = currentlocation/8;
+    int queeny = currentlocation%8;
+    int newlocation,i,j;
+    int type = board->boardarray[queenx][queeny]/10;
+
+    // got up to the left
+    if(1)
+    {
+        if(queenx < queeny)
+        {
+            j = queenx;
+        }
+        else
+        {
+            j = queeny;
+        }
+
+        for(i=1; i<=j; ++i)
+        {
+            newlocation = 8*(queenx-i)+(queeny-i);
+            if( (board->boardarray[queenx-i][queeny-i]/10 != type) && (board->boardarray[queenx-i][queeny-i] != 0))
+            {
+                appendMove(list, createMentry(currentlocation, newlocation));
+                break;
+            }
+            else if( (board->boardarray[queenx-i][queeny-i]/10 == type) && (board->boardarray[queenx-i][queeny-i] != 0))
+            {
+                break;
+            }
+            else
+            {
+                appendMove(list, createMentry(currentlocation, newlocation));
+            }
+        }
+     }
+
+    // got up to the right
+    if(1)
+    {
+        if(queenx < 7 - queeny)
+        {
+            j = queenx;
+        }
+        else
+        {
+            j = 7 - queeny;
+        }
+
+        for(i=1; i<=j; ++i)
+        {
+            newlocation = 8*(queenx-i)+(queeny+i);
+            if( (board->boardarray[queenx-i][queeny+i]/10 != type) && (board->boardarray[queenx-i][queeny+i] != 0))
+            {
+                appendMove(list, createMentry(currentlocation, newlocation));
+                break;
+            }
+            else if( (board->boardarray[queenx-i][queeny+i]/10 == type) && (board->boardarray[queenx-i][queeny+i] != 0))
+            {
+                break;
+            }
+            else
+            {
+                appendMove(list, createMentry(currentlocation, newlocation));
+            }
+        }
+     }
+
+    // go down to the right
+    if(1)
+    {
+        if(7-queenx < 7 - queeny)
+        {
+            j = 7 - queenx;
+        }
+        else
+        {
+            j = 7 - queeny;
+        }
+
+        for(i=1; i<=j; ++i)
+        {
+            newlocation = 8*(queenx+i)+(queeny+i);
+            if( (board->boardarray[queenx+i][queeny+i]/10 != type) && (board->boardarray[queenx+i][queeny+i] != 0))
+            {
+                appendMove(list, createMentry(currentlocation, newlocation));
+                break;
+            }
+            else if( (board->boardarray[queenx+i][queeny+i]/10 == type) && (board->boardarray[queenx+i][queeny+i] != 0))
+            {
+                break;
+            }
+            else
+            {
+                appendMove(list, createMentry(currentlocation, newlocation));
+            }
+        }
+     }
+
+    // go down to the left
+    if(1)
+    {
+        if(7-queenx <  queeny)
+        {
+            j = 7- queenx;
+        }
+        else
+        {
+            j = queeny;
+        }
+
+        for(i=1; i<=j; ++i)
+        {
+            newlocation = 8*(queenx+i)+(queeny-i);
+            if( (board->boardarray[queenx+i][queeny-i]/10 != type) && (board->boardarray[queenx+i][queeny-i] != 0))
+            {
+                appendMove(list, createMentry(currentlocation, newlocation));
+                break;
+            }
+            else if( (board->boardarray[queenx+i][queeny-i]/10 == type) && (board->boardarray[queenx+i][queeny-i] != 0))
+            {
+                break;
+            }
+            else
+            {
+                appendMove(list, createMentry(currentlocation, newlocation));
+            }
+        }
+     }
+
+    //go left
+    if(queeny != 0)
+    {
+        for(i=1; i<=(queeny); ++i)
+        {
+            newlocation = 8*(queenx)+(queeny-i);
+            if( (board->boardarray[queenx][queeny-i]/10 != type) && (board->boardarray[queenx][queeny-i] != 0))
+            {
+                appendMove(list, createMentry(currentlocation, newlocation));
+                break;
+            }
+            else if( (board->boardarray[queenx][queeny-i]/10 == type) && (board->boardarray[queenx][queeny-i] != 0))
+            {
+                break;
+            }
+            else
+            {
+                appendMove(list, createMentry(currentlocation, newlocation));
+            }
+        }
+     }
+
+    //go right
+    if(queeny != 7)
+    {
+        for(i=1; i<=7-(queeny); ++i)
+        {
+            newlocation = 8*(queenx)+(queeny+i);
+            if( (board->boardarray[queenx][queeny+i]/10 != type) && (board->boardarray[queenx][queeny+i] != 0))
+            {
+                appendMove(list, createMentry(currentlocation, newlocation));
+                break;
+            }
+            else if( (board->boardarray[queenx][queeny+i]/10 == type) && (board->boardarray[queenx][queeny+i] != 0))
+            {
+                break;
+            }
+            else
+            {
+                appendMove(list, createMentry(currentlocation, newlocation));
+            }
+        }
+    }
+
+    //go down
+    if(queenx != 7)
+    {
+        for(i=1; i<=7-(queenx); ++i)
+        {
+            newlocation = 8*(queenx+i)+(queeny);
+            if( (board->boardarray[queenx+i][queeny]/10 != type) && (board->boardarray[queenx+i][queeny] != 0))
+            {
+                appendMove(list, createMentry(currentlocation, newlocation));
+                break;
+            }
+            else if( (board->boardarray[queenx+i][queeny]/10 == type) && (board->boardarray[queenx+i][queeny] != 0))
+            {
+                break;
+            }
+            else
+            {
+                appendMove(list, createMentry(currentlocation, newlocation));
+            }
+        }
+    }
+
+    //go up
+    if(queenx != 0)
+    {
+        for(i=1; i<=(queenx); ++i)
+        {
+            newlocation = 8*(queenx-i)+(queeny);
+            if( (board->boardarray[queenx-i][queeny]/10 != type) && (board->boardarray[queenx-i][queeny] != 0))
+            {
+                appendMove(list, createMentry(currentlocation, newlocation));
+                break;
+            }
+            else if( (board->boardarray[queenx-i][queeny]/10 == type) && (board->boardarray[queenx-i][queeny] != 0))
+            {
+                break;
+            }
+            else
+            {
+                appendMove(list, createMentry(currentlocation, newlocation));
+            }
+        }
+    }
+
+}
+
 
 
 

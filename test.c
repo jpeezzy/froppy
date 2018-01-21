@@ -19,8 +19,8 @@ int main()
     
     //GUI(cboard->boardarray);
     empty(cboard);
-    cboard->boardarray[0][0] = 3;
-    bishopmove(list, cboard, 0);
+    cboard->boardarray[3][2] = 5;
+    queenmove(list, cboard, 26);
     seemoves(list,cboard);
     deleteMovelist(list);
 
