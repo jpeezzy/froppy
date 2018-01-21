@@ -54,8 +54,16 @@ void Add_BoxFile(char *file, SDL_Surface *screen, int x, int y)
 
     /* Adding box to the screen */
     SDL_BlitSurface(image, NULL, screen, &coordinates);
+
+    SDL_FreeSurface(image);
 }
     
+void UpdateWindow(SDL_Surface *screen, int delay)
+{
+    SDL_Flip(screen);
+    SDL_Delay(delay);
+}
+
 void Exit(SDL_Surface *screen)
 {
     SDL_FreeSurface(screen);

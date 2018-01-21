@@ -12,6 +12,7 @@
 void DisplayWindow(char *file, SDL_Surface *screen, int delay);     /* Displays one screen */
 void Add_Box(SDL_Surface *image, SDL_Surface *screen, int x, int y);    /*Copies an image to another screen */
 void Add_BoxFile(char *file, SDL_Surface *screen, int x, int y);    /* Adds to screen directly from a file */
+void UpdateWindow(SDL_Surface *screen, int delay);  /* Updates and keeps window open */
 void Exit(SDL_Surface *screen); /* Exit protocol */
 
 #endif

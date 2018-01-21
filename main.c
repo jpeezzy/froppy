@@ -31,8 +31,7 @@ int main(int argc, char *args[])
 
     while (quit != 1)
     {
-        SDL_Flip(screen);   /* keeping window open while waiting for input */ 
-        SDL_Delay(100);     
+        UpdateWindow(screen, 100);      /* Keeping window while waiting for user input */
 
         while(SDL_PollEvent(&event))    /* Starting poll for Menu */
         {
@@ -42,7 +41,7 @@ int main(int argc, char *args[])
                     printf("Coordinates of your click: %d %d \n", event.motion.x, event.motion.y);
                     if (event.motion.x >= 120 && event.motion.x <= 470)
                     { 
-                        if ( event.motion.y >= 400 && event.motion.y >= 477)    /* Quit button */
+                        if ( event.motion.y >= 400 && event.motion.y <= 477)    /* Quit button */
                         {
                             printf("You chose to quit! \n");
                             Exit(screen);
