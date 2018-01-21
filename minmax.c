@@ -3,6 +3,9 @@
 #include <time.h>
 #include <assert.h>
 #include "minmax.h"
+#include "movelist.h"
+#include "basic_eval.h"
+#include "boardstate.h"
 
 /* create Node */
 NODE *createNode(float value, MENTRY *move, BSTATE *board)
@@ -139,41 +142,39 @@ float *alphabeta(NODE *node, WEIGHTS *weights, float alpha, float beta, PLAYER m
  
 /* finds the best worst move for the AI to make, returns pointer to MENTRY*/
 MENTRY *minmax(BSTATE *currentBoard, WEIGHTS *weights)
-{
-    MLIST *legalMLIST = NULL;
-    MENTRY *bestMove = NULL;
-    MENTRY *currentMove = NULL;
-    NODE *tree = NULL;
-    NODE *currentNode = NULL;
-    BSTATE *board = NULL;
+{   
+    NODE *current;
+    NODE *start;
+    MENTRY *bestMove;
     
     int time = 40000; 
-    clock_t start = clock();
+    clock_t start_time = clock();
     clock_t time_elapsed; 
     
+    // creates first 2 levels of the tree
     tree = createNode(0, NULL, currentBoard);
-    currentNode = tree;
-    int new_layer;
+    current = tree;
+    start = generateLayer(current);
     
-    // first layer of the tree
-    legalMLIST = findlegalmoves(currentNode->board);
-    currentMove = legalMLIST->start;
-    board = currentNode->board;
-    new_layer = 1;
-    while(currentMove != NULL)
+    // create one level of tree per loop, checks for time at the end of each loop
+    do
     {
-        if(new_layer)
+        current = start;
+        while(current != NULL)
         {
-            currentNode = addChild(currentNode, 0, currentMove, makeamove(board, currentMove));
-            new_layer = 0;
+            start = generateLayer(current); 
+            if(current == NULL && current->parent->next)
+            {
+                current = current->parent->next->child;
+            }
+            current = current->next;
         }
-        else
-        {
-            currentNode = addSibling(currentNode, 0, currentMove, makeamove(board, currentMove));
-        }  
-        currentMove = currentMove->Next;       
-    }   
+        start = start->parent->parent->child->child;
+        time_elapsed = clock() - start_time;
+    } while(time_elapsed < time);
     
+    bestMove = alphabeta(tree, weights, -3.4E38, 3.4E38, Max);
+    return bestMove;
 }   
 
 /* generate a layer and a pointer to the first child */
@@ -194,7 +195,7 @@ NODE* generateLayer(NODE *parent)
     return parent->child;
 }
 
-int main()
+/* int main()
 {
     NODE *tree = NULL;
     NODE *current = NULL;
@@ -224,4 +225,4 @@ int main()
         printf("%2.6f\n",value);
         removeNode(tree);
         return 0;
-}
+} */
