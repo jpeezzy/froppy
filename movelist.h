@@ -54,4 +54,13 @@ void bishopmove(MLIST *list, BSTATE *board, int currentlocation);
 //This will add all the possible bishop moves at that location
 void queenmove(MLIST *list, BSTATE *board, int currentlocation);
 
+//This will add all teh possible king moves at that location
+void kingmove(MLIST *list, BSTATE *board, int currentlocation);
+
+//Checks for checks on the king
+int checkchecker(BSTATE *board);
+
+//return location of black or white king based off flag
+int serachforking(BSTATE *board, int flag); 
+
 #endif

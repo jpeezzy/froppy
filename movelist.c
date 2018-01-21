@@ -728,6 +728,149 @@ void queenmove(MLIST *list, BSTATE *board, int currentlocation)
 
 }
 
+void kingmove(MLIST *list, BSTATE *board, int currentlocation)
+{
+    assert(list);
+    assert(board);
 
+    int kingx = king/8;
+    int kingy = king%8;
+    int type = board->boardarray[kingx][kingy]/10;
+    int newlocation, i, j;
+
+    for(i=-1; i<=1; ++i)
+    {
+        for(j=-1; j<=1; ++j)
+        {
+            newlocation = 8*(kingx+i)+(kingy+i);
+            if( ((board->boardarray[kingx+i][kingy+i] != type) && (board->boardarray[kingx+i][kingy+i] != 0)) || (board->boardarray[kingx+i][kingy+i]))
+            {
+                appendMove(list, createMentry(currentlocation, newlocation));
+            }
+        }
+    }
+}
+
+int searchforking(BSTATE *board, int flag)
+{
+    //search for king 
+    int i,j;
+
+    for(i=0; i<8; ++i)
+    {
+        for(j=0; j<8; ++j)
+        {
+            if( board->boardarray[i][j]%10 == 6)    
+            {
+                if(flag == 0 && (board->boardarray[i][j]/10 == 0 && board->boardarray[i][j] != 0))
+                {
+                    return (8*j+i);
+                }
+                if(flag == 1 && (board->boardarray[i][j]/10 == 1 && board->boardarray[i][j] != 0))
+                {
+                    return (8*j+i);
+                }
+            }
+        }
+    }
+}
+
+int checkchecker(BSTATE *board, int flag)
+{
+    int s = searchforking(board, flag);
+    int kingx = s/8;
+    int kingy = s%8;
+    int i,j;
+
+    //White
+    if(flag == 0)
+    {
+        //Check along the horizontal lines
+
+        //UP
+        if(kingx != 0)
+        {
+            for(i=1; i<(7-kingx); ++i)
+            {
+                if(board->boardarray[kingx-i][kingy]/10 == flag && board->boardarray[kingx-i][kingy] != 0)
+                {
+                    break;
+                }
+                else if(board->boardarray[kingx-i][kingy]/10 != flag)
+                {
+                    if(board->boardarray[kingx-i][kingy]%10 == 5 || board->boardarray[kingx-i][kingy]%10 == 4)
+                    {
+                        return 1;
+                    }
+                }
+            }
+        }
+
+        //DOWN
+        if(kingx != 7)
+        {
+            for(i=1; i<(kingx); ++i)
+            {
+                if(board->boardarray[kingx+i][kingy] == flag && board->boardarray[kingx+i][kingy] != 0)
+                {
+                    break;
+                }
+                else if(board->boardarray[kingx+i][kingy]/10 != flag)
+                {
+                    if(board->boardarray[kingx+i][kingy]%10 == 5 || board->boardarray[kingx+i][kingy]%10 == 4)
+                    {
+                        return 1;
+                    }
+                }
+            }
+        }
+
+        //Left
+        if(kingy != 0)
+        {
+            for(i=1; i<(kingy); ++i)
+            {
+                if(board->boardarray[kingx][kingy-i]/10 == flag && board->boardarray[kingx][kingy-i] != 0)
+                {
+                    break;
+                }
+                else if(board->boardarray[kingx][kingy-i]/10 != flag)
+                {
+                    if(board->boardarray[kingx][kingy-i]%10 == 5 || board->boardarray[kingx][kingy-i]%10 == 4)
+                    {
+                        return 1;
+                    }
+                }
+            }
+        }
+
+        //RIGHT
+        if(kingy != 7)
+        {
+            for(i=1; i<(7-kingy); ++i)
+            {
+                if(board->boardarray[kingx][kingy+i]/10 == flag && board->boardarray[kingx][kingy+i] != 0)
+                {
+                    break;
+                }
+                else if(board->boardarray[kingx][kingy+i]/10 != flag)
+                {
+                    if(board->boardarray[kingx][kingy+i]%10 == 5 || board->boardarray[kingx][kingy+i]%10 == 4)
+                    {
+                        return 1;
+                    }
+                }
+            }
+        }
+
+
+    
+
+
+    }
+
+
+    return 0;
+}
 
 
