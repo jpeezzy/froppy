@@ -55,6 +55,12 @@ int main(int argc, char *args[])
                         }
                     } 
                     break;
+           
+                 case SDL_QUIT:
+                    printf("You exited out of the window. \n");
+                    Exit(screen);
+                    quit = 1;
+                    break;
             }
         }    
     }   
