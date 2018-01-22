@@ -78,3 +78,24 @@ void loadStart(BSTATE *currentboard)
 
 }
 
+void copyBstate(BSTATE *old, BSTATE *new)
+{
+    assert(old);
+    assert(new);
+
+    new->WQCFlag = old->WQCFlag;
+    new->WKCFlag = old->WKCFlag;
+    new->BQCFlag = old->BQCFlag;
+    new->BKCFlag = old->BKCFlag;
+
+    int i,j;
+
+    for(i=0; i<8; ++i)
+    {
+        for(j=0; j<8; ++j)
+        {
+            new->boardarray[i][j] = old->boardarray[i][j];
+        }
+    }
+}
+

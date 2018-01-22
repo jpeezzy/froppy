@@ -63,4 +63,7 @@ int checkchecker(BSTATE *board);
 //return location of black or white king based off flag
 int serachforking(BSTATE *board, int flag); 
 
+//adds all legal moves to the list
+void allLegal(MLIST *list, BSTATE *board);
+
 #endif

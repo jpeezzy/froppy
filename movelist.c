@@ -71,7 +71,7 @@ void appendMove(MLIST *Movelist, MENTRY *Move)
 {
     assert(Movelist);
     assert(Move);
-    
+   
     if(Movelist->Last)
     {
         Move->List = Movelist;
@@ -91,6 +91,8 @@ void appendMove(MLIST *Movelist, MENTRY *Move)
         Movelist->movenum = 1;
     }
 }
+
+
 
 //possible move for a pawn
 void pawnmove(MLIST *list, BSTATE *board, int pawnlocation)
@@ -775,6 +777,21 @@ int searchforking(BSTATE *board, int flag)
     }
 }
 
+
+int checkmove(BSTATE *board, int currentlocation, int newlocation)
+{
+    assert(board);
+    
+    BSTATE *temp;
+    temp = createBstate();
+    copyBSTATE(board, temp);
+    mov(temp, currentlocation, newlocation);
+    int result = checkchecker(temp, board->sidetomove);
+    deleteBstate(temp);
+    return result;
+}
+ 
+//return 0 if not in check
 int checkchecker(BSTATE *board, int flag)
 {
     int s = searchforking(board, flag);
@@ -782,9 +799,7 @@ int checkchecker(BSTATE *board, int flag)
     int kingy = s%8;
     int i,j;
 
-    //White
-    if(flag == 0)
-    {
+    
         //Check along the horizontal lines
 
         //UP
@@ -867,10 +882,58 @@ int checkchecker(BSTATE *board, int flag)
     
 
 
-    }
+    
 
 
     return 0;
 }
 
+void allLegal(MLIST *list, BSTATE *board)
+{
+    assert(list);
+    assert(board);
+
+    int stm = board->sidetomove;
+    int i,j,type;
+    int cloc;
+
+    for(i = 0; i<8; ++i)
+    {
+        for(j = 0; j<8; ++j)
+        {
+            if( board->boardarray[i][j]/10 == stm && board->boardarray != 0)
+            {
+                type = board->boardarray[i][j]%10;
+                cloc = 8*j+i;
+                if(type == 1)
+                {
+                    pawnmove(list,board, cloc);
+                }
+                else if(type == 2)
+                {
+                    knightmove(list,board, cloc);
+                }
+                else if(type == 3)
+                {
+                    bishopmove(list,board,cloc);
+                }
+                else if(type == 4)
+                {
+                    rookmove(list,board,cloc);
+                }
+                else if(type == 5)
+                {
+                    queenmove(list, board, cloc);
+                }
+                else if(type == 6)
+                {
+                    kingmove(list, board ,cloc);
+                }
+            }
+
+        }
+
+    }
+
+}
 
