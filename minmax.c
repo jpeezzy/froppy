@@ -23,13 +23,33 @@ NODE *createNode(float value, MENTRY *move, BSTATE *board)
     node->parent = NULL;
     node->child = NULL;
     node->next = NULL;
+    node->head = NULL;
     return node;
 }
 
+/* create a head structure*/
+HEAD *createHead(NODE *root)
+{
+    assert(root);
+    HEAD *head = NULL;
+    head = malloc(sizeof(HEAD));
+    if(head == NULL)
+    {
+        perror("Out of memory aborting...");
+        exit(10);
+    }
+    head->length = 1;
+    head->root = root;
+    root->head = head;
+    return head;
+}
+
+
 /* create node with float value and add it to the parent node */
-NODE *addChild(NODE* parent, float value, MENTRY *move, BSTATE *board)
+NODE *addChild(NODE* parent, HEAD *head, float value, MENTRY *move, BSTATE *board)
 {
     assert(parent);
+    assert(head);
     assert(parent->child == NULL);
     assert(move);
     assert(board);
@@ -37,13 +57,16 @@ NODE *addChild(NODE* parent, float value, MENTRY *move, BSTATE *board)
     child = createNode(value, move, board);
     parent->child = child;
     child->parent = parent;
+    child->head = head;
+    head->length++;
     return child;     
 }
 
 /* create node with float value and add it to child */
-NODE *addSibling(NODE *child, float value, MENTRY *move, BSTATE *board)
+NODE *addSibling(NODE *child, HEAD *head, float value, MENTRY *move, BSTATE *board)
 {
     assert(child);
+    assert(head);
     assert(child->next == NULL);
     assert(move);
     assert(board);
@@ -51,6 +74,8 @@ NODE *addSibling(NODE *child, float value, MENTRY *move, BSTATE *board)
     sibling = createNode(value, move, board);
     child->next = sibling;
     sibling->parent = child->parent;
+    sibling->head = head;
+    head->length++;
     return sibling;
 }
 
@@ -72,6 +97,33 @@ void removeNode(NODE *node)
     node->child = NULL;
     node->next = NULL;
     free(node);
+}
+
+/* remove the head struct */
+void removeHead(HEAD *head)
+{
+    assert(head);
+    head->root = NULL;
+    free(head);   
+}
+
+
+/* generate a layer and a pointer to the first child */
+NODE* generateLayer(NODE *parent, HEAD *head)
+{
+    MLIST* legalMLIST = NULL;
+    MENTRY* currentMove = NULL; 
+    NODE* currentNode = NULL;   
+    
+    legalMLIST = findlegalmoves(parent->board);
+    currentMove = legalMLIST->start;
+    currentNode = addChild(parent, head, 0, currentMove, mov(parent->board->boardarray, currentMove->CLOC, currentMove->NLOC));
+    while(currentMove != NULL)
+    {
+        currentNode = addSibling(currentNode, head, 0, currentMove, mov(parent->board->boardarray, currentMove->CLOC, currentMove->NLOC));  
+        currentMove = currentMove->Next;       
+    }   
+    return parent->child;
 }
 
 /* finds the best worst value in the tree using minmax with alphabeta pruning */
@@ -143,16 +195,19 @@ float *alphabeta(NODE *node, WEIGHTS *weights, float alpha, float beta, PLAYER m
 /* finds the best worst move for the AI to make, returns pointer to MENTRY*/
 MENTRY *minmax(BSTATE *currentBoard, WEIGHTS *weights)
 {   
-    NODE *current;
-    NODE *start;
     MENTRY *bestMove;
-    
+    NODE *tree;
+    HEAD *head;
+    NODE *current;
+    NODE *start;   
+
     int time = 40000; 
     clock_t start_time = clock();
     clock_t time_elapsed; 
     
     // creates first 2 levels of the tree
     tree = createNode(0, NULL, currentBoard);
+    head = createHead(tree);
     current = tree;
     start = generateLayer(current);
     
@@ -162,7 +217,7 @@ MENTRY *minmax(BSTATE *currentBoard, WEIGHTS *weights)
         current = start;
         while(current != NULL)
         {
-            start = generateLayer(current); 
+            start = generateLayer(current, head); 
             if(current == NULL && current->parent->next)
             {
                 current = current->parent->next->child;
@@ -176,53 +231,3 @@ MENTRY *minmax(BSTATE *currentBoard, WEIGHTS *weights)
     bestMove = alphabeta(tree, weights, -3.4E38, 3.4E38, Max);
     return bestMove;
 }   
-
-/* generate a layer and a pointer to the first child */
-NODE* generateLayer(NODE *parent)
-{
-    MLIST* legalMLIST = NULL;
-    MENTRY* currentMove = NULL; 
-    NODE* currentNode = NULL;   
-    
-    legalMLIST = findlegalmoves(parent->board);
-    currentMove = legalMLIST->start;
-    currentNode = addChild(parent, 0, currentMove, makeamove(parent->board, currentMove));
-    while(currentMove != NULL)
-    {
-        currentNode = addSibling(currentNode, 0, currentMove, makeamove(board, currentMove));  
-        currentMove = currentMove->Next;       
-    }   
-    return parent->child;
-}
-
-/* int main()
-{
-    NODE *tree = NULL;
-    NODE *current = NULL;
-    NODE *add = NULL;
-    float x;
-    int i;
-    srand(time(NULL));
-    tree = createNode(0, NULL);
-    current = addChild(tree, 0, NULL);
-    current = tree->child;
-    for(i = 0; i < 19; i++)
-    {
-        current = addSibling(current, 0, NULL);
-    }
-    current = tree->child;
-    add = addChild(current, 2.0);
-    while(current)
-    {
-        for(i = 0; i < 19; i++)
-        {
-            x = ((float)rand()/(float)(RAND_MAX)) * 5.0;
-            add = addSibling(add, x);                
-        }
-        current = current->next;
-    }
-        float value = alphabeta(tree, -3.4E38, 3.4E38, Max);
-        printf("%2.6f\n",value);
-        removeNode(tree);
-        return 0;
-} */
