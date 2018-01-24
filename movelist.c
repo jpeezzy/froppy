@@ -7,9 +7,40 @@
 //Move a piece doesnt check anything
 void mov(int barr[8][8], int ploc, int pmov)
 {
-    int temp = barr[ploc/8][ploc%8];
-    barr[ploc/8][ploc%8] = 0;
-    barr[pmov/8][pmov%8] = temp;
+    if(ploc == 0 && pmov == 0)
+    {
+        barr[7][6] = 6;
+        barr[7][5] = 4;
+        barr[7][4] = 0;
+        barr[7][7] = 0;
+    }
+    else if(ploc == 1 && pmov == 1)
+    {
+        barr[7][2] = 6;
+        barr[7][3] = 4;
+        barr[7][4] = 0;
+        barr[7][0] = 0;
+    }
+    else if(ploc == 2 && pmov == 2)
+    {
+        barr[0][2] = 16;
+        barr[0][3] = 14;
+        barr[0][0] = 0;
+        barr[0][4] = 0;
+    }
+    else if(ploc == 3 && pmov == 3)
+    {
+        barr[0][6] = 16;
+        barr[0][5] = 14;
+        barr[0][7] = 0;
+        barr[0][4] = 0;
+    }
+    else
+    {
+        int temp = barr[ploc/8][ploc%8];
+        barr[ploc/8][ploc%8] = 0;
+        barr[pmov/8][pmov%8] = temp;
+    }
 }
   
 //Create the move List
@@ -116,7 +147,10 @@ void pawnmove(MLIST *list, BSTATE *board, int pawnlocation)
             newlocation = 8*(4)+pawny;
             if(board->boardarray[4][pawny] == 0)
             {
-                appendMove(list, createMentry(pawnlocation,newlocation));
+                if(checkmove(board, pawnlocation, newlocation))
+                {
+                    appendMove(list, createMentry(pawnlocation,newlocation));
+                }
             }                   
         }
 
@@ -126,7 +160,10 @@ void pawnmove(MLIST *list, BSTATE *board, int pawnlocation)
             newlocation = 8*(pawnx-1)+pawny;
             if(board->boardarray[pawnx-1][pawny] == 0)
             {
-                appendMove(list, createMentry(pawnlocation, newlocation));
+                if(checkmove(board, pawnlocation, newlocation))
+                {
+                    appendMove(list, createMentry(pawnlocation,newlocation));
+                }
             }
         }
 
@@ -138,7 +175,10 @@ void pawnmove(MLIST *list, BSTATE *board, int pawnlocation)
                 if(board->boardarray[pawnx-1][pawny-1] != 0)
                 {
                     newlocation = 8*(pawnx-1)+(pawny-1);
-                    appendMove(list, createMentry(pawnlocation, newlocation));
+                    if(checkmove(board, pawnlocation, newlocation))
+                    {
+                        appendMove(list, createMentry(pawnlocation,newlocation));
+                    }
                 }
             }
         }
@@ -151,7 +191,10 @@ void pawnmove(MLIST *list, BSTATE *board, int pawnlocation)
                 if(board->boardarray[pawnx-1][pawny+1] != 0)
                 {
                     newlocation = 8*(pawnx+1)+(pawny+1);
-                    appendMove(list, createMentry(pawnlocation, newlocation));
+                    if(checkmove(board, pawnlocation, newlocation))
+                    {
+                        appendMove(list, createMentry(pawnlocation,newlocation));
+                    }
                 }
             }
         }
@@ -169,7 +212,10 @@ void pawnmove(MLIST *list, BSTATE *board, int pawnlocation)
             newlocation = 8*(3)+pawny;
             if(board->boardarray[3][pawny] == 0)
             {
-                appendMove(list, createMentry(pawnlocation,newlocation));
+                if(checkmove(board, pawnlocation, newlocation))
+                {
+                  appendMove(list, createMentry(pawnlocation,newlocation));
+                }
             }                   
         }
 
@@ -179,7 +225,10 @@ void pawnmove(MLIST *list, BSTATE *board, int pawnlocation)
             newlocation = 8*(pawnx+1)+pawny;
             if(board->boardarray[pawnx+1][pawny] == 0)
             {
-                appendMove(list, createMentry(pawnlocation, newlocation));
+                if(checkmove(board, pawnlocation, newlocation))
+                {
+                  appendMove(list, createMentry(pawnlocation,newlocation));
+                }
             }
         }
 
@@ -191,7 +240,10 @@ void pawnmove(MLIST *list, BSTATE *board, int pawnlocation)
                 if(board->boardarray[pawnx+1][pawny-1] != 0)
                 {
                     newlocation = 8*(pawnx+1)+(pawny-1);
-                    appendMove(list, createMentry(pawnlocation, newlocation));
+                    if(checkmove(board, pawnlocation, newlocation))
+                    {
+                        appendMove(list, createMentry(pawnlocation,newlocation));
+                    }
                 }
             }
         }
@@ -204,7 +256,10 @@ void pawnmove(MLIST *list, BSTATE *board, int pawnlocation)
                 if(board->boardarray[pawnx+1][pawny+1] != 0)
                 {
                     newlocation = 8*(pawnx+1)+(pawny+1);
-                    appendMove(list, createMentry(pawnlocation, newlocation));
+                    if(checkmove(board, pawnlocation, newlocation))
+                    {
+                      appendMove(list, createMentry(pawnlocation,newlocation));
+                    }
                 }
             }
         }
@@ -227,43 +282,67 @@ void knightmove(MLIST *list, BSTATE *board, int currentlocation)
     if(knightx>2 && knighty != 0 && ((board->boardarray[knightx-2][knighty-1])/10 != type || board->boardarray[knightx-2][knighty-1] == 0))
     {
         newlocation = 8*(knightx-2)+(knighty-1);
-        appendMove(list, createMentry(currentlocation, newlocation));
+        if(checkmove(board, currentlocation, newlocation))
+        {
+            appendMove(list, createMentry(currentlocation, newlocation));
+        }
     }
     if(knightx<6 && knighty != 0 && ((board->boardarray[knightx+2][knighty-1])/10 != type || board->boardarray[knightx+2][knighty-1] == 0))
     {
         newlocation = 8*(knightx+2)+(knighty-1);
-        appendMove(list, createMentry(currentlocation, newlocation));
+        if(checkmove(board, currentlocation, newlocation))
+        {
+            appendMove(list, createMentry(currentlocation, newlocation));
+        }
     }
     if(knightx<6 && knighty != 7 && ((board->boardarray[knightx+2][knighty+1])/10 != type || board->boardarray[knightx+2][knighty+1] == 0))
     {
         newlocation = 8*(knightx+2)+(knighty+1);
-        appendMove(list, createMentry(currentlocation, newlocation));
+        if(checkmove(board, currentlocation, newlocation))
+        {
+            appendMove(list, createMentry(currentlocation, newlocation));
+        }
     }
     if(knightx>2 && knighty != 7 && ((board->boardarray[knightx-2][knighty+1])/10 != type || board->boardarray[knightx-2][knighty+1] == 0))
     {
         newlocation = 8*(knightx-2)+(knighty+1);
-        appendMove(list, createMentry(currentlocation, newlocation));
+        if(checkmove(board, currentlocation, newlocation))
+        {
+            appendMove(list, createMentry(currentlocation, newlocation));
+        }
     }
 
     if(knightx != 0 && knighty > 2 && ((board->boardarray[knightx-1][knighty-2])/10 != type || board->boardarray[knightx-1][knighty-2] == 0))
     {
         newlocation = 8*(knightx-1)+(knighty-2);
-        appendMove(list, createMentry(currentlocation, newlocation));
+        if(checkmove(board, currentlocation, newlocation))
+        {
+            appendMove(list, createMentry(currentlocation, newlocation));
+        }
     }
     if(knightx != 0 && knighty < 6 && ((board->boardarray[knightx+1][knighty-2])/10 != type || board->boardarray[knightx+1][knighty-2] == 0))
     {
         newlocation = 8*(knightx+1)+(knighty-2);
-        appendMove(list, createMentry(currentlocation, newlocation));
+        if(checkmove(board, currentlocation, newlocation))
+        {
+            appendMove(list, createMentry(currentlocation, newlocation));
+        }
     }
     if(knightx != 7 && knighty < 6 && ((board->boardarray[knightx+1][knighty+2])/10 != type || board->boardarray[knightx+1][knighty+2] == 0))
     {
         newlocation = 8*(knightx+1)+(knighty+2);
-        appendMove(list, createMentry(currentlocation, newlocation));
+        if(checkmove(board, currentlocation, newlocation))
+        {
+            appendMove(list, createMentry(currentlocation, newlocation));
+        }
     }
     if(knightx != 7 && knighty > 2 && ((board->boardarray[knightx-1][knighty+2])/10 != type || board->boardarray[knightx-1][knighty+2] == 0))
     {
         newlocation = 8*(knightx-1)+(knighty+2);
-        appendMove(list, createMentry(currentlocation, newlocation));
+        if(checkmove(board, currentlocation, newlocation))
+        {
+            appendMove(list, createMentry(currentlocation, newlocation));
+        }
     }
 
 }
@@ -289,7 +368,10 @@ void rookmove(MLIST *list, BSTATE *board, int currentlocation)
             newlocation = 8*(rookx)+(rooky-i);
             if( (board->boardarray[rookx][rooky-i]/10 != type) && (board->boardarray[rookx][rooky-i] != 0))
             {
-                appendMove(list, createMentry(currentlocation, newlocation));
+                if(checkmove(board, currentlocation, newlocation))
+                {
+                    appendMove(list, createMentry(currentlocation, newlocation));
+                }
                 break;
             }
             else if( (board->boardarray[rookx][rooky-i]/10 == type) && (board->boardarray[rookx][rooky-i] != 0))
@@ -298,7 +380,10 @@ void rookmove(MLIST *list, BSTATE *board, int currentlocation)
             }
             else
             {
-                appendMove(list, createMentry(currentlocation, newlocation));
+                if(checkmove(board, currentlocation, newlocation))
+                {
+                    appendMove(list, createMentry(currentlocation, newlocation));
+                }
             }
         }
      }
@@ -311,7 +396,10 @@ void rookmove(MLIST *list, BSTATE *board, int currentlocation)
             newlocation = 8*(rookx)+(rooky+i);
             if( (board->boardarray[rookx][rooky+i]/10 != type) && (board->boardarray[rookx][rooky+i] != 0))
             {
-                appendMove(list, createMentry(currentlocation, newlocation));
+                if(checkmove(board, currentlocation, newlocation))
+                {
+                    appendMove(list, createMentry(currentlocation, newlocation));
+                }
                 break;
             }
             else if( (board->boardarray[rookx][rooky+i]/10 == type) && (board->boardarray[rookx][rooky+i] != 0))
@@ -320,7 +408,10 @@ void rookmove(MLIST *list, BSTATE *board, int currentlocation)
             }
             else
             {
-                appendMove(list, createMentry(currentlocation, newlocation));
+                if(checkmove(board, currentlocation, newlocation))
+                {
+                    appendMove(list, createMentry(currentlocation, newlocation));
+                }
             }
         }
     }
@@ -333,7 +424,10 @@ void rookmove(MLIST *list, BSTATE *board, int currentlocation)
             newlocation = 8*(rookx+i)+(rooky);
             if( (board->boardarray[rookx+i][rooky]/10 != type) && (board->boardarray[rookx+i][rooky] != 0))
             {
-                appendMove(list, createMentry(currentlocation, newlocation));
+                if(checkmove(board, currentlocation, newlocation))
+                {
+                    appendMove(list, createMentry(currentlocation, newlocation));
+                }
                 break;
             }
             else if( (board->boardarray[rookx+i][rooky]/10 == type) && (board->boardarray[rookx+i][rooky] != 0))
@@ -342,7 +436,10 @@ void rookmove(MLIST *list, BSTATE *board, int currentlocation)
             }
             else
             {
-                appendMove(list, createMentry(currentlocation, newlocation));
+                if(checkmove(board, currentlocation, newlocation))
+                {
+                    appendMove(list, createMentry(currentlocation, newlocation));
+                }
             }
         }
     }
@@ -355,7 +452,10 @@ void rookmove(MLIST *list, BSTATE *board, int currentlocation)
             newlocation = 8*(rookx-i)+(rooky);
             if( (board->boardarray[rookx-i][rooky]/10 != type) && (board->boardarray[rookx-i][rooky] != 0))
             {
-                appendMove(list, createMentry(currentlocation, newlocation));
+                if(checkmove(board, currentlocation, newlocation))
+                {
+                    appendMove(list, createMentry(currentlocation, newlocation));
+                }
                 break;
             }
             else if( (board->boardarray[rookx-i][rooky]/10 == type) && (board->boardarray[rookx-i][rooky] != 0))
@@ -364,7 +464,10 @@ void rookmove(MLIST *list, BSTATE *board, int currentlocation)
             }
             else
             {
-                appendMove(list, createMentry(currentlocation, newlocation));
+                if(checkmove(board, currentlocation, newlocation))
+                {
+                    appendMove(list, createMentry(currentlocation, newlocation));
+                }
             }
         }
     }
@@ -398,7 +501,10 @@ void bishopmove(MLIST *list, BSTATE *board, int currentlocation)
             newlocation = 8*(bishopx-i)+(bishopy-i);
             if( (board->boardarray[bishopx-i][bishopy-i]/10 != type) && (board->boardarray[bishopx-i][bishopy-i] != 0))
             {
-                appendMove(list, createMentry(currentlocation, newlocation));
+                if(checkmove(board, currentlocation, newlocation))
+                {
+                    appendMove(list, createMentry(currentlocation, newlocation));
+                }
                 break;
             }
             else if( (board->boardarray[bishopx-i][bishopy-i]/10 == type) && (board->boardarray[bishopx-i][bishopy-i] != 0))
@@ -407,7 +513,10 @@ void bishopmove(MLIST *list, BSTATE *board, int currentlocation)
             }
             else
             {
-                appendMove(list, createMentry(currentlocation, newlocation));
+                if(checkmove(board, currentlocation, newlocation))
+                {
+                    appendMove(list, createMentry(currentlocation, newlocation));
+                }
             }
         }
      }
@@ -429,7 +538,10 @@ void bishopmove(MLIST *list, BSTATE *board, int currentlocation)
             newlocation = 8*(bishopx-i)+(bishopy+i);
             if( (board->boardarray[bishopx-i][bishopy+i]/10 != type) && (board->boardarray[bishopx-i][bishopy+i] != 0))
             {
-                appendMove(list, createMentry(currentlocation, newlocation));
+                if(checkmove(board, currentlocation, newlocation))
+                {
+                    appendMove(list, createMentry(currentlocation, newlocation));
+                }
                 break;
             }
             else if( (board->boardarray[bishopx-i][bishopy+i]/10 == type) && (board->boardarray[bishopx-i][bishopy+i] != 0))
@@ -438,7 +550,10 @@ void bishopmove(MLIST *list, BSTATE *board, int currentlocation)
             }
             else
             {
-                appendMove(list, createMentry(currentlocation, newlocation));
+                if(checkmove(board, currentlocation, newlocation))
+                {
+                    appendMove(list, createMentry(currentlocation, newlocation));
+                }
             }
         }
      }
@@ -460,7 +575,10 @@ void bishopmove(MLIST *list, BSTATE *board, int currentlocation)
             newlocation = 8*(bishopx+i)+(bishopy+i);
             if( (board->boardarray[bishopx+i][bishopy+i]/10 != type) && (board->boardarray[bishopx+i][bishopy+i] != 0))
             {
-                appendMove(list, createMentry(currentlocation, newlocation));
+                if(checkmove(board, currentlocation, newlocation))
+                {
+                    appendMove(list, createMentry(currentlocation, newlocation));
+                }
                 break;
             }
             else if( (board->boardarray[bishopx+i][bishopy+i]/10 == type) && (board->boardarray[bishopx+i][bishopy+i] != 0))
@@ -469,7 +587,10 @@ void bishopmove(MLIST *list, BSTATE *board, int currentlocation)
             }
             else
             {
-                appendMove(list, createMentry(currentlocation, newlocation));
+                if(checkmove(board, currentlocation, newlocation))
+                {
+                    appendMove(list, createMentry(currentlocation, newlocation));
+                }
             }
         }
      }
@@ -491,7 +612,10 @@ void bishopmove(MLIST *list, BSTATE *board, int currentlocation)
             newlocation = 8*(bishopx+i)+(bishopy-i);
             if( (board->boardarray[bishopx+i][bishopy-i]/10 != type) && (board->boardarray[bishopx+i][bishopy-i] != 0))
             {
-                appendMove(list, createMentry(currentlocation, newlocation));
+                if(checkmove(board, currentlocation, newlocation))
+                {
+                    appendMove(list, createMentry(currentlocation, newlocation));
+                }
                 break;
             }
             else if( (board->boardarray[bishopx+i][bishopy-i]/10 == type) && (board->boardarray[bishopx+i][bishopy-i] != 0))
@@ -500,7 +624,10 @@ void bishopmove(MLIST *list, BSTATE *board, int currentlocation)
             }
             else
             {
-                appendMove(list, createMentry(currentlocation, newlocation));
+                if(checkmove(board, currentlocation, newlocation))
+                {
+                    appendMove(list, createMentry(currentlocation, newlocation));
+                }
             }
         }
      }
@@ -533,7 +660,10 @@ void queenmove(MLIST *list, BSTATE *board, int currentlocation)
             newlocation = 8*(queenx-i)+(queeny-i);
             if( (board->boardarray[queenx-i][queeny-i]/10 != type) && (board->boardarray[queenx-i][queeny-i] != 0))
             {
-                appendMove(list, createMentry(currentlocation, newlocation));
+                if(checkmove(board, currentlocation, newlocation))
+                {
+                    appendMove(list, createMentry(currentlocation, newlocation));
+                }
                 break;
             }
             else if( (board->boardarray[queenx-i][queeny-i]/10 == type) && (board->boardarray[queenx-i][queeny-i] != 0))
@@ -542,7 +672,10 @@ void queenmove(MLIST *list, BSTATE *board, int currentlocation)
             }
             else
             {
-                appendMove(list, createMentry(currentlocation, newlocation));
+                if(checkmove(board, currentlocation, newlocation))
+                {
+                    appendMove(list, createMentry(currentlocation, newlocation));
+                }
             }
         }
      }
@@ -564,7 +697,10 @@ void queenmove(MLIST *list, BSTATE *board, int currentlocation)
             newlocation = 8*(queenx-i)+(queeny+i);
             if( (board->boardarray[queenx-i][queeny+i]/10 != type) && (board->boardarray[queenx-i][queeny+i] != 0))
             {
-                appendMove(list, createMentry(currentlocation, newlocation));
+                if(checkmove(board, currentlocation, newlocation))
+                {
+                    appendMove(list, createMentry(currentlocation, newlocation));
+                }
                 break;
             }
             else if( (board->boardarray[queenx-i][queeny+i]/10 == type) && (board->boardarray[queenx-i][queeny+i] != 0))
@@ -573,7 +709,10 @@ void queenmove(MLIST *list, BSTATE *board, int currentlocation)
             }
             else
             {
-                appendMove(list, createMentry(currentlocation, newlocation));
+                if(checkmove(board, currentlocation, newlocation))
+                {
+                    appendMove(list, createMentry(currentlocation, newlocation));
+                }
             }
         }
      }
@@ -595,7 +734,10 @@ void queenmove(MLIST *list, BSTATE *board, int currentlocation)
             newlocation = 8*(queenx+i)+(queeny+i);
             if( (board->boardarray[queenx+i][queeny+i]/10 != type) && (board->boardarray[queenx+i][queeny+i] != 0))
             {
-                appendMove(list, createMentry(currentlocation, newlocation));
+                if(checkmove(board, currentlocation, newlocation))
+                {
+                    appendMove(list, createMentry(currentlocation, newlocation));
+                }
                 break;
             }
             else if( (board->boardarray[queenx+i][queeny+i]/10 == type) && (board->boardarray[queenx+i][queeny+i] != 0))
@@ -604,7 +746,10 @@ void queenmove(MLIST *list, BSTATE *board, int currentlocation)
             }
             else
             {
-                appendMove(list, createMentry(currentlocation, newlocation));
+                if(checkmove(board, currentlocation, newlocation))
+                {
+                    appendMove(list, createMentry(currentlocation, newlocation));
+                }
             }
         }
      }
@@ -626,7 +771,10 @@ void queenmove(MLIST *list, BSTATE *board, int currentlocation)
             newlocation = 8*(queenx+i)+(queeny-i);
             if( (board->boardarray[queenx+i][queeny-i]/10 != type) && (board->boardarray[queenx+i][queeny-i] != 0))
             {
-                appendMove(list, createMentry(currentlocation, newlocation));
+                if(checkmove(board, currentlocation, newlocation))
+                {
+                    appendMove(list, createMentry(currentlocation, newlocation));
+                }
                 break;
             }
             else if( (board->boardarray[queenx+i][queeny-i]/10 == type) && (board->boardarray[queenx+i][queeny-i] != 0))
@@ -635,7 +783,10 @@ void queenmove(MLIST *list, BSTATE *board, int currentlocation)
             }
             else
             {
-                appendMove(list, createMentry(currentlocation, newlocation));
+                if(checkmove(board, currentlocation, newlocation))
+                {
+                    appendMove(list, createMentry(currentlocation, newlocation));
+                }
             }
         }
      }
@@ -648,7 +799,10 @@ void queenmove(MLIST *list, BSTATE *board, int currentlocation)
             newlocation = 8*(queenx)+(queeny-i);
             if( (board->boardarray[queenx][queeny-i]/10 != type) && (board->boardarray[queenx][queeny-i] != 0))
             {
-                appendMove(list, createMentry(currentlocation, newlocation));
+                if(checkmove(board, currentlocation, newlocation))
+                {
+                    appendMove(list, createMentry(currentlocation, newlocation));
+                }
                 break;
             }
             else if( (board->boardarray[queenx][queeny-i]/10 == type) && (board->boardarray[queenx][queeny-i] != 0))
@@ -657,7 +811,10 @@ void queenmove(MLIST *list, BSTATE *board, int currentlocation)
             }
             else
             {
-                appendMove(list, createMentry(currentlocation, newlocation));
+                if(checkmove(board, currentlocation, newlocation))
+                {
+                    appendMove(list, createMentry(currentlocation, newlocation));
+                }
             }
         }
      }
@@ -670,7 +827,10 @@ void queenmove(MLIST *list, BSTATE *board, int currentlocation)
             newlocation = 8*(queenx)+(queeny+i);
             if( (board->boardarray[queenx][queeny+i]/10 != type) && (board->boardarray[queenx][queeny+i] != 0))
             {
-                appendMove(list, createMentry(currentlocation, newlocation));
+                if(checkmove(board, currentlocation, newlocation))
+                {
+                    appendMove(list, createMentry(currentlocation, newlocation));
+                }
                 break;
             }
             else if( (board->boardarray[queenx][queeny+i]/10 == type) && (board->boardarray[queenx][queeny+i] != 0))
@@ -679,7 +839,10 @@ void queenmove(MLIST *list, BSTATE *board, int currentlocation)
             }
             else
             {
-                appendMove(list, createMentry(currentlocation, newlocation));
+                if(checkmove(board, currentlocation, newlocation))
+                {
+                    appendMove(list, createMentry(currentlocation, newlocation));
+                }
             }
         }
     }
@@ -692,7 +855,10 @@ void queenmove(MLIST *list, BSTATE *board, int currentlocation)
             newlocation = 8*(queenx+i)+(queeny);
             if( (board->boardarray[queenx+i][queeny]/10 != type) && (board->boardarray[queenx+i][queeny] != 0))
             {
-                appendMove(list, createMentry(currentlocation, newlocation));
+                if(checkmove(board, currentlocation, newlocation))
+                {
+                    appendMove(list, createMentry(currentlocation, newlocation));
+                }
                 break;
             }
             else if( (board->boardarray[queenx+i][queeny]/10 == type) && (board->boardarray[queenx+i][queeny] != 0))
@@ -701,7 +867,10 @@ void queenmove(MLIST *list, BSTATE *board, int currentlocation)
             }
             else
             {
-                appendMove(list, createMentry(currentlocation, newlocation));
+                if(checkmove(board, currentlocation, newlocation))
+                {
+                    appendMove(list, createMentry(currentlocation, newlocation));
+                }
             }
         }
     }
@@ -714,7 +883,10 @@ void queenmove(MLIST *list, BSTATE *board, int currentlocation)
             newlocation = 8*(queenx-i)+(queeny);
             if( (board->boardarray[queenx-i][queeny]/10 != type) && (board->boardarray[queenx-i][queeny] != 0))
             {
-                appendMove(list, createMentry(currentlocation, newlocation));
+                if(checkmove(board, currentlocation, newlocation))
+                {
+                    appendMove(list, createMentry(currentlocation, newlocation));
+                }
                 break;
             }
             else if( (board->boardarray[queenx-i][queeny]/10 == type) && (board->boardarray[queenx-i][queeny] != 0))
@@ -723,7 +895,10 @@ void queenmove(MLIST *list, BSTATE *board, int currentlocation)
             }
             else
             {
-                appendMove(list, createMentry(currentlocation, newlocation));
+                if(checkmove(board, currentlocation, newlocation))
+                {
+                    appendMove(list, createMentry(currentlocation, newlocation));
+                }
             }
         }
     }
@@ -735,8 +910,8 @@ void kingmove(MLIST *list, BSTATE *board, int currentlocation)
     assert(list);
     assert(board);
 
-    int kingx = king/8;
-    int kingy = king%8;
+    int kingx = currentlocation/8;
+    int kingy = currentlocation%8;
     int type = board->boardarray[kingx][kingy]/10;
     int newlocation, i, j;
 
@@ -744,12 +919,25 @@ void kingmove(MLIST *list, BSTATE *board, int currentlocation)
     {
         for(j=-1; j<=1; ++j)
         {
-            newlocation = 8*(kingx+i)+(kingy+i);
-            if( ((board->boardarray[kingx+i][kingy+i] != type) && (board->boardarray[kingx+i][kingy+i] != 0)) || (board->boardarray[kingx+i][kingy+i]))
+            newlocation = 8*(kingx+i)+(kingy+j);
+            
+            if((kingx+i >= 0) && (kingx+i <= 7) && (kingy+j >= 0) && (kingy+j<=7))
             {
-                appendMove(list, createMentry(currentlocation, newlocation));
+                if( ((board->boardarray[kingx+i][kingy+j]/10  != type) && (board->boardarray[kingx+i][kingy+j] != 0)) || (board->boardarray[kingx+i][kingy+j] == 0))
+                {
+                    if(checkmove(board, currentlocation, newlocation))
+                    {
+                        appendMove(list, createMentry(currentlocation, newlocation));
+                    }
+                }
             }
         }
+    }
+    
+    //castling
+    if(board->WKCFlag == 1)
+    {
+
     }
 }
 
@@ -775,6 +963,7 @@ int searchforking(BSTATE *board, int flag)
             }
         }
     }
+    return 0;
 }
 
 
@@ -784,11 +973,19 @@ int checkmove(BSTATE *board, int currentlocation, int newlocation)
     
     BSTATE *temp;
     temp = createBstate();
-    copyBSTATE(board, temp);
-    mov(temp, currentlocation, newlocation);
-    int result = checkchecker(temp, board->sidetomove);
-    deleteBstate(temp);
-    return result;
+    copyBstate(board, temp);
+    mov(temp->boardarray, currentlocation, newlocation);
+    int flag = board->sidetomove;
+    int result = checkchecker(temp, flag);
+    if( result == 0)
+    {
+        return 1;
+    }
+    else
+    {
+        return 0;
+    }
+
 }
  
 //return 0 if not in check
@@ -797,7 +994,7 @@ int checkchecker(BSTATE *board, int flag)
     int s = searchforking(board, flag);
     int kingx = s/8;
     int kingy = s%8;
-    int i,j;
+    int i;
 
     
         //Check along the horizontal lines
@@ -904,7 +1101,7 @@ void allLegal(MLIST *list, BSTATE *board)
             if( board->boardarray[i][j]/10 == stm && board->boardarray != 0)
             {
                 type = board->boardarray[i][j]%10;
-                cloc = 8*j+i;
+                cloc = 8*i+j;;
                 if(type == 1)
                 {
                     pawnmove(list,board, cloc);

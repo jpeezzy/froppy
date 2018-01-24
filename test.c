@@ -16,15 +16,13 @@ int main()
 
     MLIST *list;
     list = createMovelist();
-    
-    //GUI(cboard->boardarray);
-    empty(cboard);
-    cboard->boardarray[3][2] = 5;
-    queenmove(list, cboard, 26);
-    seemoves(list,cboard);
-    deleteMovelist(list);
 
-    deleteBstate(cboard);
+    allLegal(list,cboard);
+    seemoves(list,cboard);
+
+    //deleteMovelist(list);
+
+    //deleteBstate(cboard);
 }
 
 void seemoves(MLIST *movelist, BSTATE *board)
@@ -35,11 +33,15 @@ void seemoves(MLIST *movelist, BSTATE *board)
     MENTRY *p;
     p = movelist->First;
 
+    BSTATE *copy;
+    copy = createBstate();
+    copyBstate(board, copy);
+
     while(p)
     {
-        mov(board->boardarray,p->CLOC, p->NLOC);
-        GUI(board->boardarray);
-        mov(board->boardarray, p->NLOC, p->CLOC);
+        mov(copy->boardarray,p->CLOC, p->NLOC);
+        GUI(copy->boardarray);
+        copyBstate(board, copy);
         p = p->Next;
     }
 }

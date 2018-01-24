@@ -87,6 +87,7 @@ void copyBstate(BSTATE *old, BSTATE *new)
     new->WKCFlag = old->WKCFlag;
     new->BQCFlag = old->BQCFlag;
     new->BKCFlag = old->BKCFlag;
+    new->sidetomove = old->sidetomove;
 
     int i,j;
 

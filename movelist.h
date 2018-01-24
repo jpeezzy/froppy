@@ -58,12 +58,15 @@ void queenmove(MLIST *list, BSTATE *board, int currentlocation);
 void kingmove(MLIST *list, BSTATE *board, int currentlocation);
 
 //Checks for checks on the king
-int checkchecker(BSTATE *board);
+int checkchecker(BSTATE *board, int flag);
 
 //return location of black or white king based off flag
 int serachforking(BSTATE *board, int flag); 
 
 //adds all legal moves to the list
 void allLegal(MLIST *list, BSTATE *board);
+
+//checks if the move is legal
+int checkmove(BSTATE *board, int currentlocation, int newlocation);
 
 #endif
