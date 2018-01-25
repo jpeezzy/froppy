@@ -56,15 +56,6 @@ void fenToBoardState(char * fen, BSTATE *b)
 		printf("parsing checker %s \n", board[i]);
 		textConverterToEight(board[i],b, i);
 	}
-
-	for(int i = 0; i < 8; i++)
-	{
-		for(int j = 0; j < 8; j++)
-		{
-			printf("%d ", b->boardarray[i][j]);
-		}
-		printf("\n");
-	} 
 }
 
 
@@ -91,13 +82,17 @@ int charToPiece(char input)
 int main()
 {
 	BSTATE test;
-	//	fenToBoardState("rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1", &test);
-	//	fenToBoardState("rnbqkbnr/p1pppppp/8/1p6/4P3/5N2/PPPP1PPP/RNBQKB1R w KQkq -", &test);
-	//	fenToBoardState("rnbqkbnr/p1pppppp/8/1p6/3PP3/2P2N2/PP3PPP/RNBQKB1R w KQkq -", &test);
-	//	fenToBoardState("rn1qkbnr/pppppppp/1B6/1P1R3N/1b2K3/3N4/P1PPPPPP/R2Q1B2 w KQkq -", &test);
-	//	fenToBoardState("rnbqkbnr/pppppppp/8/8/3Q1K2/1P4B1/P1PPPPPP/RN3BNR w KQkq -", &test);
-	fenToBoardState("rnbqkbnr/pppppppp/8/8/1K2R3/1P4B1/8/8 w KQkq -", &test);
-	fenToBoardState("rnbqkbnr/pppppppp/8/2R5/1K2R3/1P1R2B1/5K2/2B5 w KQkq -", &test);
+	fenToBoardState("K2Q4/pppppppp/3b4/3b1r2/1n1P1k2/R6N/PPP1PPPP/RNB2B1B w KQkq -", &test);
+	//fenToBoardState("K2Q4/pppppppp/3b4/3b2r1/1n1P1k2/7N/PPP1PPPP/RNB2B1R w KQkq -", &test);
+//	fenToBoardState("K2Q4/pppppppp/3b4/3br3/1n1P1k2/7N/PPP1PPPP/RNB2B1R w KQkq -", &test);
+	for(int i = 0; i < 8; i++)
+	{
+		for(int j = 0; j < 8; j++)
+		{
+			printf("%d ", test.boardarray[i][j]);
+		}
+		printf("\n");
+	} 
 	return 0;
 }
 */
@@ -132,10 +127,11 @@ char* textConverterToEight(char* stringT, BSTATE *b, int index)
 		{
 			if(stringT[i] >= '1' && stringT[i] <='8')
 			{
-				printf("stringT[i] is %c \n", stringT[i]);
 				temp2 = (int)(stringT[i] - '0');
-				positionTemp = i;
-				printf("i is %d \n", i);
+				
+				if(stringT[i] != '1')
+					positionTemp = i;
+
 				for(int j = 0; j < (temp2); j++)
 				{
 					positionTemp++;
@@ -143,12 +139,14 @@ char* textConverterToEight(char* stringT, BSTATE *b, int index)
 			}
 			else
 			{
-				//printf("piece being movie is %c at index %d \n", stringT[i], temp2);
-				//temp[i+temp2 -1] = 'a';
 				temp[positionTemp] = charToPiece(stringT[i]);
+				positionTemp++;
 			}
 		}
 	}
+
+
+
 	for(int i = 0; i< 8; i++)
 	{
 		b->boardarray[index][i] =temp[i];
