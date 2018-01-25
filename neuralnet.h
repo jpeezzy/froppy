@@ -43,7 +43,7 @@ struct
     float layer1[1][200];
     float layer2[1][400];
     float layer3[1][600];
-    float layer4[1][773];
+    float output[1][773];
 
 }
 
