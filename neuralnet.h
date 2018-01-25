@@ -47,18 +47,19 @@ struct
 
 } DECODERLAYER;
 
+// Stage starts from 1 and goesfrom 773 to 600 to 773
 // Foward prop for auto encoder changes depending on stage
 void fowardpropAuto(AUTOW *  weights,
                     AUTOL *  autolayer,
                     DECODEW *decodeweights,
-                    DECODEL *decodeweights,
+                    DECODEL *decodelayer,
                     int      stage);
 
-// Backprop for Auto Encoder Changes Depending on Stage
+// Backprop for Auto Encoder Changes Depending on
 void backpropAuto(AUTOW *  weights,
                   AUTOL *  autolayer,
                   DECODEW *decodeweights,
-                  DECODEL *decodeweights,
+                  DECODEL *decodelayer,
                   AUTOW *  autograd,
                   DECODE * decodegrad,
                   int      stage);
