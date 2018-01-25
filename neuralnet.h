@@ -45,15 +45,14 @@ struct
   float layer3[1][600];
   float output[1][773];
 
-} DECODERLAYER
+} DECODERLAYER;
 
-    // Foward prop for auto encoder changes depending on stage
-    void
-    fowardpropAuto(AUTOW *  weights,
-                   AUTOL *  autolayer,
-                   DECODEW *decodeweights,
-                   DECODEL *decodeweights,
-                   int      stage);
+// Foward prop for auto encoder changes depending on stage
+void fowardpropAuto(AUTOW *  weights,
+                    AUTOL *  autolayer,
+                    DECODEW *decodeweights,
+                    DECODEL *decodeweights,
+                    int      stage);
 
 // Backprop for Auto Encoder Changes Depending on Stage
 void backpropAuto(AUTOW *  weights,
