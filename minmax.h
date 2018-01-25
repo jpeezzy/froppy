@@ -4,11 +4,11 @@
 typedef struct node NODE;
 typedef struct head HEAD;
 
-/* structure to keep track of total number of nodes in a tree */
+/* structure to keep track of total number of nodes in a current depth */
 struct head
 {
     int length;
-    NODE *root;
+    NODE *first; /* pointer to first node in current depth */
 };
 
 /* node structure to create n-ary trees for minmax */
@@ -20,8 +20,8 @@ struct node
     NODE *parent;
     NODE *child;
     NODE *next;
-    int length;
-    HEAD *head;
+    int children; /* number of children nodes of current node */
+    HEAD *head; 
 };
 
 /* enum to define minimizers and maximizers */
@@ -39,7 +39,7 @@ NODE *addChild(NODE* parent, HEAD* head, float value, BSTATE *board);
 /* add sibling next to the child node with input float value */
 NODE *addSibling(NODE *child, HEAD * head, float value, BSTATE *board);
 
-/* remove the node along with its siblings and children */
+/* remove the node along with its siblings and children and head struct*/
 void removeNode(NODE *node);
 
 /* remove the head struct */

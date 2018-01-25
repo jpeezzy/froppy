@@ -1,3 +1,4 @@
+#include <omp.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
@@ -23,14 +24,15 @@ NODE *createNode(float value, MENTRY *move, BSTATE *board)
     node->parent = NULL;
     node->child = NULL;
     node->next = NULL;
+    node->children = 0;
     node->head = NULL;
     return node;
 }
 
 /* create a head structure*/
-HEAD *createHead(NODE *root)
+void *createHead(NODE *first)
 {
-    assert(root);
+    assert(first);
     HEAD *head = NULL;
     head = malloc(sizeof(HEAD));
     if(head == NULL)
@@ -39,34 +41,38 @@ HEAD *createHead(NODE *root)
         exit(10);
     }
     head->length = 1;
-    head->root = root;
-    root->head = head;
-    return head;
+    head->first = first;
+    first->head = head;
 }
 
-
 /* create node with float value and add it to the parent node */
-NODE *addChild(NODE* parent, HEAD *head, float value, MENTRY *move, BSTATE *board)
+NODE *addChild(NODE* parent, float value, MENTRY *move, BSTATE *board)
 {
     assert(parent);
-    assert(head);
     assert(parent->child == NULL);
     assert(move);
     assert(board);
     NODE *child = NULL;
     child = createNode(value, move, board);
     parent->child = child;
+    parent->children = 1;
     child->parent = parent;
-    child->head = head;
-    head->length++;
+    /* check if the parent is the first node */
+    if(parent->head->first == parent)
+    {
+        createHead(child);
+    }
+    else
+    {
+        child->head = parent->head->first->child->head;
+    }
     return child;     
 }
 
 /* create node with float value and add it to child */
-NODE *addSibling(NODE *child, HEAD *head, float value, MENTRY *move, BSTATE *board)
+NODE *addSibling(NODE *child, float value, MENTRY *move, BSTATE *board)
 {
     assert(child);
-    assert(head);
     assert(child->next == NULL);
     assert(move);
     assert(board);
@@ -74,8 +80,8 @@ NODE *addSibling(NODE *child, HEAD *head, float value, MENTRY *move, BSTATE *boa
     sibling = createNode(value, move, board);
     child->next = sibling;
     sibling->parent = child->parent;
-    sibling->head = head;
-    head->length++;
+    sibling->parent->children++;
+    sibling->head = child->head;
     return sibling;
 }
 
@@ -83,6 +89,11 @@ NODE *addSibling(NODE *child, HEAD *head, float value, MENTRY *move, BSTATE *boa
 void removeNode(NODE *node)
 {
     assert(node);
+    if(node->head->first == node)
+    {
+        removeHead(node->head);
+        node->head = NULL;
+    }
     if(node->child)
     {
         removeNode(node->child);
@@ -103,25 +114,30 @@ void removeNode(NODE *node)
 void removeHead(HEAD *head)
 {
     assert(head);
-    head->root = NULL;
+    head->first = NULL;
     free(head);   
 }
 
-
 /* generate a layer and a pointer to the first child */
-NODE* generateLayer(NODE *parent, HEAD *head)
+NODE* generateLayer(NODE *parent)
 {
+    int length;
     MLIST* legalMLIST = NULL;
     MENTRY* currentMove = NULL; 
     NODE* currentNode = NULL;   
-    
-    legalMLIST = findlegalmoves(parent->board);
+    allLegal(legalMLIST, parent->board);
     currentMove = legalMLIST->start;
-    currentNode = addChild(parent, head, 0, currentMove, mov(parent->board->boardarray, currentMove->CLOC, currentMove->NLOC));
-    while(currentMove != NULL)
+    currentNode = addChild(parent, 0, currentMove, mov(parent->board->boardarray, currentMove->CLOC, currentMove->NLOC));
+    length = legalMLIST->movenum;
+
+#pragma omp parallel
     {
-        currentNode = addSibling(currentNode, head, 0, currentMove, mov(parent->board->boardarray, currentMove->CLOC, currentMove->NLOC));  
-        currentMove = currentMove->Next;       
+    #pragma omp for
+        for(int i = 0; i < length; i++)
+        {
+            currentNode = addSibling(currentNode, 0, currentMove, mov(parent->board->boardarray, currentMove->CLOC, currentMove->NLOC));  
+            currentMove = currentMove->Next;       
+        }
     }   
     return parent->child;
 }
@@ -132,6 +148,7 @@ float *alphabeta(NODE *node, WEIGHTS *weights, float alpha, float beta, PLAYER m
     assert(node);
     assert(weights);
     NODE *current = NULL;
+    int children;
     float temp; 
     
     // if current node is the a node, returns its value;
@@ -146,25 +163,31 @@ float *alphabeta(NODE *node, WEIGHTS *weights, float alpha, float beta, PLAYER m
     {
         node->value = -3.4E38;
         current = node->child;
-        while(current)
+        children = node->children;
+        
+    #pragma omp parallel
         {
-            temp = alphabeta(current, alpha, beta, Min);
-            if(temp > node->value)
+        #pragma omp for 
+            for(int i = 0; i < children; i++)
             {
-                node->value = temp;
-                // if node is the root(top) node, store the pointer to the moveEntry Struct of current in it. 
-                if(node->parent = NULL)
+                temp = alphabeta(current, alpha, beta, Min);
+                if(temp > node->value)
                 {
-                    node->move = current->move;       
+                    node->value = temp;
+                    // if node is the root(top) node, store the pointer to the moveEntry Struct of current in it. 
+                    if(node->parent = NULL)
+                    {
+                        node->move = current->move;       
+                    }
                 }
-            }
-            alpha = (alpha > node->value) ? alpha : node->value;
-            if(beta <= alpha)
-            {
-                // pruning the tree
-                break;
-            }
-            current = current->next;
+                alpha = (alpha > node->value) ? alpha : node->value;
+                if(beta <= alpha)
+                {
+                    // pruning the tree
+                    break;
+                }
+                current = current->next;
+            }/* rof */
         }
         current = NULL;
         return node->value;
@@ -175,17 +198,23 @@ float *alphabeta(NODE *node, WEIGHTS *weights, float alpha, float beta, PLAYER m
     {
         node->value = 3.4E38;
         current = node->child;
-        while(current)
+        children = node->children;
+    
+    #pragma omp parallel
         {
-            temp = alphabeta(current, alpha, beta, Max);
-            node->value = (node->value < temp) ? node->value : temp;
-            beta = (beta < node->value) ? beta : node->value;
-            if(beta <= alpha)
+        #pragma omp for
+            for(int i = 0; i < children; i++)
             {
-                // pruning the tree
-                break;
-            }
-            current = current->next;
+                temp = alphabeta(current, alpha, beta, Max);
+                node->value = (node->value < temp) ? node->value : temp;
+                beta = (beta < node->value) ? beta : node->value;
+                if(beta <= alpha)
+                {
+                    // pruning the tree
+                    break;
+                }
+                current = current->next;
+            }/* rof */
         }
         current = NULL;
         return node->value;   
@@ -197,9 +226,9 @@ MENTRY *minmax(BSTATE *currentBoard, WEIGHTS *weights)
 {   
     MENTRY *bestMove;
     NODE *tree;
-    HEAD *head;
     NODE *current;
-    NODE *start;   
+    NODE *start; 
+    int length;  
 
     int time = 40000; 
     clock_t start_time = clock();
@@ -207,7 +236,6 @@ MENTRY *minmax(BSTATE *currentBoard, WEIGHTS *weights)
     
     // creates first 2 levels of the tree
     tree = createNode(0, NULL, currentBoard);
-    head = createHead(tree);
     current = tree;
     start = generateLayer(current);
     
@@ -215,16 +243,22 @@ MENTRY *minmax(BSTATE *currentBoard, WEIGHTS *weights)
     do
     {
         current = start;
-        while(current != NULL)
-        {
-            start = generateLayer(current, head); 
-            if(current == NULL && current->parent->next)
+        length = current->head->length;
+    #pragma omp parallel
+        { 
+        #pragma omp for
+            for(int i = 0; i < length; i++)
             {
-                current = current->parent->next->child;
+                start = generateLayer(current);
+                current = current->next; 
+                if(current == NULL && current->parent->next)
+                {
+                    current = current->parent->next->child;
+                }
             }
-            current = current->next;
         }
-        start = start->parent->parent->child->child;
+        /* change start to pointer to the first node in current depth */
+        start = start->head->first;
         time_elapsed = clock() - start_time;
     } while(time_elapsed < time);
     
