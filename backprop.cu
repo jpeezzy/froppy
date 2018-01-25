@@ -24,17 +24,17 @@ float der_error_cal_first(float desired_output, float actual_output)
 
 // using equation 6 in the CUDA backprop paper
 // 1 block for each element in the result
-__global__ void der_error_input_cal_hidden(float* weight,
+__global__ void der_error_input_cal_hiddenCUDA(float* weight,
                                            int    prev_layer_node_lenth,
                                            float* cur_layer_der,
                                            int    cur_layer_node_lenth,
                                            float* prev_layer_value,
                                            float* result)
 {
-  int              weight_id    = blockId.x;
+  int              weight_id    = blockIdx.x;
   int              cur_layer_id = threadIdx.x;
   float            sum          = 0;
-  __shared__ float temp_sum[cur_layer_node_lenth];
+  extern __shared__ float temp_sum[];
   // every element compute one multiplication then thread 0 add them up
   temp_sum[cur_layer_id] =
       weight[cur_layer_id * cur_layer_node_lenth + weight_id] *
@@ -58,12 +58,11 @@ __global__ void der_error_input_cal_hidden(float* weight,
 // calculate the derivative of the pevious layer
 void der_error_input_cal_hidden(float* weight,
                                 int    prev_layer_node_lenth,
-                                float* cur_layer_der,
-                                int    cur_layer_node_lenth,
+                                float* cur_layer_der,int    cur_layer_node_lenth,
                                 float* prev_layer_value,
                                 float* result)
 {
-  assert(weight) assert(cur_layer_der);
+  assert(weight); assert(cur_layer_der);
   assert(result);
   float* cuda_weight           = NULL;
   float* cuda_cur_layer_der    = NULL;
@@ -89,32 +88,32 @@ void der_error_input_cal_hidden(float* weight,
              size_cur_layer_value,
              cudaMemcpyHostToDevice);
 
-  der_error_output_cal_hiddenCUDA << prev_layer_node_lenth,
-      cur_layer_node_lenth >> (cuda_weight,
+  der_error_input_cal_hiddenCUDA <<< prev_layer_node_lenth,
+      cur_layer_node_lenth, cur_layer_node_lenth*sizeof(float) >>> (cuda_weight,
                                prev_layer_node_lenth,
-                               cuda_cur_layer_der,
-                               cur_layer_node_lenth,
+                               cuda_cur_layer_der,cur_layer_node_lenth,
                                cuda_prev_layer_value,
-                               result);
+                               cuda_result);
   cudaMemcpy(result, cuda_result, size_result, cudaMemcpyDeviceToHost);
-  cudaFree(cuda_desired_output);
+
   cudaFree(cuda_cur_layer_der);
   cudaFree(cuda_result);
+  cudaFree(cuda_prev_layer_value);
 }
 
 __global__ void backprop_calCUDA(float* der_error_value,
-                                 float* prev_layer_value,
+                                 float* prev_layer_value,int prev_layer_node_length,
                                  float* result)
 {
-  int weight_id_x    = blockId.x;
-  int weight_id_y    = blockId.y;
+  int weight_id_x    = blockIdx.x;
+  int weight_id_y    = blockIdx.y;
   int cur_layer_id_x = threadIdx.x;
   int cur_layer_id_y = threadIdx.y;
-  result[blockDim.x * weight_id_x + cur_layer_id_x]
-        [blockDim.y * weight_id_y + cur_layer_id_y] =
+  result[(blockDim.x * weight_id_x + cur_layer_id_x)*prev_layer_node_length+ blockDim.y * weight_id_y + cur_layer_id_y] =
             der_error_value[blockDim.y * weight_id_y + cur_layer_id_y] *
             prev_layer_value[blockDim.x * weight_id_x + cur_layer_id_x];
 }
+
 void backprop_cal(float* der_error_value,
                   int    node_length,
                   float* prev_layer_value,
@@ -129,8 +128,7 @@ void backprop_cal(float* der_error_value,
   float*    cuda_result           = NULL;
   const int block_size            = 32;
 
-  block_index =
-      dim3(node_length / block_size, prev_layer_node_length / block_size);
+  dim3 block_index(node_length / block_size, prev_layer_node_length / block_size);
 
   // memory allocations
   int size_der_error_value  = sizeof(der_error_value);
@@ -140,7 +138,7 @@ void backprop_cal(float* der_error_value,
   cudaMalloc((void**)&cuda_prev_layer_value, size_prev_layer_value);
   cudaMalloc((void**)&cuda_result, size_result);
 
-  backprop_calCUDA << block_index, block_size >> ();
+  backprop_calCUDA <<< block_index, block_size >>> (cuda_der_error_value,cuda_prev_layer_value,prev_layer_node_length,cuda_result);
 
   // cleanup
   cudaMemcpy(result, cuda_result, size_result, cudaMemcpyDeviceToHost);
