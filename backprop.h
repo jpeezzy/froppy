@@ -18,7 +18,8 @@
 #define NODE_AMOUNT_9 1
 // the node number follows Abel's design
 
-typedef struct {
+typedef struct
+{
   // all arrays following notataion array[row_num][col_num]
   // arrays carrying the weights of the layers
   // this is the input layer
@@ -50,6 +51,37 @@ typedef struct {
 } neuralNetwork;
 
 // calculate backprop, assume that activation function is tanh
-__global__ float* backprop_cal(float* desired_output, float* actual_output,
-                               float* output_prev_layer);
+__global__ void backprop_calCUDA(float* der_error_value,
+                                 float* prev_layer_value,
+                                 float* result);
+
+// wrapper function for backprop to be called by CPU
+void backprop_cal(float* der_error_value,
+                  int    node_length,
+                  float* prev_layer_value,
+                  int    prev_layer_node_length,
+                  float* result);
+
+__global__ void der_error_cal_firstCUDA(float* desired_output,
+                                        float* actual_output,
+                                        float* result);
+
+void der_error_cal_first(float* desired_output,
+                         float* actual_output,
+                         int    last_node_length,
+                         float* result);
+
+// take in the weight belonging to the previous node
+// weight input should be a nx1 vector
+// the derivative input should be a 1xn vector
+__global__ void der_error_output_cal_hiddenCUDA(float* weight,
+                                                float* next_layer_der,
+                                                int    next_layer_node_lenth,
+                                                float* result);
+
+void der_error_output_cal_hidden(float* weight,
+                                 int    cur_layer_node_lenth,
+                                 float* next_layer_der,
+                                 int    next_layer_node_lenth,
+                                 float* result);
 #endif
