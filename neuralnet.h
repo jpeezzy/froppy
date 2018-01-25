@@ -76,19 +76,18 @@ void tanhArray(float *array, int m, int n, int flag);
 // Apply Activation Function on an array
 void reluArray(float *array, int m, int n, int flag);
 
-//nadam update
+// nadam update
 void nadam(float *w, float *g, float *m, float *v, int t);
 
-//nadam optimzation algorithm 
-void nadamAuto(AUTOW * autoweights,
-                DECODEW *decodeweights,
-                AUTOW * autograd,
-                DECODEW *decodegrad, 
-                AUTOW *autoM, 
-                AUTOW *autoV
-                DECODEW *decodeM, 
-                DECODEW *decodeV,
-                int t);
-
+// nadam optimzation algorithm
+void nadamAuto(AUTOW *  autoweights,
+               DECODEW *decodeweights,
+               AUTOW *  autograd,
+               DECODEW *decodegrad,
+               AUTOW *  autoM,
+               AUTOW *  autoV,
+               DECODEW *decodeM,
+               DECODEW *decodeV,
+               int      t);
 
 #endif
