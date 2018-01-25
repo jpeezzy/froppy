@@ -53,5 +53,16 @@ void fowardpropAuto(AUTOW *weights, AUTOL *autolayer, DECODEW *decodeweights, DE
 //Backprop for Auto Encoder Changes Depending on Stage
 void backpropAuto(AUTOW *weights, AUTOL *autolayer, DECODEW *decodeweights, DECODEL *decodeweights, AUTOW *autograd, DECODE *decodegrad, int stage);
 
+//RELU Activation
+float reluActivation(float x, int flag);
+
+//Tanh Activation
+float tanhActivation(float x, int flag);
+
+//Apply Activation Function on an array 
+void tanhArray(float *array, int m, int n, int flag);
+
+//Apply Activation Function on an array
+void reluArray(float *array, int m, int n, int flag);
 
 #endif
