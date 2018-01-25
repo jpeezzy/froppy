@@ -17,7 +17,7 @@ int main(int argc, char *args[])
 
     /* Surface initializations and assignments */
     SDL_Surface *greenBoard = NULL;      /* Making surface for green part of board */
-    greenBoard = SDL_LoadBMP("Green640.bmp");
+    greenBoard = SDL_LoadBMP("Green.bmp");
     if ( greenBoard == NULL)
     {
         printf("Green Board didn't load \n");
@@ -153,8 +153,9 @@ int main(int argc, char *args[])
             switch (event.type)
             {
                 case SDL_MOUSEBUTTONDOWN:
-                    Move(chessPieces, wQ, screen, boardArray[0][0]);
-                    SDL_BlitSurface(baseBoard, &boardArray[6][6], screen, &boardArray[6][6]);
+                //   if (event.motion.x    event.motion.y 
+                    Move(chessPieces, bP, screen, boardArray[5][5]);
+                    SDL_BlitSurface(baseBoard, &boardArray[5][6], screen, &boardArray[5][6]);
                     break;
                 
                 case SDL_QUIT:  /* Handles if user presses "x" button on window */
