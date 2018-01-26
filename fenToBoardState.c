@@ -51,7 +51,6 @@ void  fenToBoardState(char* fen, BSTATE* b)
       else if (board[9][i] == 'k')
         {
           b->BKCFlag = 1;
-          textConverterToEight
         }
       else if (board[9][i] == 'q')
         {
