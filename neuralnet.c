@@ -105,7 +105,7 @@ void nadam(float *w, float *g, float *m, float *v, int t)
 }
 
 //nadam Array 
-void nadamArray( float *W, float *V, float *M, float *G, int m, int n, int t)
+void nadamArray(float *W, float *G, float *M, float *V, int m, int n, int t)
 {
     int i,j;
     

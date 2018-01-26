@@ -79,6 +79,9 @@ void reluArray(float *array, int m, int n, int flag);
 // nadam update
 void nadam(float *w, float *g, float *m, float *v, int t);
 
+//nadam on an a array
+void nadamArray(float *W, float *G, float *M, float *V, int m, int n, int t); 
+
 // nadam optimzation algorithm
 void nadamAuto(AUTOW *  autoweights,
                DECODEW *decodeweights,
