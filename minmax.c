@@ -4,9 +4,7 @@
 #include <time.h>
 #include <assert.h>
 #include "minmax.h"
-#include "movelist.h"
 #include "basic_eval.h"
-#include "boardstate.h"
 
 /* create Node */
 NODE *createNode(float value, MENTRY *move, BSTATE *board)
@@ -130,9 +128,9 @@ NODE* generateLayer(NODE *parent)
     currentNode = addChild(parent, 0, currentMove, mov(parent->board->boardarray, currentMove->CLOC, currentMove->NLOC));
     length = legalMLIST->movenum;
 
-#pragma omp parallel
+#pragma omp parallel num_threads(56)
     {
-    #pragma omp for
+    #pragma omp for schedule(static)
         for(int i = 0; i < length; i++)
         {
             currentNode = addSibling(currentNode, 0, currentMove, mov(parent->board->boardarray, currentMove->CLOC, currentMove->NLOC));  
@@ -143,18 +141,16 @@ NODE* generateLayer(NODE *parent)
 }
 
 /* finds the best worst value in the tree using minmax with alphabeta pruning */
-float *alphabeta(NODE *node, WEIGHTS *weights, float alpha, float beta, PLAYER minmax)
+float alphabeta(NODE *node, float alpha, float beta, PLAYER minmax)
 {
     assert(node);
-    assert(weights);
     NODE *current = NULL;
     int children;
-    float temp; 
-    
+    float temp;
     // if current node is the a node, returns its value;
     if(node->child == NULL)
     {
-        node->value = basicEvaluation(node->board, weights);
+        node->value = basicEvaluation(node->board);
         return node->value;
     }
     
@@ -164,31 +160,28 @@ float *alphabeta(NODE *node, WEIGHTS *weights, float alpha, float beta, PLAYER m
         node->value = -3.4E38;
         current = node->child;
         children = node->children;
-        
-    #pragma omp parallel
+         
+        for(int i = 0; i < children; i++)
         {
-        #pragma omp for 
-            for(int i = 0; i < children; i++)
+            temp = alphabeta(current, alpha, beta, Min);
+            if(temp > node->value)
             {
-                temp = alphabeta(current, alpha, beta, Min);
-                if(temp > node->value)
+                node->value = temp;
+                /* if node is the root(top) node, store the pointer to the moveEntry Struct of current in it */ 
+                if(node->parent == NULL)
                 {
-                    node->value = temp;
-                    // if node is the root(top) node, store the pointer to the moveEntry Struct of current in it. 
-                    if(node->parent = NULL)
-                    {
-                        node->move = current->move;       
-                    }
+                    node->move = current->move;       
                 }
-                alpha = (alpha > node->value) ? alpha : node->value;
-                if(beta <= alpha)
-                {
-                    // pruning the tree
-                    break;
-                }
-                current = current->next;
-            }/* rof */
-        }
+            }
+            alpha = (alpha > node->value) ? alpha : node->value;
+            if(beta <= alpha)
+            {
+                // pruning the tree
+                break;
+            }
+            current = current->next;
+        }/* rof */
+        
         current = NULL;
         return node->value;
     }       
@@ -200,30 +193,27 @@ float *alphabeta(NODE *node, WEIGHTS *weights, float alpha, float beta, PLAYER m
         current = node->child;
         children = node->children;
     
-    #pragma omp parallel
+        for(int i = 0; i < children; i++)
         {
-        #pragma omp for
-            for(int i = 0; i < children; i++)
+            temp = alphabeta(current, alpha, beta, Max);
+            node->value = (node->value < temp) ? node->value : temp;
+            beta = (beta < node->value) ? beta : node->value;
+            if(beta <= alpha)
             {
-                temp = alphabeta(current, alpha, beta, Max);
-                node->value = (node->value < temp) ? node->value : temp;
-                beta = (beta < node->value) ? beta : node->value;
-                if(beta <= alpha)
-                {
-                    // pruning the tree
-                    break;
-                }
-                current = current->next;
-            }/* rof */
-        }
+                // pruning the tree
+                break;
+            }
+            current = current->next;
+        }/* rof */
         current = NULL;
         return node->value;   
     }
 }
  
-/* finds the best worst move for the AI to make, returns pointer to MENTRY*/
-MENTRY *minmax(BSTATE *currentBoard, WEIGHTS *weights)
+/* finds the best worst move for the AI to make, returns pointer to MENTRY */
+MENTRY *minmax(BSTATE *currentBoard)
 {   
+    assert(currentBoard);
     MENTRY *bestMove;
     NODE *tree;
     NODE *current;
@@ -234,19 +224,19 @@ MENTRY *minmax(BSTATE *currentBoard, WEIGHTS *weights)
     clock_t start_time = clock();
     clock_t time_elapsed; 
     
-    // creates first 2 levels of the tree
+    /* creates first 2 levels of the tree */
     tree = createNode(0, NULL, currentBoard);
     current = tree;
     start = generateLayer(current);
     
-    // create one level of tree per loop, checks for time at the end of each loop
+    /* create one level of tree per loop, checks for time at the end of each loop */
     do
     {
         current = start;
         length = current->head->length;
-    #pragma omp parallel
+    #pragma omp parallel num_threads(56)
         { 
-        #pragma omp for
+        #pragma omp for schedule(static)
             for(int i = 0; i < length; i++)
             {
                 start = generateLayer(current);
@@ -262,6 +252,7 @@ MENTRY *minmax(BSTATE *currentBoard, WEIGHTS *weights)
         time_elapsed = clock() - start_time;
     } while(time_elapsed < time);
     
-    bestMove = alphabeta(tree, weights, -3.4E38, 3.4E38, Max);
+    alphabeta(tree, -3.4E38, 3.4E38, Max);
+    bestMove = tree->move;
     return bestMove;
 }   
