@@ -12,7 +12,7 @@ void calerrorOuput(
     float* weight, float* nexterrorVAl, float* res, int lenCur, int lenNex);
 
 // calculate the derivative of error w.r.t to value of a node
-// parameters: the current layer value, derivative of error w.r.t output
+// parameters: the current layer output, derivative of error w.r.t output
 void calerrorVal(float* layerVal, float* errorOutput, float* res, int length);
 
 // calculate the gradient descent

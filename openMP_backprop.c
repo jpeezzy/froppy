@@ -7,15 +7,6 @@
 
 #define CORE_NUM 56
 
-void backpropAuto(AUTOW*   autoweights,
-                  AUTOL*   autolayer,
-                  DECODEW* decodeweights,
-                  DECODEL* decodelayer,
-                  AUTOW*   autograd,
-                  DECODEL* decodegrad,
-                  int      stage)
-{
-}
 void calerrorOuputO(float* output, float* truth, float* res, int length)
 {
   assert(output);
@@ -66,4 +57,50 @@ void calgrad(
   assert(errorVal);
   assert(res);
   matrixMultiplication(errorVal, prevOutput, res, lenCur, 1, lenPrev);
+}
+
+void backpropAuto(AUTOW*   autoweights,
+                  AUTOL*   autolayer,
+                  DECODEW* decodeweights,
+                  DECODEL* decodelayer,
+                  AUTOW*   autograd,
+                  DECODEL* decodegrad,
+                  int      stage)
+{
+  float* derErrorOutput0 = NULL;
+  float* derErrorOutput  = NULL;
+  float* derErrorVal     = NULL;
+  switch (stage)
+    {
+      case 1:
+        derErrorOutput0 = malloc(773 * sizeof(float));
+        calerrorOuputO(
+            decodelayer->output, autolayer->input, derErrorOutput0, 773);
+        derErrorVal = malloc(773 * sizeof(float));
+        calerrorVal(decodelayer->output, derErrorOutput0, derErrorVal, 773);
+        calgrad(decodelayer->layer3, derErrorVal, decodegrad->output, 773, 600);
+
+        derErrorOutput = malloc(600 * sizeof(float));
+        calerrorOuput(autolayer->layer1, derErrorVal, derErrorOutput, 600, 773);
+        free(derErrorVal);
+        calerrorVal(autolayer->layer1, derErrorOutput, derErrorVal, 600);
+        calgrad(derErrorOutput0, derErrorVal, autograd->weight1, 600, 773);
+
+        free(derErrorOutput0);
+        derErrorOutput0 = derErrorOutput;
+        derErrorOutput  = NULL;
+
+        derErrorOutput = malloc(773 * sizeof(float));
+        calerrorOuput(autolayer->input, derErrorVal, derErrorOutput, 600, 773);
+
+        break;
+      case 2:
+        break;
+      case 3:
+        break;
+      case 4:
+        break;
+      default:
+        break;
+    }
 }

@@ -7,45 +7,42 @@ typedef struct AUTOENCODERLAYER   AUTOL;
 typedef struct DECODERLAYER       DECODEL;
 
 // Struct for the auto encoder weight information
-struct
+struct AUTOENCODERWEIGHTS
 {
   float weight0[773][600];
   float weight1[600][400];
   float weight2[400][200];
   float weight3[200][100];
-
-} AUTOENCODERWEIGHTS;
+};
 
 // Struct for auto encoder layers
-struct
+struct AUTOENCODERLAYER
 {
   float input[1][773];
   float layer1[1][600];
   float layer2[1][400];
   float layer3[1][200];
   float output[1][100];
-} AUTOENCODERLAYER;
+};
 
 // Struct for the auto encode weight information
-struct
+struct DECODERWEIGHTS
 {
   float weight0[100][200];
   float weight1[200][400];
   float weight2[400][600];
   float weight3[600][773];
-
-} DECODERWEIGHTS;
+};
 
 // Struct for the decoder layers
-struct
+struct DECODERLAYER
 {
   // input of decoder is the output of the autoencoder
   float layer1[1][200];
   float layer2[1][400];
   float layer3[1][600];
   float output[1][773];
-
-} DECODERLAYER;
+};
 
 // Stage starts from 1 and goesfrom 773 to 600 to 773
 // Foward prop for auto encoder changes depending on stage
@@ -79,8 +76,8 @@ void reluArray(float *array, int m, int n, int flag);
 // nadam update
 void nadam(float *w, float *g, float *m, float *v, int t);
 
-//nadam on an a array
-void nadamArray(float *W, float *G, float *M, float *V, int m, int n, int t); 
+// nadam on an a array
+void nadamArray(float *W, float *G, float *M, float *V, int m, int n, int t);
 
 // nadam optimzation algorithm
 void nadamAuto(AUTOW *  autoweights,
@@ -91,6 +88,7 @@ void nadamAuto(AUTOW *  autoweights,
                AUTOW *  autoV,
                DECODEW *decodeM,
                DECODEW *decodeV,
-               int      t, int stage);
+               int      t,
+               int      stage);
 
 #endif
