@@ -78,8 +78,6 @@ void backpropAuto(AUTOW*   autoweights,
   float* derErrorOutput0 = NULL;
   float* derErrorOutput  = NULL;
   float* derErrorVal     = NULL;
-  float* derErrorOutput2 = NULL;
-  float* derErrorVal2    = NULL;
   switch (stage)
     {
       case 1:
