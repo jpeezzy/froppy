@@ -23,6 +23,10 @@ struct datab
   ENTRY* lastMove;
 };
 
+DATABASE* createDataB(void);
+
+ENTRY* createEntry(void);
+
 void   readFenfile(FILE** fenFilehandle, DATABASE* dataMain);
 BSTATE pickRandMove(DATABASE* dataMain);
 

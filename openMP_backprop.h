@@ -19,4 +19,6 @@ void calerrorVal(float* layerVal, float* errorOutput, float* res, int length);
 // parameters: output of previous layer, derivative of error w.r.t value
 void calgrad(
     float* prevOutput, float* errorVal, float* res, int lenCur, int lenPrev);
+
+void printOutError(float* error, int lenght);
 #endif

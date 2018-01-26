@@ -7,6 +7,15 @@
 #include "neuralnet.h"
 
 #define CORE_NUM 56
+void printOutError(float* error, int lenght)
+{
+  float sum = 0;
+  for (int i = 0; i < lenght; ++i)
+    {
+      sum += error[i];
+    }
+  printf("The total error is %f", sum);
+}
 
 void calerrorOuputO(float* output, float* truth, float* res, int length)
 {
@@ -88,6 +97,8 @@ void backpropAuto(AUTOW*   autoweights,
                        (float*)autolayer->input,
                        derErrorOutput0,
                        773);
+        // used for debugging
+        printOutError(derErrorOutput0, 773);
         derErrorVal = (float*)malloc(773 * sizeof(float));
         calerrorVal(
             (float*)decodelayer->output, derErrorOutput0, derErrorVal, 773);
