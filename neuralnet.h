@@ -49,6 +49,11 @@ struct DECODERLAYER
   float output[1][773];
 };
 
+AUTOW *  createAutoW(void);
+DECODEW *createDecoW(void);
+AUTOL *  createAutoL(void);
+DECODEL *createDecoL(void);
+
 // Stage starts from 1 and goesfrom 773 to 600 to 773
 // Foward prop for auto encoder changes depending on stage
 void fowardpropAuto(AUTOW *  autoweights,
@@ -96,7 +101,7 @@ void nadamAuto(AUTOW *  autoweights,
                int      t,
                int      stage);
 
-//intialize the relu
+// intialize the relu
 void randReluArray(float *A, int m, int n, int f);
 
 #endif
