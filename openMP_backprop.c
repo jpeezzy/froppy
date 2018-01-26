@@ -56,7 +56,14 @@ void calgrad(
   assert(prevOutput);
   assert(errorVal);
   assert(res);
-  matrixMultiplication(errorVal, prevOutput, res, lenCur, 1, lenPrev);
+#pragma omp parallel num_threads(CORE_NUM)
+  for (int i = 0; i < lenCur; ++i)
+    {
+      for (int j = 0; j < lenPrev; ++j)
+        {
+          res[i * lenPrev + j] = prevOutput[j] * errorVal[i];
+        }
+    }
 }
 
 void backpropAuto(AUTOW*   autoweights,
@@ -71,6 +78,8 @@ void backpropAuto(AUTOW*   autoweights,
   float* derErrorOutput0 = NULL;
   float* derErrorOutput  = NULL;
   float* derErrorVal     = NULL;
+  float* derErrorOutput2 = NULL;
+  float* derErrorVal2    = NULL;
   switch (stage)
     {
       case 1:
@@ -98,23 +107,44 @@ void backpropAuto(AUTOW*   autoweights,
 
         break;
       case 2:
-        // train layer 3 of decoder
-        derErrorOutput0 = (float*)malloc(600 * sizeof(float));
+        // train decoder layer output
+        derErrorOutput0 = (float*)malloc(773 * sizeof(float));
         calerrorOuputO(
-            decodelayer->layer3, autolayer->layer1, derErrorOutput0, 600);
+            decodelayer->output, autolayer->input, derErrorOutput0, 773);
+        derErrorVal = (float*)malloc(773 * sizeof(float));
+        calerrorVal(decodelayer->output, derErrorOutput0, derErrorVal, 773);
+
+        // train layer 3 of decoder
+        derErrorOutput = (float*)malloc(400 * sizeof(float));
+        calerrorOuput(
+            autoweights->weight1, derErrorVal, derErrorOutput, 400, 600);
+        free(derErrorVal);
+        derErrorVal = NULL;
         derErrorVal = (float*)malloc(600 * sizeof(float));
-        calerrorVal(decodelayer->layer3, derErrorOutput0, derErrorVal, 600);
-        calgrad(decodelayer->layer2, derErrorVal, decodegrad->layer3, 600, 400);
+        calerrorVal(autolayer->layer1, derErrorOutput, derErrorVal, 400);
+        calgrad(derErrorOutput0, derErrorVal, autograd->weight1, 400, 600);
+        free(derErrorOutput);
 
         // train layer 1 of encoder
         derErrorOutput = (float*)malloc(400 * sizeof(float));
         calerrorOuput(
-            autoweights->weight2, derErrorVal, derErrorOutput, 400, 600);
+            autoweights->weight1, derErrorVal, derErrorOutput, 400, 600);
         free(derErrorVal);
         derErrorVal = NULL;
         derErrorVal = (float*)malloc(600 * sizeof(float));
-        calerrorVal(autolayer->layer2, derErrorOutput, derErrorVal, 400);
+        calerrorVal(autolayer->layer1, derErrorOutput, derErrorVal, 400);
         calgrad(derErrorOutput0, derErrorVal, autograd->weight1, 400, 600);
+
+        // train input layer of encoder
+        free(derErrorOutput);
+        derErrorOutput = (float*)malloc(600 * sizeof(float));
+        calerrorOuput(
+            autoweights->weight0, derErrorVal, derErrorOutput, 600, 773);
+        free(derErrorVal);
+        derErrorVal = NULL;
+        derErrorVal = (float*)malloc(600 * sizeof(float));
+        calerrorVal(autolayer->input, derErrorOutput, derErrorVal, 600);
+        calgrad(derErrorOutput0, derErrorVal, autograd->weight0, 600, 773);
 
         free(derErrorOutput0);
         free(derErrorOutput);
@@ -136,7 +166,7 @@ void backpropAuto(AUTOW*   autoweights,
         free(derErrorVal);
         derErrorVal = NULL;
         derErrorVal = (float*)malloc(200 * sizeof(float));
-        calerrorVal(autolayer->layer3, derErrorOutput, derErrorVal, 200);
+        calerrorVal(autolayer->layer2, derErrorOutput, derErrorVal, 200);
         calgrad(derErrorOutput0, derErrorVal, autograd->weight2, 200, 400);
 
         free(derErrorOutput0);
@@ -158,7 +188,7 @@ void backpropAuto(AUTOW*   autoweights,
         free(derErrorVal);
         derErrorVal = NULL;
         derErrorVal = (float*)malloc(100 * sizeof(float));
-        calerrorVal(autolayer->output, derErrorOutput, derErrorVal, 100);
+        calerrorVal(autolayer->layer3, derErrorOutput, derErrorVal, 100);
         calgrad(derErrorOutput0, derErrorVal, autograd->weight3, 100, 200);
 
         free(derErrorOutput0);
