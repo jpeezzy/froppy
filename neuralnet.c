@@ -5,6 +5,11 @@
 #include "neuralnet.h"
 #include "matrix.h"
 
+float eta=0.001;
+float epsilon=10e-8;
+float beta1=0.9;
+float beta2=0.999;
+
 //Calculates the relu activation of a single input 0 is normal 1 is deriv
 float reluActivation(float x, int flag)
 {
@@ -103,7 +108,7 @@ void nadam(float *w, float *g, float *m, float *v, int t)
     *(v) = (*(v))*beta2 + (1-beta2)*(*(g))*(*(g));
     
     //Calculate the new weight
-    *(w) = *(w) - (eta/(sqrt((*(v))/(1-pow(beta1,t))))+eplison)*(beta1*((*(m))/(1-pow(beta1,t)))+ ((1-beta1)*(*(g)))/(1-pow(beta1,t)));  
+    *(w) = *(w) - (eta/(sqrt((*(v))/(1-pow(beta1,t))))+epsilon)*(beta1*((*(m))/(1-pow(beta1,t)))+ ((1-beta1)*(*(g)))/(1-pow(beta1,t)));  
 }
 
 //nadam Array 
@@ -141,7 +146,6 @@ void nadamAuto (AUTOW * autoweights,
                 DECODEW * decodeV,
                 int t, int stage)
 {
-    int i,j;
     int tid, nthreads, chunk;
     chunk = 10;
     #pragma omp parallel

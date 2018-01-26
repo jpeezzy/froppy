@@ -1,10 +1,10 @@
 #ifndef NEURALNET_H
 #define NEURALNET_H
 
-extern const float eta=0.001;
-extern const float epsilon=10e-8;
-extern const float beta1=0.9;
-extern const float beta2=0.999;
+extern float eta;
+extern float epsilon;
+extern float beta1;
+extern float beta2;
 
 typedef struct AUTOENCODERWEIGHTS AUTOW;
 typedef struct DECODERWEIGHTS     DECODEW;
