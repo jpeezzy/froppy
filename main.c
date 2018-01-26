@@ -6,19 +6,20 @@ int main(int argc, char *args[])
 {
     SDL_Surface *screen = NULL;     /* Main surface to be displayed */
     SDL_Surface *baseBoard = NULL;  /* Surface that will be the reference chess board */
-
+    SDL_Rect pieceArray[8][8];      /* Keeps track of where each piece is on the board */
  
+
     SDL_Init(SDL_INIT_VIDEO);   /* Initializes SDL Environment */
 
     screen = SDL_SetVideoMode(WIDTH, HEIGHT, BPP, SDL_SWSURFACE); /* Inputs settings for screen */
-    DisplayWindow("TempMenu.bmp", screen, 1000);    
+    DisplayWindow("Intro.bmp", screen, 1000);    
             /* @@@@@change out menu @@@@@ */
 
 
     /* Surface initializations and assignments */
     SDL_Surface *greenBoard = NULL;      /* Making surface for green part of board */
     greenBoard = SDL_LoadBMP("Green.bmp");
-    if ( greenBoard == NULL)
+    if ( greenBoard == NULL)    /* Checking if it loaded */
     {
         printf("Green Board didn't load \n");
         Exit(greenBoard);
@@ -27,7 +28,7 @@ int main(int argc, char *args[])
     
     SDL_Surface *whiteBoard = NULL;     /* Making surface for white part of board */
     whiteBoard = SDL_LoadBMP("White.bmp");
-    if ( whiteBoard == NULL)
+    if ( whiteBoard == NULL)    /* Checking if it loaded */
     {
         printf("White Board didn't load \n");
         Exit(whiteBoard);
@@ -71,68 +72,108 @@ int main(int argc, char *args[])
 
 /** Start of user interaction loop  **********************************************************/
     SDL_Event event; 
+    
     int quit = 0;   /* Flag for ending menu while loop */
+    
+
+    while (SDL_WaitEvent(&event))
+    {
+        if (event.type == SDL_MOUSEBUTTONDOWN)  
+        {
+            Add_BoxFile("Menu1.bmp", screen, 0,0);
+            SDL_Flip(screen);   
+            break;
+        }
+    }         
 
     while (quit != 1)
     {
-        UpdateWindow(screen, 100);      /* Updating and Keeping window while waiting for user input */
-
         while(SDL_PollEvent(&event))    /* Starting poll for Menu */
         {
             switch(event.type)
             {
                 case SDL_MOUSEBUTTONDOWN: 
                     printf("Coordinates of your click: %d %d \n", event.motion.x, event.motion.y);
-                    if (event.motion.x >= 120 && event.motion.x <= 470)
+                    if (event.motion.x >= 176 && event.motion.x <= 468)
                     { 
-                        if ( event.motion.y >= 400 && event.motion.y <= 477)    /* Quit button */
+                        if ( event.motion.y >= 475 && event.motion.y <= 578)    /* Quit button */
+                        {
+                            Add_BoxFile("MenuQuit.bmp", screen, 0,0);
+                            SDL_Flip(screen);
+                            break;
+                        }
+                        else if (event.motion.y >= 346 && event.motion.y <= 449) /* Play button */
+                        {
+                            Add_BoxFile("MenuPlay.bmp", screen, 0,0);
+                            SDL_Flip(screen);
+                            break;
+                        }
+                    }
+                    else 
+                    {
+                        Add_BoxFile("Menu1.bmp", screen, 0,0);
+                        SDL_Flip(screen);
+                    } 
+    
+ 
+                case SDL_MOUSEBUTTONUP:
+                    if (event.motion.x >= 176 && event.motion.x <= 468)
+                    { 
+                        if ( event.motion.y >= 475 && event.motion.y <= 578)    /* Quit button */
                         {
                             printf("You chose to quit! \n");
                             Exit(screen);
-                            quit = 1;
+                            return 0;
                         }
-                        else if (event.motion.y >= 263 && event.motion.y <= 350) /* Play button */
-                        {
+                    
+                        else if (event.motion.y >= 346 && event.motion.y <= 449)     /* Play button */    
+                        {    
                             printf("You chose to play! \n");
                             CreateBoard(whiteBoard, greenBoard, screen);    /* Making board graphics */ 
-                            baseBoard = BaseBoardCopy(screen, boardArray);  /* Copying board */ 
-                    
-                            /* Putting initial pieces on the board */
-                                /* Pawns */
-                            for (int i = 0; i < 8; i++) 
-                            { 
-                                SDL_BlitSurface(chessPieces, &wP, screen, &boardArray[i][1]);  
-                                SDL_BlitSurface(chessPieces, &bP, screen, &boardArray[i][6]);
-                            }
         
-                                /* Rooks */
-                            SDL_BlitSurface(chessPieces, &wR, screen, &boardArray[0][0]);
-                            SDL_BlitSurface(chessPieces, &wR, screen, &boardArray[7][0]);
-                            SDL_BlitSurface(chessPieces, &bR, screen, &boardArray[0][7]);
-                            SDL_BlitSurface(chessPieces, &bR, screen, &boardArray[7][7]);
+                            baseBoard = SDL_DisplayFormat(screen);          /* Copying board for reference */ 
+                            SDL_BlitSurface(screen, NULL, baseBoard, NULL); 
+                        
+                    
 
-		                		/* Knights */
-                            SDL_BlitSurface(chessPieces, &wH, screen, &boardArray[1][0]);
-                            SDL_BlitSurface(chessPieces, &wH, screen, &boardArray[6][0]);
-                            SDL_BlitSurface(chessPieces, &bH, screen, &boardArray[1][7]);
-                            SDL_BlitSurface(chessPieces, &bH, screen, &boardArray[6][7]);
+                    
+                        /* Putting initial pieces on the board */
+                 	          /* Pawns */
+                 	    for (int i = 0; i < 8; i++) 
+                	    { 
+                 	        SDL_BlitSurface(chessPieces, &bP, screen, &boardArray[i][1]);  
+                	         SDL_BlitSurface(chessPieces, &wP, screen, &boardArray[i][6]);
+                	    }
+        
+	                         /* Rooks */
+        	            SDL_BlitSurface(chessPieces, &bR, screen, &boardArray[0][0]);
+        	            SDL_BlitSurface(chessPieces, &bR, screen, &boardArray[7][0]);
+               	        SDL_BlitSurface(chessPieces, &wR, screen, &boardArray[0][7]);
+               		    SDL_BlitSurface(chessPieces, &wR, screen, &boardArray[7][7]);
+
+			            	/* Knights */
+               	 	    SDL_BlitSurface(chessPieces, &bH, screen, &boardArray[1][0]);
+               	        SDL_BlitSurface(chessPieces, &bH, screen, &boardArray[6][0]);
+                 	    SDL_BlitSurface(chessPieces, &wH, screen, &boardArray[1][7]);
+                	    SDL_BlitSurface(chessPieces, &wH, screen, &boardArray[6][7]);
                                 
-			                	/* Bishops */
-                            SDL_BlitSurface(chessPieces, &wB, screen, &boardArray[2][0]);
-                            SDL_BlitSurface(chessPieces, &wB, screen, &boardArray[5][0]);
-                            SDL_BlitSurface(chessPieces, &bB, screen, &boardArray[2][7]);
-                            SDL_BlitSurface(chessPieces, &bB, screen, &boardArray[5][7]);
+		      	    	    /* Bishops */
+             		    SDL_BlitSurface(chessPieces, &bB, screen, &boardArray[2][0]);
+              	        SDL_BlitSurface(chessPieces, &bB, screen, &boardArray[5][0]);
+             	        SDL_BlitSurface(chessPieces, &wB, screen, &boardArray[2][7]);
+               	        SDL_BlitSurface(chessPieces, &wB, screen, &boardArray[5][7]);
+	
+                    		/* Queens */
+                   	    SDL_BlitSurface(chessPieces, &bQ, screen, &boardArray[4][0]);
+                   	    SDL_BlitSurface(chessPieces, &wQ, screen, &boardArray[4][7]);
 
-		                		/* Queens */
-                            SDL_BlitSurface(chessPieces, &wQ, screen, &boardArray[4][0]);
-                            SDL_BlitSurface(chessPieces, &bQ, screen, &boardArray[4][7]);
+				            /* Kings */
+                   	    SDL_BlitSurface(chessPieces, &bK, screen, &boardArray[3][0]);
+                   	    SDL_BlitSurface(chessPieces, &wK, screen, &boardArray[3][7]);
 
-				                /* Kings */
-                            SDL_BlitSurface(chessPieces, &wK, screen, &boardArray[3][0]);
-                            SDL_BlitSurface(chessPieces, &bK, screen, &boardArray[3][7]);
                             quit = 1;
-                         }
-                    } 
+                     	} /* end elseif */
+                    }
                     break;
            
                  case SDL_QUIT:     /* Handles if user presses "x" button on window */
@@ -144,7 +185,9 @@ int main(int argc, char *args[])
         }    
     }   
 
-    quit = 0;      /* Starting game loop */
+    SDL_Flip(screen);
+
+    quit = 0;      /* Starting game loop. Resetting quit flag */
     while (quit !=1)
     {
         UpdateWindow(screen, 100);  /* Updates window at the beginning of every loop */
@@ -152,10 +195,8 @@ int main(int argc, char *args[])
         {
             switch (event.type)
             {
-                case SDL_MOUSEBUTTONDOWN:
+                case SDL_MOUSEBUTTONDOWN: /* clicking on a piece */
                 //   if (event.motion.x    event.motion.y 
-                    Move(chessPieces, bP, screen, boardArray[5][5]);
-                    SDL_BlitSurface(baseBoard, &boardArray[5][6], screen, &boardArray[5][6]);
                     break;
                 
                 case SDL_QUIT:  /* Handles if user presses "x" button on window */
@@ -169,9 +210,11 @@ int main(int argc, char *args[])
 
 
     /* Freeing used surfaces */
+    SDL_FreeSurface(baseBoard);  /* board copy */
     SDL_FreeSurface(whiteBoard); /* white board surface */ 
     SDL_FreeSurface(greenBoard); /* green board surface */
-    SDL_FreeSurface(chessPieces); 
+    SDL_FreeSurface(chessPieces);/* chess pieces surface */ 
+    
     return 0;
 }
 
