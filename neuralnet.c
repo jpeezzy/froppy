@@ -209,13 +209,70 @@ void fowardpropAuto(AUTOW *  autoweights,
     }
     
     //foward prop when the autoencoder is in stage 2
-    if(stage == 1)
+    if(stage == 2)
     {
-        matrixMultiplication((float *) autolayer->input,
-
+        matrixMultiplication((float *) autolayer->input, (float *) autoweights->weight0, (float *) autolayer->layer1, 1, 773, 600);
+        reluArray((float *) autolayer->layer1, 1, 600,0);
+        
+        matrixMultiplication((float *) autolayer->layer1, (float *) autoweights->weight1, (float *) autolayer->layer2, 1, 600, 400);
+        reluArray((float *) autolayer->layer2, 1, 400,0);     
+        
+        matrixMultiplication((float *) autolayer->layer2, (float *) decodeweights->weight2, (float *) decodelayer->layer3, 1, 400, 600);
+        reluArray((float *) decodelayer->layer3, 1, 600,0);   
+        
+        matrixMultiplication((float *) decodelayer->layer3, (float *) decodeweights->weight3, (float *) decodelayer->output, 1, 600, 773);
+        reluArray((float *) decodelayer->output, 1, 773,0);               
+    }
+    
+    //foward prop at stage 3
+    if(stage == 3)
+    {
+        matrixMultiplication((float *) autolayer->input, (float *) autoweights->weight0, (float *) autolayer->layer1, 1, 773, 600);
+        reluArray((float *) autolayer->layer1, 1, 600,0);
+        
+        matrixMultiplication((float *) autolayer->layer1, (float *) autoweights->weight1, (float *) autolayer->layer2, 1, 600, 400);
+        reluArray((float *) autolayer->layer2, 1, 400,0); 
+        
+        matrixMultiplication((float *) autolayer->layer2, (float *) autoweights->weight2, (float *) autolayer->layer3, 1, 400, 200);
+        reluArray((float *) autolayer->layer3, 1, 200,0);
+        
+        matrixMultiplication((float *) autolayer->layer3, (float *) decodeweights->weight1, (float *) decodelayer->layer2, 1, 200, 400);
+        reluArray((float *) decodelayer->layer2, 1, 400,0);
+               
+        matrixMultiplication((float *) decodelayer->layer2, (float *) decodeweights->weight2, (float *) decodelayer->layer3, 1, 400, 600);
+        reluArray((float *) decodelayer->layer3, 1, 600,0);   
+        
+        matrixMultiplication((float *) decodelayer->layer3, (float *) decodeweights->weight3, (float *) decodelayer->output, 1, 600, 773);
+        reluArray((float *) decodelayer->output, 1, 773,0);   
     }
 
+    //foward prop at stage 4
+    if(stage == 4)
+    {
+        matrixMultiplication((float *) autolayer->input, (float *) autoweights->weight0, (float *) autolayer->layer1, 1, 773, 600);
+        reluArray((float *) autolayer->layer1, 1, 600,0);
+        
+        matrixMultiplication((float *) autolayer->layer1, (float *) autoweights->weight1, (float *) autolayer->layer2, 1, 600, 400);
+        reluArray((float *) autolayer->layer2, 1, 400,0); 
+        
+        matrixMultiplication((float *) autolayer->layer2, (float *) autoweights->weight2, (float *) autolayer->layer3, 1, 400, 200);
+        reluArray((float *) autolayer->layer3, 1, 200,0);        
 
+        matrixMultiplication((float *) autolayer->layer3, (float *) autoweights->weight3, (float *) autolayer->output, 1, 200, 100);
+        reluArray((float *) autolayer->output, 1, 100,0);
+        
+        matrixMultiplication((float *) autolayer->output, (float *) decodeweights->weight0, (float *) decodelayer->layer1, 1, 100, 200);
+        reluArray((float *) decodelayer->layer1, 1, 200,0);       
+    
+        matrixMultiplication((float *) decodelayer->layer1, (float *) decodeweights->weight1, (float *) decodelayer->layer2, 1, 200, 400);
+        reluArray((float *) decodelayer->layer2, 1, 400,0);
+               
+        matrixMultiplication((float *) decodelayer->layer2, (float *) decodeweights->weight2, (float *) decodelayer->layer3, 1, 400, 600);
+        reluArray((float *) decodelayer->layer3, 1, 600,0);   
+        
+        matrixMultiplication((float *) decodelayer->layer3, (float *) decodeweights->weight3, (float *) decodelayer->output, 1, 600, 773);
+        reluArray((float *) decodelayer->output, 1, 773,0);  
+    }
     
 
 }
