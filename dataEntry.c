@@ -4,6 +4,18 @@
 #include <time.h>
 #include "fenToBoardState.h"
 
+DATABASE* createDataB(void)
+{
+  DATABASE* temp = malloc(sizeof(DATABASE));
+  return temp;
+}
+
+ENTRY* createEntry(void)
+{
+  ENTRY* temp = malloc(sizeof(ENTRY));
+  return temp;
+}
+
 // read a fen file and returns a database comprising of all the moves
 void readFenfile(FILE** fenFilehandle, DATABASE* dataMain)
 {
