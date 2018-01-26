@@ -1,6 +1,10 @@
 CC = gcc
 CFLAGS = -std=c99 -fopenmp -Wall
 MATH= -lm
+
+#randGen.o: randGen.h randGen.c
+#	$(CC) $(CFLAGS) -c randGen.c -o randGen.o $(MATH)
+
 matrix.o: matrix.h matrix.c
 	$(CC) $(CFLAGS) -c matrix.c -o matrix.o $(MATH)
 
@@ -10,7 +14,7 @@ fenToBoardState.o: fenToBoardState.c fenToBoardState.h
 boardToVector.o: boardToVector.c boardToVector.h
 	$(CC) $(CFLAGS) -c boardToVector.c -o boardToVector.o $(MATH)
 
-neuralnet.o: neuralnet.c neuralnet.h matrix.h
+neuralnet.o: neuralnet.c neuralnet.h matrix.h randGen.h
 	$(CC) $(CFLAGS) -c neuralnet.c -o neuralnet.o $(MATH)
 
 openMP_backprop.o: openMP_backprop.c openMP_backprop.h matrix.h neuralnet.h

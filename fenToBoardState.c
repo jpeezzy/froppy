@@ -95,6 +95,7 @@ int charToPiece(char input)
         return 16;
         // case '1': return 0;
     }
+  return 0;
 }
 /*
 int main()
