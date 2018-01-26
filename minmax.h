@@ -12,6 +12,7 @@ struct head
 {
     int length;
     NODE *first; /* pointer to first node in current depth */
+	HEAD *next; /* pointer to the head struct of next depth */
 };
 
 /* node structure to create n-ary trees for minmax */

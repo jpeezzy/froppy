@@ -40,6 +40,7 @@ void *createHead(NODE *first)
     }
     head->length = 1;
     head->first = first;
+	head->next = NULL;
     first->head = head;
 }
 
@@ -55,14 +56,16 @@ NODE *addChild(NODE* parent, float value, MENTRY *move, BSTATE *board)
     parent->child = child;
     parent->children = 1;
     child->parent = parent;
-    /* check if the parent is the first node */
-    if(parent->head->first == parent)
-    {
-        createHead(child);
-    }
-    else
-    {
-        child->head = parent->head->first->child->head;
+    /* check if the child is the first node */
+	if (parent->head->next == NULL)
+	{
+		createHead(child);
+		parent->head->next = child->head;
+	}
+	else
+	{
+        child->head = parent->head->next;
+		child->head->length++;
     }
     return child;     
 }
@@ -80,6 +83,7 @@ NODE *addSibling(NODE *child, float value, MENTRY *move, BSTATE *board)
     sibling->parent = child->parent;
     sibling->parent->children++;
     sibling->head = child->head;
+	sibling->head->length++;
     return sibling;
 }
 
@@ -105,6 +109,7 @@ void removeNode(NODE *node)
     node->parent = NULL;
     node->child = NULL;
     node->next = NULL;
+	node->head = NULL;
     free(node);
 }
 
@@ -113,10 +118,11 @@ void removeHead(HEAD *head)
 {
     assert(head);
     head->first = NULL;
+	head->next = NULL;
     free(head);   
 }
 
-/* generate a layer and a pointer to the first child */
+/* generate a layer and a pointer to the first node in next depth */
 NODE* generateLayer(NODE *parent)
 {
     int length;
@@ -124,9 +130,20 @@ NODE* generateLayer(NODE *parent)
     MENTRY* currentMove = NULL; 
     NODE* currentNode = NULL;   
     allLegal(legalMLIST, parent->board);
+	length = legalMLIST->movenum;
+	if (length == 0)
+	{
+		if(parent->head->next != NULL)
+		{	
+			return parent->head->next->first;
+		}
+		else
+		{
+			return NULL;
+		}
+	}
     currentMove = legalMLIST->start;
     currentNode = addChild(parent, 0, currentMove, mov(parent->board->boardarray, currentMove->CLOC, currentMove->NLOC));
-    length = legalMLIST->movenum;
 
 #pragma omp parallel num_threads(56)
     {
@@ -137,7 +154,7 @@ NODE* generateLayer(NODE *parent)
             currentMove = currentMove->Next;       
         }
     }   
-    return parent->child;
+    return parent->head->next->first;
 }
 
 /* finds the best worst value in the tree using minmax with alphabeta pruning */
@@ -217,6 +234,7 @@ MENTRY *minmax(BSTATE *currentBoard)
     MENTRY *bestMove;
     NODE *tree;
     NODE *current;
+	NODE *temp;
     NODE *start; 
     int length;  
 
@@ -224,12 +242,12 @@ MENTRY *minmax(BSTATE *currentBoard)
     clock_t start_time = clock();
     clock_t time_elapsed; 
     
-    /* creates first 2 levels of the tree */
+    /* creates first 2 depths of the tree */
     tree = createNode(0, NULL, currentBoard);
     current = tree;
     start = generateLayer(current);
     
-    /* create one level of tree per loop, checks for time at the end of each loop */
+    /* increases depth of tree by 1 per loop, checks for time at the end of each loop */
     do
     {
         current = start;
@@ -240,15 +258,26 @@ MENTRY *minmax(BSTATE *currentBoard)
             for(int i = 0; i < length; i++)
             {
                 start = generateLayer(current);
-                current = current->next; 
-                if(current == NULL && current->parent->next)
-                {
-                    current = current->parent->next->child;
-                }
+                if (current->next)
+				{
+					current = current->next;
+				}
+				else
+				{
+					temp = current->parent->next;
+					while (temp != NULL && temp->child == NULL)						
+					{
+						temp = temp->next;
+					}
+					current = temp->child;
+				}
             }
         }
-        /* change start to pointer to the first node in current depth */
-        start = start->head->first;
+        /* not able to generate next depth */
+        if(start == NULL)
+		{
+			break;
+		}
         time_elapsed = clock() - start_time;
     } while(time_elapsed < time);
     
