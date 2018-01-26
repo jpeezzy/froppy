@@ -91,6 +91,6 @@ void nadamAuto(AUTOW *  autoweights,
                AUTOW *  autoV,
                DECODEW *decodeM,
                DECODEW *decodeV,
-               int      t);
+               int      t, int stage);
 
 #endif

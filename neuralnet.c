@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include <omp.h>
+#include "neuralnet.c"
 
 //Calculates the relu activation of a single input 0 is normal 1 is deriv
 float reluActivation(float x, int flag)
@@ -108,16 +109,40 @@ void nadam(float *w, float *g, float *m, float *v, int t)
 void nadamArray(float *W, float *G, float *M, float *V, int m, int n, int t)
 {
     int i,j;
-    
-    for(i = 0; i < m; ++i)
-    {
-        for(j = 0; j < n; ++j)
+    int chunk, nthreads, tid;
+    chunk = 10;
+    #pragma omp parallel
         {
-             nadam( &(W[i*n+j]), &(V[i*n+j]), &(M[i*n+j]), &(G[i*n+j]), t);         
+            tid = omp_get_thread_num();
+            if(tid == 0)
+            {
+                nthreads = omp_get_num_threads();
+            }
+            #pragma omp for schedule(static, chunk)
+                for(i = 0; i < m; ++i)
+                {
+                    for(j = 0; j < n; ++j)
+                    {
+                        nadam( &(W[i*n+j]), &(G[i*n+j]), &(M[i*n+j]), &(V[i*n+j]), t);
+                    }
+                }
         }
     }
 }
 
+void nadamAuto (AUTOW * autoweights,
+                DECODEW *decodeweights,
+                AUTOW * autograd,
+                DECODEW *decodegrad,
+                AUTOW * autoM,
+                AUTOW * autoV,
+                DECODEW * decodeM,
+                DECODEW * decodeV,
+                int t, int stage)
+{
+        
+
+}
 
 
 
