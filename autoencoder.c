@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include "boardToVector.h"
+#include "dataEntry.h"
 #include "fenToBoardState.h"
 #include "matrix.h"
 #include "neuralnet.h"
@@ -32,38 +33,43 @@ int main()
   // Intialize the weights
   randReluArray((float *)aw->weight0, 773, 600, 773);
   randReluArray((float *)dw->weight3, 600, 773, 600);
-  int yy,xx;
-  for(yy=0; yy<773; ++yy)
-  {
-      for(xx=0; xx<600; ++xx)
-      {
+  int yy, xx;
+  for (yy = 0; yy < 773; ++yy)
+    {
+      for (xx = 0; xx < 600; ++xx)
+        {
           am->weight0[yy][xx] = 0;
           av->weight0[yy][xx] = 0;
           dm->weight3[xx][yy] = 0;
           dv->weight3[xx][yy] = 0;
-      }
-
-  }
-
+        }
+    }
 
   // load the data in
-  float vect[1][773];
-  dataB = createDataB(void);
-  readFenfile(fopen(res1.txt, 'r'), dataB);
+  float     vect[1][773];
+  DATABASE *dataB;
+  dataB = createDataB();
+  readFenfile(fopen("res1.txt", 'r'), dataB);
   move = pickRandMove(dataB);
-  boardToVector(move, (float *)vect);
+  boardToVector(&move, (float *)vect);
   int t = 1;
   int i;
-  aw->input = vect;
+  for (int i = 0; i < 773; ++i)
+    {
+      al->input[1][i] = vect[1][i];
+    }
   for (i = 0; i < 10000; ++i)
     {
       fowardpropAuto(aw, al, dw, dl, 1);
-      backpropAuto(aw, al, dw, dl, ag, dg,1);
+      backpropAuto(aw, al, dw, dl, ag, dg, 1);
       nadamAuto(aw, dw, ag, dg, am, av, dm, dv, t, 1);
       t    = t + 1;
       move = pickRandMove(dataB);
-      boardToVector(move, (float *)vect);
-      aw->input = vect;
+      boardToVector(&move, (float *)vect);
+      for (int i = 0; i < 773; ++i)
+        {
+          al->input[1][i] = vect[1][i];
+        }
     }
 
   return 0;
