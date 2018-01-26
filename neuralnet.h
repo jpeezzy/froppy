@@ -96,4 +96,7 @@ void nadamAuto(AUTOW *  autoweights,
                int      t,
                int      stage);
 
+//intialize the relu
+void randReluArray(float *A, int m, int n, int f);
+
 #endif

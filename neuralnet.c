@@ -3,6 +3,7 @@
 #include <math.h>
 #include <omp.h>
 #include "neuralnet.h"
+#include "randGen.h"
 #include "matrix.h"
 
 float eta=0.001;
@@ -277,10 +278,22 @@ void fowardpropAuto(AUTOW *  autoweights,
         matrixMultiplication((float *) decodelayer->layer3, (float *) decodeweights->weight3, (float *) decodelayer->output, 1, 600, 773);
         reluArray((float *) decodelayer->output, 1, 773,0);  
     }
-    
-
 }
 
 
+void randReluArray(float *A, int m, int n, int f)
+{
+    int i, j;
+
+    for(i = 0; i<m; ++i)
+    {
+        for(j = 0; j<n; ++j)
+        {
+            A[i*n+j] = randGen() * (sqrt(6.0)/f); 
+        }
+    }
+
+
+}
 
 

@@ -15,7 +15,7 @@ int main()
     //create the structs
 
     //Intialize the weights 
-    
+    randReluArray(float     
 
 
     return 0;
