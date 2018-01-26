@@ -16,12 +16,6 @@ int main()
 
     //Intialize the weights 
     
-    int i,j;
-    for(i=1; i<=4; ++i)
-    {
-        for(j=0; 
-
-    }
 
 
     return 0;
