@@ -1,3 +1,4 @@
+#include "openMP_backprop.h"
 #include <assert.h>
 #include <omp.h>
 #include <stdio.h>
