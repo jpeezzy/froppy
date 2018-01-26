@@ -108,12 +108,23 @@ void nadam(float *w, float *g, float *m, float *v, int t)
 void nadamArray(float *W, float *G, float *M, float *V, int m, int n, int t)
 {
     int i,j;
-    
-    for(i = 0; i < m; ++i)
-    {
-        for(j = 0; j < n; ++j)
+    int chunk, nthreads, tid;
+    chunk = 10;
+    #pragma omp parallel
         {
-             nadam( &(W[i*n+j]), &(V[i*n+j]), &(M[i*n+j]), &(G[i*n+j]), t);         
+            tid = omp_get_thread_num();
+            if(tid == 0)
+            {
+                nthreads = omp_get_num_threads();
+            }
+            #pragma omp for schedule(static, chunk)
+                for(i = 0; i < m; ++i)
+                {
+                    for(j = 0; j < n; ++j)
+                    {
+                        nadam( &(W[i*n+j]), &(G[i*n+j]), &(M[i*n+j]), &(V[i*n+j]), t);
+                    }
+                }
         }
     }
 }
