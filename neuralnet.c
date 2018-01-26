@@ -140,11 +140,63 @@ void nadamAuto (AUTOW * autoweights,
                 DECODEW * decodeV,
                 int t, int stage)
 {
-        
+    int i,j;
+    int tid, nthreads, chunk;
+    chunk = 10;
+    #pragma omp parallel
+    {
+        tid = omp_get_thread_num();
+        if(tid == 0)
+        {
+            nthreads = omp_get_num_threads();
+        }
 
+        //stage 1 of the auto encoder 
+        if(stage == 1)
+        {
+            nadamArray((float *) autoweights->weight0,(float *) autograd->weight0, (float *) autoM->weight0,
+                        (float *) autoV->weight0, 773, 600, t);
+            nadamArray((float *) decodeweights->weight3,(float *) decodegrad->weight3, (float *) decodeM->weight3,
+                        (float *) decodeV->weight3, 600, 773, t); 
+        }
+
+        //stage 2 of the auto encoder 
+        if(stage == 2)
+        {
+            nadamArray((float *) autoweights->weight1,(float *) autograd->weight1, (float *) autoM->weight1,
+                        (float *) autoV->weight1, 600, 400, t);
+            nadamArray((float *) decodeweights->weight2,(float *) decodegrad->weight2, (float *) decodeM->weight2,
+                        (float *) decodeV->weight2, 400, 600, t); 
+        }
+
+        //stage 3 of the auto encoder 
+        if(stage == 3)
+        {
+            nadamArray((float *) autoweights->weight2,(float *) autograd->weight2, (float *) autoM->weight2,
+                        (float *) autoV->weight2, 400, 200, t);
+            nadamArray((float *) decodeweights->weight1,(float *) decodegrad->weight1, (float *) decodeM->weight1,
+                        (float *) decodeV->weight1, 200, 400, t);
+        }
+    
+        //stage 4 of the auto encoder 
+        if(stage == 4)
+        {
+            nadamArray((float *) autoweights->weight3,(float *) autograd->weight3, (float *) autoM->weight3,
+                        (float *) autoV->weight3, 200, 100, t);
+            nadamArray((float *) decodeweights->weight0,(float *) decodegrad->weight0, (float *) decodeM->weight0,
+                        (float *) decodeV->weight0, 100, 200, t); 
+        }
+    }
 }
 
 
+//foward propagation 
+void fowardpropAuto(AUTOW *  autoweights,
+                    AUTOL *  autolayer,
+                    DECODEW *decodeweights,
+                    DECODEL *decodelayer,
+                    int      stage)
+                    
 
 
 
