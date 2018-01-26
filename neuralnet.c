@@ -3,6 +3,7 @@
 #include <omp.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 #include "matrix.h"
 #include "randGen.h"
 
@@ -447,12 +448,12 @@ void fowardpropAuto(AUTOW *  autoweights,
 void randReluArray(float *A, int m, int n, int f)
 {
   int i, j;
-
+  srand(time(NULL));
   for (i = 0; i < m; ++i)
     {
       for (j = 0; j < n; ++j)
         {
-          A[i * n + j] = randGen() * (sqrt(6.0) / f);
+          A[i * n + j] = rand() * (sqrt(6.0) / f);
         }
     }
 }
