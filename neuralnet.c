@@ -190,6 +190,13 @@ void nadamAuto (AUTOW * autoweights,
 }
 
 
+//foward propagation 
+void fowardpropAuto(AUTOW *  autoweights,
+                    AUTOL *  autolayer,
+                    DECODEW *decodeweights,
+                    DECODEL *decodelayer,
+                    int      stage)
+                    
 
 
 
