@@ -5,9 +5,9 @@
 // struct representing a database of information extracted from fen file
 typedef struct
 {
-  int    totalData;
-  ENTRY* firstMove;
-  ENTRY* lastMove;
+  int        totalData;
+  struct en* firstMove;
+  struct en* lastMove;
 } DATABASE;
 
 #endif

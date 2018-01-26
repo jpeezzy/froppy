@@ -7,12 +7,12 @@
 // structure used for representing an entry of a data base containing the next,
 // prev move and the state of the move it represents as well as the pt to
 // database
-typedef struct
+typedef struct en
 {
-  DATABASE* base;
-  BSTATE*   state;
-  ENTRY*    next;
-  ENTRY*    prev;
+  DATABASE*  base;
+  BSTATE*    state;
+  struct en* next;
+  struct en* prev;
 } ENTRY;
 void   readFenfile(FILE* fenFilehandle, DATABASE* dataMain);
 BSTATE pickRandMove(DATABASE* dataMain);
