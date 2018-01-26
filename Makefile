@@ -30,3 +30,4 @@ auto: matrix.o fenToBoardState.o boardToVector.o neuralnet.o openMP_backprop.o d
 
 clean:
 	rm -f *o
+	rm -f auto
