@@ -32,6 +32,19 @@ int main()
   // Intialize the weights
   randReluArray((float *)aw->weight0, 773, 600, 773);
   randReluArray((float *)dw->weight3, 600, 773, 600);
+  int yy,xx;
+  for(yy=0; yy<773; ++yy)
+  {
+      for(xx=0; xx<600; ++xx)
+      {
+          am->weight0[yy][xx] = 0;
+          av->weight0[yy][xx] = 0;
+          dm->weight3[xx][yy] = 0;
+          dv->weight3[xx][yy] = 0;
+      }
+
+  }
+
 
   // load the data in
   float vect[1][773];
