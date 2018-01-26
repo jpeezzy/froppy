@@ -16,7 +16,7 @@ neuralnet.o: neuralnet.c neuralnet.h matrix.h
 openMP_backprop.o: openMP_backprop.c openMP_backprop.h matrix.h neuralnet.h
 	$(CC) $(CFLAGS) -c openMP_backprop.c -o openMP_backprop.o
 
-dataEntry.o: dataEntry.c dataEntry.h database.h fenToBoardState.h
+dataEntry.o: dataEntry.c dataEntry.h fenToBoardState.h
 	$(CC) $(CFLAGS) -c dataEntry.c -o dataEntry.o
 
 autoencoder.o: autoencoder.c matrix.h fenToBoardState.h boardToVector.h neuralnet.h openMP_backprop.h dataEntry.h database.h
