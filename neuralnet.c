@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include <omp.h>
+#include "neuralnet.c"
 
 //Calculates the relu activation of a single input 0 is normal 1 is deriv
 float reluActivation(float x, int flag)
@@ -129,6 +130,19 @@ void nadamArray(float *W, float *G, float *M, float *V, int m, int n, int t)
     }
 }
 
+void nadamAuto (AUTOW * autoweights,
+                DECODEW *decodeweights,
+                AUTOW * autograd,
+                DECODEW *decodegrad,
+                AUTOW * autoM,
+                AUTOW * autoV,
+                DECODEW * decodeM,
+                DECODEW * decodeV,
+                int t, int stage)
+{
+        
+
+}
 
 
 
