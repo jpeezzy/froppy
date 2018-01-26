@@ -67,38 +67,93 @@ void backpropAuto(AUTOW*   autoweights,
                   DECODEL* decodegrad,
                   int      stage)
 {
+  // temporary variables for storing numbers between layers
   float* derErrorOutput0 = NULL;
   float* derErrorOutput  = NULL;
   float* derErrorVal     = NULL;
   switch (stage)
     {
       case 1:
-        derErrorOutput0 = malloc(773 * sizeof(float));
+        derErrorOutput0 = (float*)malloc(773 * sizeof(float));
         calerrorOuputO(
             decodelayer->output, autolayer->input, derErrorOutput0, 773);
-        derErrorVal = malloc(773 * sizeof(float));
+        derErrorVal = (float*)malloc(773 * sizeof(float));
         calerrorVal(decodelayer->output, derErrorOutput0, derErrorVal, 773);
         calgrad(decodelayer->layer3, derErrorVal, decodegrad->output, 773, 600);
 
-        derErrorOutput = malloc(600 * sizeof(float));
+        derErrorOutput = (float*)malloc(600 * sizeof(float));
         calerrorOuput(autolayer->layer1, derErrorVal, derErrorOutput, 600, 773);
         free(derErrorVal);
-        calerrorVal(autolayer->layer1, derErrorOutput, derErrorVal, 600);
+        derErrorVal = NULL;
+        derErrorVal = (float*)malloc(600 * sizeof(float));
+        calerrorVal(autoweights->weight1, derErrorOutput, derErrorVal, 600);
         calgrad(derErrorOutput0, derErrorVal, autograd->weight1, 600, 773);
 
         free(derErrorOutput0);
-        derErrorOutput0 = derErrorOutput;
-        derErrorOutput  = NULL;
-
-        derErrorOutput = malloc(773 * sizeof(float));
-        calerrorOuput(autolayer->input, derErrorVal, derErrorOutput, 600, 773);
+        free(derErrorOutput);
+        free(derErrorVal);
 
         break;
       case 2:
+        derErrorOutput0 = (float*)malloc(600 * sizeof(float));
+        calerrorOuputO(
+            decodelayer->output, autolayer->input, derErrorOutput0, 600);
+        derErrorVal = (float*)malloc(600 * sizeof(float));
+        calerrorVal(decodelayer->output, derErrorOutput0, derErrorVal, 600);
+        calgrad(decodelayer->layer3, derErrorVal, decodegrad->output, 600, 400);
+
+        derErrorOutput = (float*)malloc(600 * sizeof(float));
+        calerrorOuput(autolayer->layer1, derErrorVal, derErrorOutput, 400, 600);
+        free(derErrorVal);
+        derErrorVal = NULL;
+        derErrorVal = (float*)malloc(600 * sizeof(float));
+        calerrorVal(autoweights->weight1, derErrorOutput, derErrorVal, 400);
+        calgrad(derErrorOutput0, derErrorVal, autograd->weight1, 400, 600);
+
+        free(derErrorOutput0);
+        free(derErrorOutput);
+        free(derErrorVal);
+
         break;
       case 3:
+        derErrorOutput0 = (float*)malloc(400 * sizeof(float));
+        calerrorOuputO(
+            decodelayer->output, autolayer->input, derErrorOutput0, 400);
+        derErrorVal = (float*)malloc(400 * sizeof(float));
+        calerrorVal(decodelayer->output, derErrorOutput0, derErrorVal, 400);
+        calgrad(decodelayer->layer3, derErrorVal, decodegrad->output, 400, 200);
+
+        derErrorOutput = (float*)malloc(200 * sizeof(float));
+        calerrorOuput(autolayer->layer1, derErrorVal, derErrorOutput, 200, 400);
+        free(derErrorVal);
+        derErrorVal = NULL;
+        derErrorVal = (float*)malloc(600 * sizeof(float));
+        calerrorVal(autoweights->weight1, derErrorOutput, derErrorVal, 200);
+        calgrad(derErrorOutput0, derErrorVal, autograd->weight1, 200, 400);
+
+        free(derErrorOutput0);
+        free(derErrorOutput);
+        free(derErrorVal);
         break;
       case 4:
+        derErrorOutput0 = (float*)malloc(200 * sizeof(float));
+        calerrorOuputO(
+            decodelayer->output, autolayer->input, derErrorOutput0, 200);
+        derErrorVal = (float*)malloc(200 * sizeof(float));
+        calerrorVal(decodelayer->output, derErrorOutput0, derErrorVal, 200);
+        calgrad(decodelayer->layer3, derErrorVal, decodegrad->output, 200, 100);
+
+        derErrorOutput = (float*)malloc(100 * sizeof(float));
+        calerrorOuput(autolayer->layer1, derErrorVal, derErrorOutput, 100, 200);
+        free(derErrorVal);
+        derErrorVal = NULL;
+        derErrorVal = (float*)malloc(600 * sizeof(float));
+        calerrorVal(autoweights->weight1, derErrorOutput, derErrorVal, 100);
+        calgrad(derErrorOutput0, derErrorVal, autograd->weight1, 100, 200);
+
+        free(derErrorOutput0);
+        free(derErrorOutput);
+        free(derErrorVal);
         break;
       default:
         break;
