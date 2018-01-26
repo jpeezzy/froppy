@@ -74,6 +74,7 @@ void backpropAuto(AUTOW*   autoweights,
   switch (stage)
     {
       case 1:
+        // train decoder layer output
         derErrorOutput0 = (float*)malloc(773 * sizeof(float));
         calerrorOuputO(
             decodelayer->output, autolayer->input, derErrorOutput0, 773);
@@ -81,9 +82,10 @@ void backpropAuto(AUTOW*   autoweights,
         calerrorVal(decodelayer->output, derErrorOutput0, derErrorVal, 773);
         calgrad(decodelayer->layer3, derErrorVal, decodegrad->output, 773, 600);
 
+        // train input layer of encoder
         derErrorOutput = (float*)malloc(600 * sizeof(float));
         calerrorOuput(
-            autoweights->weight1, derErrorVal, derErrorOutput, 600, 773);
+            autoweights->weight0, derErrorVal, derErrorOutput, 600, 773);
         free(derErrorVal);
         derErrorVal = NULL;
         derErrorVal = (float*)malloc(600 * sizeof(float));
@@ -96,6 +98,7 @@ void backpropAuto(AUTOW*   autoweights,
 
         break;
       case 2:
+        // train layer 3 of decoder
         derErrorOutput0 = (float*)malloc(600 * sizeof(float));
         calerrorOuputO(
             decodelayer->layer3, autolayer->layer1, derErrorOutput0, 600);
@@ -103,6 +106,7 @@ void backpropAuto(AUTOW*   autoweights,
         calerrorVal(decodelayer->layer3, derErrorOutput0, derErrorVal, 600);
         calgrad(decodelayer->layer2, derErrorVal, decodegrad->layer3, 600, 400);
 
+        // train layer 1 of encoder
         derErrorOutput = (float*)malloc(400 * sizeof(float));
         calerrorOuput(
             autoweights->weight2, derErrorVal, derErrorOutput, 400, 600);
@@ -118,6 +122,7 @@ void backpropAuto(AUTOW*   autoweights,
 
         break;
       case 3:
+        // train layer 2 of decoder
         derErrorOutput0 = (float*)malloc(400 * sizeof(float));
         calerrorOuputO(
             decodelayer->layer2, autolayer->layer2, derErrorOutput0, 400);
@@ -139,6 +144,7 @@ void backpropAuto(AUTOW*   autoweights,
         free(derErrorVal);
         break;
       case 4:
+        // train layer 1 of decoder
         derErrorOutput0 = (float*)malloc(200 * sizeof(float));
         calerrorOuputO(
             decodelayer->layer1, autolayer->layer3, derErrorOutput0, 200);
