@@ -2,11 +2,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-#include "database.h"
 #include "fenToBoardState.h"
 
 // read a fen file and returns a database comprising of all the moves
-void readFenfile(FILE* fenFilehandle, DATABASE* dataMain)
+void readFenfile(FILE** fenFilehandle, DATABASE* dataMain)
 {
   char curLine[100];
   dataMain->totalData = 0;
@@ -14,7 +13,7 @@ void readFenfile(FILE* fenFilehandle, DATABASE* dataMain)
   dataMain->lastMove  = NULL;
   ENTRY* curEntry     = NULL;
   // read a file line by line and records the result into a database
-  while (fgets(curLine, 100, fenFilehandle) != NULL)
+  while (fgets(curLine, 100, *fenFilehandle) != NULL)
     {
       if (dataMain->totalData == 0)
         {
