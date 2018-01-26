@@ -13,8 +13,9 @@ void backpropAuto(AUTOW*   autoweights,
                   DECODEL* decodelayer,
                   AUTOW*   autograd,
                   DECODEL* decodegrad,
-                  int      stage);
-
+                  int      stage)
+{
+}
 void calerrorOuputO(float* output, float* truth, float* res, int length)
 {
   assert(output);
@@ -36,7 +37,9 @@ void calerrorOuput(
   assert(nexterrorVAl);
   assert(res);
   float* temp = NULL;
-  transposeMatrix(weight, lenNex, lenCur);
+  temp        = transposeMatrix(weight, lenNex, lenCur);
+  matrixMultiplication(temp, nexterrorVAl, res, lenNex, lenCur, 1);
+  free(temp);
 }
 
 // calculate the derivative of error w.r.t to value of a node
@@ -46,6 +49,12 @@ void calerrorVal(float* layerVal, float* errorOutput, float* res, int length)
   assert(layerVal);
   assert(errorOutput);
   assert(res);
+  reluArray(layerVal, length, 1, 1);
+#pragma omp parallel num_threads(CORE_NUM)
+  for (int i = 0; i < length; ++i)
+    {
+      res[i] = layerVal[i] * errorOutput[i];
+    }
 }
 
 // calculate the gradient descent
@@ -56,4 +65,5 @@ void calgrad(
   assert(prevOutput);
   assert(errorVal);
   assert(res);
+  matrixMultiplication(errorVal, prevOutput, res, lenCur, 1, lenPrev);
 }
