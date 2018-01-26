@@ -14,5 +14,7 @@ typedef struct
   ENTRY*    next;
   ENTRY*    prev;
 } ENTRY;
+void   readFenfile(FILE* fenFilehandle, DATABASE* dataMain);
+BSTATE pickRandMove(DATABASE* dataMain);
 
 #endif

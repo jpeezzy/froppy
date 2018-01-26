@@ -1,6 +1,7 @@
 #include "dataEntry.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 #include "database.h"
 #include "fenToBoardState.h"
 
@@ -27,7 +28,24 @@ void readFenfile(FILE* fenFilehandle, DATABASE* dataMain)
           fenToBoardState(curLine, curEntry->state);
           curEntry = curEntry->next;
         }
-      dataMain->totalData += 1;
+      ++(dataMain->totalData);
     }
   dataMain->lastMove = curEntry;
+}
+
+// pick and return a random move
+BSTATE pickRandMove(DATABASE* dataMain)
+{
+  srand(time(NULL));
+  ENTRY* curEntry = NULL;
+  int    num      = rand() % (dataMain->totalData) + 1;
+  int    count    = 0;
+  curEntry        = dataMain->firstMove;
+  ++count;
+  while (count < num)
+    {
+      curEntry = curEntry->next;
+      ++count;
+    }
+  return *(curEntry->state);
 }
