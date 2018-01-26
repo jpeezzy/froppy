@@ -99,11 +99,11 @@ void tanhArray(float *array, int m, int n, int flag)
 void nadam(float *w, float *g, float *m, float *v, int t)
 {
     //Update the Momentum and Variance Vectors
-    *(m) = (*(m))*b1 + (1-b1)*(*(g));
-    *(v) = (*(v))*b2 + (1-b2)*(*(g))*(*(g));
+    *(m) = (*(m))*beta1 + (1-beta1)*(*(g));
+    *(v) = (*(v))*beta2 + (1-beta2)*(*(g))*(*(g));
     
     //Calculate the new weight
-    *(w) = *(w) - (eta/(sqrt((*(v))/(1-pow(b1,t))))+e)*(b1*((*(m))/(1-pow(b1,t)))+ ((1-b1)*(*(g)))/(1-pow(b1,t)));  
+    *(w) = *(w) - (eta/(sqrt((*(v))/(1-pow(beta1,t))))+eplison)*(beta1*((*(m))/(1-pow(beta1,t)))+ ((1-beta1)*(*(g)))/(1-pow(beta1,t)));  
 }
 
 //nadam Array 
@@ -128,7 +128,7 @@ void nadamArray(float *W, float *G, float *M, float *V, int m, int n, int t)
                     }
                 }
         }
-    }
+
 }
 
 void nadamAuto (AUTOW * autoweights,
