@@ -25,7 +25,7 @@ int main()
   ag = malloc(sizeof(AUTOW));
   dg = malloc(sizeof(DECODEW));
   am = malloc(sizeof(AUTOW));
-  av = mallox(sizeof(AUTOW));
+  av = malloc(sizeof(AUTOW));
   dm = malloc(sizeof(DECODEW));
   dv = malloc(sizeof(AUTOW));
 
@@ -58,7 +58,7 @@ int main()
   for (i = 0; i < 10000; ++i)
     {
       fowardpropAuto(aw, al, dw, dl, 1);
-      backpropAuto(aw, al, dw, dl, ag, dg);
+      backpropAuto(aw, al, dw, dl, ag, dg,1);
       nadamAuto(aw, dw, ag, dg, am, av, dm, dv, t, 1);
       t    = t + 1;
       move = pickRandMove(dataB);
