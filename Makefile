@@ -13,7 +13,11 @@ boardToVector.o: boardToVector.c boardToVector.h
 neuralnet.o: neuralnet.c neuralnet.h matrix.h
 	$(CC) $(CFLAGS) -c neuralnet.c -o neuralnet.o
 
+openMP_backprop.o: openMP_backprop.c openMP_backprop.h matrix.h
+	$(CC) $(CFLAGS) -c openMP_backprop.c -o openMP_backprop.o
 
+dataEntry.o: dataEntry.c dataEntry.h database.h fenToBoardState.h
+	$(CC) $(CFLAGS) -c dataEntry.c -o dataEntry.o
 
 
 

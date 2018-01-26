@@ -2,7 +2,7 @@
 #include <omp.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include "chessAI/chessAI-master/matrix.h"
+#include "matrix.h"
 #include "neuralnet.h"
 
 #define CORE_NUM 56
