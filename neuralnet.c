@@ -2,7 +2,8 @@
 #include <stdlib.h>
 #include <math.h>
 #include <omp.h>
-#include "neuralnet.c"
+#include "neuralnet.h"
+#include "matrix.h"
 
 //Calculates the relu activation of a single input 0 is normal 1 is deriv
 float reluActivation(float x, int flag)
@@ -196,8 +197,28 @@ void fowardpropAuto(AUTOW *  autoweights,
                     DECODEW *decodeweights,
                     DECODEL *decodelayer,
                     int      stage)
-                    
+{ 
+    //foward prop when the autoencoder is in stage 1
+    if(stage == 1)
+    {
+        matrixMultiplication((float *) autolayer->input, (float *) autoweights->weight0, (float *) autolayer->layer1, 1, 773, 600);
+        reluArray((float *) autolayer->layer1, 1, 600,0);
+        
+        matrixMultiplication((float *) autolayer->layer1, (float *) decodeweights->weight3, (float *) decodelayer->output, 1, 600, 773);
+        reluArray((float *) decodelayer->output, 1, 773,0);
+    }
+    
+    //foward prop when the autoencoder is in stage 2
+    if(stage == 1)
+    {
+        matrixMultiplication((float *) autolayer->input,
 
+    }
+
+
+    
+
+}
 
 
 
