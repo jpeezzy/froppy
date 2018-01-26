@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include "boardToVector.h"
-#include "fentoBoardState.h"
+#include "fenToBoardState.h"
 #include "matrix.h"
 #include "neuralnet.h"
 #include "openMP_backprop.h"
