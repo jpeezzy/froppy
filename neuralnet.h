@@ -68,7 +68,7 @@ void backpropAuto(AUTOW *  autoweights,
                   DECODEW *decodeweights,
                   DECODEL *decodelayer,
                   AUTOW *  autograd,
-                  DECODEL *decodegrad,
+                  DECODEW *decodegrad,
                   int      stage);
 
 // RELU Activation

@@ -1,10 +1,11 @@
-#include "openMP_backprop.h"
 #include <assert.h>
 #include <omp.h>
 #include <stdio.h>
 #include <stdlib.h>
+
 #include "matrix.h"
 #include "neuralnet.h"
+#include "openMP_backprop.h"
 
 #define CORE_NUM 56
 void printOutError(float* error, int lenght)
@@ -89,8 +90,8 @@ void backpropAuto(AUTOW*   autoweights,
                   DECODEW* decodeweights,
                   DECODEL* decodelayer,
                   AUTOW*   autograd,
-                  DECODEL* decodegrad,
-                  int      stage)
+                  DECODEW* decodegrad,
+                  int      stage);
 {
   // temporary variables for storing numbers between layers
   float* derErrorOutput0 = NULL;
@@ -128,7 +129,7 @@ void backpropAuto(AUTOW*   autoweights,
         derErrorVal = NULL;
         derErrorVal = (float*)malloc(600 * sizeof(float));
         calerrorVal((float*)autolayer->input, derErrorOutput, derErrorVal, 600);
-        calgrad((float*)autolayer->input,
+        calgrad((float*)autolayer->layer1,
                 derErrorVal,
                 (float*)autograd->weight0,
                 600,
