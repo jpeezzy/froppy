@@ -38,7 +38,17 @@ void  fenToBoardState(char* fen, BSTATE* b)
       fen++;
     }
 
-  b->sidetomove = atoi(board[8]);
+  if(board[8] == 'w')
+  {
+	b->sidetomove = 1;
+  }
+  else if(board[8] == 'b')
+  {
+	b->sidetomove = 0;
+  }
+  else
+	  b->sidetomove = 3;
+  //b->sidetomove = atoi(board[8]);
   /*parse for castling flags for
    * board[9] */
   for (int i = 0; i < sizeof(board[9]) / sizeof(char); i++)
