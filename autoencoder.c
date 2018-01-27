@@ -77,6 +77,7 @@ int main()
 #endif
       nadamAuto(aw, dw, ag, dg, am, av, dm, dv, t, 1);
       t    = t + 1;
+      exit(0);
       move = pickRandMove(dataB);
       boardToVector(&move, (float *)vect);
 #ifdef DEBUG

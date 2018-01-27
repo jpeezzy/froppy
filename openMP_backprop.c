@@ -106,7 +106,7 @@ void backpropAuto(AUTOW*   autoweights,
 #ifdef DEBUG
         for (int l = 0; l < 10; ++l)
           {
-            printf("%f ", ((float*)decodelayer->output)[l]);
+            printf("%f ", decodelayer->output[0][l]);
           }
 
         for (int l = 0; l < 10; ++l)
