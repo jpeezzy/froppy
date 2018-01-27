@@ -90,7 +90,7 @@ int main()
     printf("\n");
     for(int i=0; i<iters; i++)
     {   
-    printf("iter. %2d: randGen() = %0.12f\n", i+1, randGen() );
+        printf("iter. %2d: randGen() = %0.12f\n", i+1, randGen() );
     }
     randReluArray_edited(A, m, n, f);
 	
