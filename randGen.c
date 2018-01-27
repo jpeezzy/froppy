@@ -14,11 +14,9 @@
 /*                                                                   */
 /*********************************************************************/
 
-#include <stdio.h>
-#include <stdint.h>
-#include <stdlib.h>
-#include <time.h>
 #include "randGen.h"
+
+#define INCL_MAIN 0 /* toggle for including main */
 
 /* global variables */
 uint64_t multVal =  6364136223846793005ULL;
@@ -51,7 +49,7 @@ float randGen()
 
 /*********************************************************************/
 /*********************************************************************/
-#if 0/* comment out '#if 0' and '#endif' to compile this code ind.   */
+#if INCL_MAIN == 1
 
 int main() 
 {

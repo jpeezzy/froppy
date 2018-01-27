@@ -11,6 +11,12 @@
 #ifndef RANDGEN_H
 #define RANDGEN_H
 
+/* other header files req'd for corres. C code */
+#include <stdint.h>
+#include <stdlib.h>
+#include <stdio.h> 
+#include <time.h>
+
 /* randGen() global variables */
 extern uint64_t multVal, seedVal, incrVal;
 extern uint32_t rnd;
