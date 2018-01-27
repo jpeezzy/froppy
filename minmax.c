@@ -285,3 +285,65 @@ MENTRY *minmax(BSTATE *currentBoard)
     bestMove = tree->move;
     return bestMove;
 }   
+
+/* maximizer function for minimax with alpha-beta pruning that uses depth */
+float alphaBetaMax(BSTATE* board, float alpha, float beta, int depth) 
+{
+    MLIST *legal;
+  	MENTRY *current;
+	  float value;
+	  if (depth == 0)
+	  {	
+		    return basicEvaluation(board);
+	  }
+	  legal = createMovelist();
+	  allLegal(legal, board);
+	  current = legal->first;
+	  while (current != NULL)
+	  {
+    		mov(board->boardarray, current->CLOC, current->NLOC);
+    		value = alphaBetaMin(board, alpha, beta, depth - 1);
+    		mov(board->boardarray, current->NLOC, current->CLOC);
+    		if (value > alpha)
+    		{	
+   			    if(value >= beta)
+			      {
+				        return beta;   // fail hard beta-cutoff
+			      }
+			      alpha = value; // alpha acts like max in MiniMax
+		    }
+        current = current->next;
+    }
+    return alpha;
+}
+ 
+/* minimizer function for minimax with alpha-beta pruning that uses depth */ 
+float alphaBetaMin(BSTATE *board, float alpha, float beta, int depth) 
+{
+    MLIST *legal;
+	  MENTRY *current;
+	  float value;
+	  if (depth == 0)
+	  {	
+     		return basicEvaluation(board);
+	  }
+	  legal = createMovelist();
+	  allLegal(legal, board);
+	  current = legal->first;
+	  while (current != NULL)
+	  {
+		    mov(board->boardarray, current->CLOC, current->NLOC);
+    		value = alphaBetaMax(board, alpha, beta, depth - 1);
+    		mov(board->boardarray, current->NLOC, current->CLOC);
+		    if (value < beta)
+		    {
+			      if (value <= alpha)
+			      {
+				        return alpha; // fail hard alpha-cutoff
+		  	    }
+			      beta = value; // beta acts like min in MiniMax
+		    }
+		    current = current->Next;
+    }
+    return beta;
+}
