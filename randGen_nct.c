@@ -11,7 +11,7 @@
 /*           http://www.pcg-random.org/download.html			     */
 /*      	                                                         */
 /*           edited 1/26/2018 for neuralnet compatibility (nc)       */
-/*                                                                   */
+/*           and in Github (indent size 8 to 4)                      */
 /*********************************************************************/
 
 #include <stdio.h>
@@ -31,6 +31,7 @@ uint32_t rnd = 0;
 /* neuralnet pseudo-global-input variables (nc) */
 int m = 8, n = 8, f = 773+600;
 float *A = NULL;
+
 
 /* ----------------------------------------------------------------- */
 /* ----------------------------------------------------------------- */
