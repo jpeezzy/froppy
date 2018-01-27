@@ -59,6 +59,7 @@ void calerrorVal(float* layerVal, float* errorOutput, float* res, int length)
   reluArray(layerVal, length, 1, 1);
 #pragma omp parallel num_threads(CORE_NUM)
   {
+#pragma omp for schedule(static)
     for (int i = 0; i < length; ++i)
       {
         res[i] = layerVal[i] * errorOutput[i];
@@ -76,6 +77,7 @@ void calgrad(
   assert(res);
 #pragma omp parallel num_threads(CORE_NUM)
   {
+#pragma omp for schedule(static)
     for (int i = 0; i < lenCur; ++i)
       {
         for (int j = 0; j < lenNext; ++j)
@@ -129,11 +131,21 @@ void backpropAuto(AUTOW*   autoweights,
         derErrorVal = (float*)malloc(773 * sizeof(float));
         calerrorVal(
             (float*)decodelayer->output, derErrorOutput0, derErrorVal, 773);
+        for (int l = 0; l < 10; ++l)
+          {
+            printf("%f ", derErrorVal[l]);
+          }
+        printOutError(derErrorOutput0, 773);
         calgrad((float*)decodelayer->layer3,
                 derErrorVal,
                 (float*)decodegrad->weight3,
                 773,
                 600);
+
+        for (int l = 0; l < 10; ++l)
+          {
+            printf("%f ", decodegrad->weight3[l]);
+          }
 
         // train input layer of encoder
         derErrorOutput = (float*)malloc(600 * sizeof(float));
@@ -142,15 +154,27 @@ void backpropAuto(AUTOW*   autoweights,
                       derErrorOutput,
                       600,
                       773);
+        for (int l = 0; l < 10; ++l)
+          {
+            printf("%f ", derErrorOutput[l]);
+          }
         free(derErrorVal);
         derErrorVal = NULL;
         derErrorVal = (float*)malloc(600 * sizeof(float));
         calerrorVal((float*)autolayer->input, derErrorOutput, derErrorVal, 600);
+        for (int l = 0; l < 10; ++l)
+          {
+            printf("%f ", derErrorVal[l]);
+          }
         calgrad((float*)autolayer->layer1,
                 derErrorVal,
                 (float*)autograd->weight0,
                 600,
                 773);
+        for (int l = 0; l < 10; ++l)
+          {
+            printf("%f ", autograd->weight0[l]);
+          }
 
         free(derErrorOutput0);
         free(derErrorOutput);
