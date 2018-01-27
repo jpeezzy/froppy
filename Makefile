@@ -1,6 +1,6 @@
 CC = gcc
-CFLAGS = -std=c99 -fopenmp -Wall
-MATH= -lm
+CFLAGS = -std=c99 -fopenmp -Wall -g -DDEBUG
+MATH= -lm 
 
 #randGen.o: randGen.h randGen.c
 #	$(CC) $(CFLAGS) -c randGen.c -o randGen.o $(MATH)

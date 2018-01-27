@@ -27,9 +27,9 @@ struct datab
 
 DATABASE* createDataB(void);
 
-ENTRY* createEntry(void);
+ENTRY* createEntry(DATABASE* datab, BSTATE* state);
 
-void   readFenfile(FILE** fenFilehandle, DATABASE* dataMain);
+void   readFenfile(FILE* fenFilehandle, DATABASE* dataMain);
 BSTATE pickRandMove(DATABASE* dataMain);
 
 #endif

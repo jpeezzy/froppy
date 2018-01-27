@@ -1,14 +1,17 @@
+#include <assert.h>
 #include <malloc.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "boardstate.h"
 
+#include "boardstate.h"
 char* textConverterToEight(char* stringT, BSTATE* b, int index);
 void  fenToBoardState(char* fen, BSTATE* b)
 {
   /* cheess board pieces based off the positions 1-8, where black king is at
    * board1 */
+  assert(b);
+  assert(fen);
   char* board[13];
   int   n     = 0;
   char* buf   = malloc(sizeof(char*) * 30);
@@ -60,7 +63,9 @@ void  fenToBoardState(char* fen, BSTATE* b)
   /* now lets add the states to the array */
   for (int i = 0; i < 8; i++)
     {
+#ifdef DEBUG
       printf("parsing checker %s \n", board[i]);
+#endif
       textConverterToEight(board[i], b, i);
     }
 }

@@ -1,8 +1,10 @@
+#include <assert.h>
 #include <math.h>
 #include <omp.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+
 #include "boardToVector.h"
 #include "dataEntry.h"
 #include "fenToBoardState.h"
@@ -10,7 +12,6 @@
 #include "neuralnet.h"
 #include "openMP_backprop.h"
 #include "randGen.h"
-
 int main()
 {
   // create the structs
@@ -49,7 +50,13 @@ int main()
   float     vect[1][773];
   DATABASE *dataB;
   dataB = createDataB();
-  readFenfile(fopen("res1.txt", "r"), dataB);
+  assert(dataB);
+  FILE *che = fopen("res1.txt", "r");
+  assert(che);
+  printf("Finished asserting che! \n");
+
+  readFenfile((FILE *)che, dataB);
+  printf("Finished reading fen file che! \n");
   move = pickRandMove(dataB);
   boardToVector(&move, (float *)vect);
   int t = 1;
@@ -71,6 +78,5 @@ int main()
           al->input[1][i] = vect[1][i];
         }
     }
-
   return 0;
 }
