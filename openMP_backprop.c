@@ -91,7 +91,7 @@ void backpropAuto(AUTOW*   autoweights,
                   DECODEL* decodelayer,
                   AUTOW*   autograd,
                   DECODEW* decodegrad,
-                  int      stage);
+                  int      stage)
 {
   // temporary variables for storing numbers between layers
   float* derErrorOutput0 = NULL;
