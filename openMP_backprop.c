@@ -26,6 +26,7 @@ void calerrorOuputO(float* output, float* truth, float* res, int length)
   assert(res);
 #pragma omp parallel num_threads(CORE_NUM)
   {
+#pragma omp for schedule(static)
     for (int i = 0; i < length; ++i)
       {
         res[i] = output[i] - truth[i];
