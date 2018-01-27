@@ -7,7 +7,7 @@
 #include "basic_eval.h"
 
 /* create Node */
-NODE *createNode(float value, MENTRY *move, BSTATE *board)
+NODE *createNode(MENTRY *move, BSTATE *board)
 {
     NODE *node = NULL;
     node = malloc(sizeof(NODE));
@@ -16,9 +16,10 @@ NODE *createNode(float value, MENTRY *move, BSTATE *board)
         perror("Out of memory aborting...");
         exit(10);
     }   
-    node->value = value;
+    node->value = 0;
     node->move = move;
     node->board = board;
+    node->legal = NULL;
     node->parent = NULL;
     node->child = NULL;
     node->next = NULL;
@@ -40,50 +41,66 @@ void *createHead(NODE *first)
     }
     head->length = 1;
     head->first = first;
-	head->next = NULL;
+	  head->next = NULL;
     first->head = head;
 }
 
+/* create mini structure */
+MINI *createMini(BSTATE *board)
+{
+    assert(board);
+    MINI *mini = NULL;
+    mini = malloc(sizeof(MINI));
+    if(mini == NULL)
+    {
+        perror("Out of memory aborting...");
+        exit(10);
+    }
+    mini->board = board;
+    mini->move = NULL;
+    mini->store = 1;
+}
+
 /* create node with float value and add it to the parent node */
-NODE *addChild(NODE* parent, float value, MENTRY *move, BSTATE *board)
+NODE *addChild(NODE* parent, MENTRY *move, BSTATE *board)
 {
     assert(parent);
     assert(parent->child == NULL);
     assert(move);
     assert(board);
     NODE *child = NULL;
-    child = createNode(value, move, board);
+    child = createNode(move, board);
     parent->child = child;
     parent->children = 1;
     child->parent = parent;
     /* check if the child is the first node */
-	if (parent->head->next == NULL)
-	{
-		createHead(child);
-		parent->head->next = child->head;
-	}
-	else
-	{
+	  if (parent->head->next == NULL)
+	  {
+		    createHead(child);
+		    parent->head->next = child->head;
+	  }
+	  else
+	  {
         child->head = parent->head->next;
-		child->head->length++;
+		    child->head->length++;
     }
     return child;     
 }
 
 /* create node with float value and add it to child */
-NODE *addSibling(NODE *child, float value, MENTRY *move, BSTATE *board)
+NODE *addSibling(NODE *child, MENTRY *move, BSTATE *board)
 {
     assert(child);
     assert(child->next == NULL);
     assert(move);
     assert(board);
     NODE *sibling = NULL;
-    sibling = createNode(value, move, board);
+    sibling = createNode(move, board);
     child->next = sibling;
     sibling->parent = child->parent;
     sibling->parent->children++;
     sibling->head = child->head;
-	sibling->head->length++;
+	  sibling->head->length++;
     return sibling;
 }
 
@@ -105,11 +122,20 @@ void removeNode(NODE *node)
         removeNode(node->next);
     }
     node->move = NULL;
-    node->board = NULL;
+    if(node->board)
+    {
+        deleteBstate(node->board);
+        node->board = NULL;
+    }
+    if(node->legal)
+    {
+        deleteMovelist(node->legal);
+        node->legal = NULL;
+    }
     node->parent = NULL;
     node->child = NULL;
     node->next = NULL;
-	node->head = NULL;
+	  node->head = NULL;
     free(node);
 }
 
@@ -118,8 +144,17 @@ void removeHead(HEAD *head)
 {
     assert(head);
     head->first = NULL;
-	head->next = NULL;
+	  head->next = NULL;
     free(head);   
+}
+
+/* remove mini struct */
+void removeMini(MINI *mini)
+{
+    assert(mini);
+    mini->board = NULL;
+    mini->move = NULL;
+    free(mini);
 }
 
 /* generate a layer and a pointer to the first node in next depth */
@@ -128,29 +163,38 @@ NODE* generateLayer(NODE *parent)
     int length;
     MLIST* legalMLIST = NULL;
     MENTRY* currentMove = NULL; 
-    NODE* currentNode = NULL;   
+    NODE* currentNode = NULL;
+    BSTATE *board = NULL;   
+    legalMLIST = createMovelist();
     allLegal(legalMLIST, parent->board);
-	length = legalMLIST->movenum;
-	if (length == 0)
-	{
-		if(parent->head->next != NULL)
-		{	
-			return parent->head->next->first;
-		}
-		else
-		{
-			return NULL;
-		}
-	}
+    parent->legal = legalMLIST;
+	  length = legalMLIST->movenum;
+	  if (length == 0)
+	  {
+		    if(parent->head->next != NULL)
+		    {	
+			      return parent->head->next->first;
+		    }
+		    else
+		    {
+			      return NULL;
+		    }
+	  }
     currentMove = legalMLIST->start;
-    currentNode = addChild(parent, 0, currentMove, mov(parent->board->boardarray, currentMove->CLOC, currentMove->NLOC));
+    board = createBstate();
+    copyBstate(parent->board, board);
+    mov(board->boardarray, currentMove->CLOC, currentMove->NLOC);
+    currentNode = addChild(parent, currentMove, board);
 
 #pragma omp parallel num_threads(56)
     {
     #pragma omp for schedule(static)
         for(int i = 0; i < length; i++)
         {
-            currentNode = addSibling(currentNode, 0, currentMove, mov(parent->board->boardarray, currentMove->CLOC, currentMove->NLOC));  
+            board = createBstate();
+            copyBstate(parent->board, board);
+            mov(board->boardarray, currentMove->CLOC, currentMove->NLOC);
+            currentNode = addSibling(currentNode, currentMove, board);  
             currentMove = currentMove->Next;       
         }
     }   
@@ -164,16 +208,16 @@ float alphabeta(NODE *node, float alpha, float beta, PLAYER minmax)
     NODE *current = NULL;
     int children;
     float temp;
-    // if current node is the a node, returns its value;
-    if(node->child == NULL)
-    {
-        node->value = basicEvaluation(node->board);
-        return node->value;
-    }
     
     // if current node is a maximizer
     if(minmax == Max)
     {
+        // if current node is the a node, returns its value;
+        if(node->child == NULL)
+        {
+            node->value = basicEvaluation(node->board);
+            return node->value;
+        }
         node->value = -3.4E38;
         current = node->child;
         children = node->children;
@@ -206,6 +250,12 @@ float alphabeta(NODE *node, float alpha, float beta, PLAYER minmax)
     // if current node is a minimizer 
     else
     {
+        // if current node is the a node, returns its value;
+        if(node->child == NULL)
+        {
+            node->value = basicEvaluation(node->board);
+            return node->value;
+        }
         node->value = 3.4E38;
         current = node->child;
         children = node->children;
@@ -231,11 +281,11 @@ float alphabeta(NODE *node, float alpha, float beta, PLAYER minmax)
 MENTRY *minmax(BSTATE *currentBoard)
 {   
     assert(currentBoard);
-    MENTRY *bestMove;
-    NODE *tree;
-    NODE *current;
-	NODE *temp;
-    NODE *start; 
+    MENTRY *bestMove = NULL;
+    NODE *tree = NULL;
+    NODE *current = NULL;
+	  NODE *temp = NULL;
+    NODE *start = NULL;
     int length;  
 
     int time = 40000; 
@@ -243,7 +293,7 @@ MENTRY *minmax(BSTATE *currentBoard)
     clock_t time_elapsed; 
     
     /* creates first 2 depths of the tree */
-    tree = createNode(0, NULL, currentBoard);
+    tree = createNode(NULL, currentBoard);
     current = tree;
     start = generateLayer(current);
     
@@ -259,35 +309,40 @@ MENTRY *minmax(BSTATE *currentBoard)
             {
                 start = generateLayer(current);
                 if (current->next)
-				{
-					current = current->next;
-				}
-				else
-				{
-					temp = current->parent->next;
-					while (temp != NULL && temp->child == NULL)						
-					{
-						temp = temp->next;
-					}
-					current = temp->child;
-				}
+				        {
+				            current = current->next;
+			        	}
+			        	else
+			        	{
+				            temp = current->parent->next;
+				            while (temp != NULL && temp->child == NULL)						
+					          {
+					        	    temp = temp->next;
+					          }
+					          current = temp->child;
+			         	}
             }
         }
         /* not able to generate next depth */
         if(start == NULL)
-		{
-			break;
-		}
+		    {
+		  	    break;
+		    }
         time_elapsed = clock() - start_time;
     } while(time_elapsed < time);
     
     alphabeta(tree, -3.4E38, 3.4E38, Max);
     bestMove = tree->move;
+    removeNode(tree);
+    tree = NULL;
+    current = NULL;
+	  temp = NULL;
+    start = NULL;
     return bestMove;
 }   
 
 /* maximizer function for minimax with alpha-beta pruning that uses depth */
-float alphaBetaMax(BSTATE* board, float alpha, float beta, int depth) 
+float alphaBetaMax(MINI *mini, float alpha, float beta, int depth) 
 {
     MLIST *legal;
   	MENTRY *current;
@@ -297,13 +352,13 @@ float alphaBetaMax(BSTATE* board, float alpha, float beta, int depth)
 		    return basicEvaluation(board);
 	  }
 	  legal = createMovelist();
-	  allLegal(legal, board);
+	  allLegal(legal, mini->board);
 	  current = legal->first;
 	  while (current != NULL)
 	  {
-    		mov(board->boardarray, current->CLOC, current->NLOC);
-    		value = alphaBetaMin(board, alpha, beta, depth - 1);
-    		mov(board->boardarray, current->NLOC, current->CLOC);
+    		mov(mini->board->boardarray, current->CLOC, current->NLOC);
+    		value = alphaBetaMin(mini, alpha, beta, depth - 1);
+    		mov(mini->board->boardarray, current->NLOC, current->CLOC);
     		if (value > alpha)
     		{	
    			    if(value >= beta)
@@ -314,6 +369,9 @@ float alphaBetaMax(BSTATE* board, float alpha, float beta, int depth)
 		    }
         current = current->next;
     }
+    deleteMovelist(legal);
+    legal = NULL;
+    current = NULL;
     return alpha;
 }
  
@@ -328,13 +386,13 @@ float alphaBetaMin(BSTATE *board, float alpha, float beta, int depth)
      		return basicEvaluation(board);
 	  }
 	  legal = createMovelist();
-	  allLegal(legal, board);
+	  allLegal(legal, mini->board);
 	  current = legal->first;
 	  while (current != NULL)
 	  {
-		    mov(board->boardarray, current->CLOC, current->NLOC);
-    		value = alphaBetaMax(board, alpha, beta, depth - 1);
-    		mov(board->boardarray, current->NLOC, current->CLOC);
+		    mov(mini->board->boardarray, current->CLOC, current->NLOC);
+    		value = alphaBetaMax(mini, alpha, beta, depth - 1);
+    		mov(mini->board->boardarray, current->NLOC, current->CLOC);
 		    if (value < beta)
 		    {
 			      if (value <= alpha)
@@ -345,5 +403,8 @@ float alphaBetaMin(BSTATE *board, float alpha, float beta, int depth)
 		    }
 		    current = current->Next;
     }
+    deleteMovelist(legal);
+    legal = NULL;
+    current = NULL;
     return beta;
 }
