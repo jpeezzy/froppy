@@ -51,7 +51,7 @@ int main()
   DATABASE *dataB;
   dataB = createDataB();
   assert(dataB);
-  FILE *che = fopen("res2.txt", "r");
+  FILE *che = fopen("res1.txt", "r");
   assert(che);
   printf("Finished asserting che! \n");
 
@@ -63,7 +63,7 @@ int main()
   int i;
   for (int i = 0; i < 773; ++i)
     {
-      al->input[1][i] = vect[1][i];
+      al->input[0][i] = vect[0][i];
     }
   for (i = 0; i < 10000; ++i)
     {
@@ -84,7 +84,7 @@ int main()
 #endif
       for (int i = 0; i < 773; ++i)
         {
-          al->input[1][i] = vect[1][i];
+          al->input[0][i] = vect[0][i];
         }
     }
   return 0;

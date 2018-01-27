@@ -286,6 +286,11 @@ void fowardpropAuto(AUTOW *  autoweights,
                            600,
                            773);
       reluArray((float *)decodelayer->output, 1, 773, 0);
+      int ii;
+      for(ii=0; ii < 773; ++ii)
+      {
+          printf("%.4f \n",decodelayer->output[0][ii]);
+      }
     }
 
   // foward prop when the autoencoder is in stage 2
@@ -453,7 +458,7 @@ void randReluArray(float *A, int m, int n, int f)
     {
       for (j = 0; j < n; ++j)
         {
-          A[i * n + j] = rand() * (sqrt(6.0) / f);
+          A[i * n + j] = ((float)rand()/(float)(RAND_MAX)) * (sqrt(6.0) / f);
         }
     }
 }
