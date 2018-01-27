@@ -64,7 +64,7 @@ void  fenToBoardState(char* fen, BSTATE* b)
   for (int i = 0; i < 8; i++)
     {
 #ifdef DEBUG
-      printf("parsing checker %s \n", board[i]);
+    // printf("parsing checker %s \n", board[i]);
 #endif
       textConverterToEight(board[i], b, i);
     }

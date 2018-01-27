@@ -133,7 +133,7 @@ void backpropAuto(AUTOW*   autoweights,
             (float*)decodelayer->output, derErrorOutput0, derErrorVal, 773);
         for (int l = 0; l < 10; ++l)
           {
-            printf("%f ", derErrorVal[l]);
+            printf("\nerror val: %f ", derErrorVal[l]);
           }
         printOutError(derErrorOutput0, 773);
         calgrad((float*)decodelayer->layer3,
@@ -144,7 +144,7 @@ void backpropAuto(AUTOW*   autoweights,
 
         for (int l = 0; l < 10; ++l)
           {
-            printf("%f ", decodegrad->weight3[l]);
+            printf("\n decode grad:%f ", decodegrad->weight3[l]);
           }
 
         // train input layer of encoder
@@ -156,7 +156,7 @@ void backpropAuto(AUTOW*   autoweights,
                       773);
         for (int l = 0; l < 10; ++l)
           {
-            printf("%f ", derErrorOutput[l]);
+            printf("\n error out%f ", derErrorOutput[l]);
           }
         free(derErrorVal);
         derErrorVal = NULL;
@@ -164,7 +164,7 @@ void backpropAuto(AUTOW*   autoweights,
         calerrorVal((float*)autolayer->input, derErrorOutput, derErrorVal, 600);
         for (int l = 0; l < 10; ++l)
           {
-            printf("%f ", derErrorVal[l]);
+            printf("\n error val %f ", derErrorVal[l]);
           }
         calgrad((float*)autolayer->layer1,
                 derErrorVal,
@@ -173,7 +173,7 @@ void backpropAuto(AUTOW*   autoweights,
                 773);
         for (int l = 0; l < 10; ++l)
           {
-            printf("%f ", autograd->weight0[l]);
+            printf("\n auto grad: %f ", autograd->weight0[l]);
           }
 
         free(derErrorOutput0);
