@@ -1,5 +1,5 @@
 /*********************************************************************/
-/* randGen_fini.c: random number generator (RNG) from the PCG family */
+/* randGen.c: random number generator (RNG) from the PCG family      */
 /*                                                                   */
 /* Author: JAB      Date: 1/24/2018                                  */
 /*                                                                   */
@@ -18,7 +18,6 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <time.h>
-#include <math.h> /* for neuralnet compatibility testing (nct) */
 #include "randGen.h"
 
 /* global variables */
@@ -27,11 +26,6 @@ uint64_t seedVal =  9600629759793949339ULL;
 uint64_t incrVal = 15726070495360670683ULL;
 
 uint32_t rnd = 0;
-
-/* neuralnet pseudo-global-input variables (nc) */
-int m = 8, n = 8, f = 773+600;
-float *A = NULL;
-
 
 /* ----------------------------------------------------------------- */
 /* ----------------------------------------------------------------- */
@@ -55,34 +49,10 @@ float randGen()
 /* ----------------------------------------------------------------- */
 /* ----------------------------------------------------------------- */
 
-/* ----------------------------------------------------------------- */
-/* ----------------------------------------------------------------- */
-void randReluArray_edited(float *A, int m, int n, int f)/* (for nct) */
-{
-	int i, j;
-	A = malloc(m*n*sizeof(float));
-	/*srand(time(NULL));*/
-	printf("\nA:\n");
-	for (i = 0; i < m; ++i)
-    {
-		for (j = 0; j < n; ++j)
-        {
-			A[i * n + j] = randGen() * (sqrt(6.0) / f);
-			/*printf("A[i*n+j] = A[%2d*%2d+%2d] = A[%2d] = %8f\n",
-			       i, n, j, i*n+j, A[i*n+j] );*/
-		    printf("%8f ", A[i*n+j]);
-        }
-		printf("\n");
-    }
-	
-	free(A); /* passes valgrind */
-	
-}
-/* ----------------------------------------------------------------- */
-/* ----------------------------------------------------------------- */
+/*********************************************************************/
+/*********************************************************************/
+#if 0/* comment out '#if 0' and '#endif' to compile this code ind.   */
 
-/*********************************************************************/
-/*********************************************************************/
 int main() 
 {
 	int iters = 10;
@@ -92,15 +62,13 @@ int main()
 	{   
         printf("iter. %2d: randGen() = %0.12f\n", i+1, randGen() );
 	}
-	randReluArray_edited(A, m, n, f);
-	
-	/*free(A); oops, wrong place */
-	
 	printf("\n");
 	
 	return 0;
 
 } /* end main() */
+
+#endif
 /*********************************************************************/
 /*********************************************************************/
 
