@@ -11,12 +11,12 @@
 void printOutError(float* error, int lenght)
 {
   assert(error);
-  float sum = 0;
+  float sum = 0.0;
   for (int i = 0; i < lenght; ++i)
     {
       sum += error[i];
     }
-  printf("The total error is %f", sum);
+  printf("The total error is %f\n", sum);
 }
 
 void calerrorOuputO(float* output, float* truth, float* res, int length)
@@ -100,21 +100,37 @@ void backpropAuto(AUTOW*   autoweights,
   switch (stage)
     {
       case 1:
+#ifdef DEBUG
+        for (int l = 0; l < 10; ++l)
+          {
+            printf("%f ", ((float*)decodelayer->output)[l]);
+          }
+
+        for (int l = 0; l < 10; ++l)
+          {
+            printf("%f ", ((autolayer->input))[0][l]);
+          }
+#endif
         // train decoder layer output
         derErrorOutput0 = (float*)malloc(773 * sizeof(float));
-        calerrorOuputO((float*)decodelayer->output,
-                       (float*)autolayer->input,
+        calerrorOuputO((float*)(decodelayer->output),
+                       (float*)(autolayer->input),
                        derErrorOutput0,
                        773);
 #ifdef DEBUG
-        printOutError(derErrorOutput0, 773);
+        // for (int l = 0; l < 10; ++l)
+        //   {
+        //     printf("%f ", derErrorOutput0[l]);
+        //   }
+        // printOutError(derErrorOutput0, 773);
+
 #endif
         derErrorVal = (float*)malloc(773 * sizeof(float));
         calerrorVal(
             (float*)decodelayer->output, derErrorOutput0, derErrorVal, 773);
         calgrad((float*)decodelayer->layer3,
                 derErrorVal,
-                (float*)decodegrad->output,
+                (float*)decodegrad->weight3,
                 773,
                 600);
 

@@ -32,11 +32,13 @@ void boardToVector(BSTATE *board, float *vector)
                   if (piece / 10 == (color) && piece % 10 == (rank + 1) &&
                       piece != 0)
                     {
-                      printf("the piece is %d, position is %d and %d !!!\n ",
-                             piece,
-                             i,
-                             j);
-                      printf("Rank is  %d, Color is %d!!!\n ", rank, color);
+                      //  printf("the piece is %d, position is %d and %d !!!\n
+                      //  ",
+                      //        piece,
+                      //        i,
+                      //        j);
+                      // printf("Rank is  %d, Color is %d!!!\n ", rank,
+                      // color);
                       vector[shift + color * 6 * 8 * 8 + rank * 8 * 8 + i * 8 +
                              j] = 1;
                     }

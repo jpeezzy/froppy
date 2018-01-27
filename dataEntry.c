@@ -55,6 +55,8 @@ void readFenfile(FILE* fenFilehandle, DATABASE* dataMain)
 // pick and return a random move
 BSTATE pickRandMove(DATABASE* dataMain)
 {
+  assert(dataMain->totalData);
+  assert(dataMain);
   srand(time(NULL));
   ENTRY* curEntry = NULL;
   int    num      = rand() % (dataMain->totalData) + 1;
