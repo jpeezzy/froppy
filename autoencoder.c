@@ -51,7 +51,7 @@ int main()
   DATABASE *dataB;
   dataB = createDataB();
   assert(dataB);
-  FILE *che = fopen("res1.txt", "r");
+  FILE *che = fopen("res2.txt", "r");
   assert(che);
   printf("Finished asserting che! \n");
 
@@ -68,11 +68,20 @@ int main()
   for (i = 0; i < 10000; ++i)
     {
       fowardpropAuto(aw, al, dw, dl, 1);
+#ifdef DEBUG
+      printf("finished fprop\n");
+#endif
       backpropAuto(aw, al, dw, dl, ag, dg, 1);
+#ifdef DEBUG
+      printf("finished bprop\n");
+#endif
       nadamAuto(aw, dw, ag, dg, am, av, dm, dv, t, 1);
       t    = t + 1;
       move = pickRandMove(dataB);
       boardToVector(&move, (float *)vect);
+#ifdef DEBUG
+      printf("finished one move\n");
+#endif
       for (int i = 0; i < 773; ++i)
         {
           al->input[1][i] = vect[1][i];

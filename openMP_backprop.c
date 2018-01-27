@@ -33,13 +33,14 @@ void calerrorOuputO(float* output, float* truth, float* res, int length)
 // derivative of error with respect to input of next layer as well as length of
 // the current node and length of the next node
 void calerrorOuput(
-    float* weight, float* nexterrorVAl, float* res, int lenCur, int lenNex)
+    float* weightCur, float* nexterrorVAl, float* res, int lenCur, int lenNex)
 {
   assert(nexterrorVAl);
   assert(res);
+  assert(weightCur);
   float* temp = NULL;
-  temp        = transposeMatrix(weight, lenNex, lenCur);
-  matrixMultiplication(temp, nexterrorVAl, res, lenNex, lenCur, 1);
+  temp        = transposeMatrix(weightCur, lenNex, lenCur);
+  matrixMultiplication(temp, nexterrorVAl, res, lenCur, lenNex, 1);
   free(temp);
 }
 
@@ -97,8 +98,9 @@ void backpropAuto(AUTOW*   autoweights,
                        (float*)autolayer->input,
                        derErrorOutput0,
                        773);
-        // used for debugging
+#ifdef DEBUG
         printOutError(derErrorOutput0, 773);
+#endif
         derErrorVal = (float*)malloc(773 * sizeof(float));
         calerrorVal(
             (float*)decodelayer->output, derErrorOutput0, derErrorVal, 773);
@@ -113,12 +115,12 @@ void backpropAuto(AUTOW*   autoweights,
         calerrorOuput((float*)autoweights->weight0,
                       derErrorVal,
                       derErrorOutput,
-                      600,
-                      773);
+                      773,
+                      600);
         free(derErrorVal);
         derErrorVal = NULL;
-        derErrorVal = (float*)malloc(600 * sizeof(float));
-        calerrorVal((float*)autolayer->input, derErrorOutput, derErrorVal, 600);
+        derErrorVal = (float*)malloc(773 * sizeof(float));
+        calerrorVal((float*)autolayer->input, derErrorOutput, derErrorVal, 773);
         calgrad(
             derErrorOutput0, derErrorVal, (float*)autograd->weight0, 600, 773);
 
