@@ -49,7 +49,7 @@ int main()
   float     vect[1][773];
   DATABASE *dataB;
   dataB = createDataB();
-  readFenfile(fopen("res1.txt", 'r'), dataB);
+  readFenfile(fopen("res1.txt", "r"), dataB);
   move = pickRandMove(dataB);
   boardToVector(&move, (float *)vect);
   int t = 1;
