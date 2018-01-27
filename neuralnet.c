@@ -453,12 +453,11 @@ void fowardpropAuto(AUTOW *  autoweights,
 void randReluArray(float *A, int m, int n, int f)
 {
   int i, j;
-  srand(time(NULL));
   for (i = 0; i < m; ++i)
     {
       for (j = 0; j < n; ++j)
         {
-          A[i * n + j] = ((float)rand()/(float)(RAND_MAX)) * (sqrt(6.0) / f);
+          A[i * n + j] = randGen() * (sqrt(6.0) / f);
         }
     }
 }
