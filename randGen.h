@@ -4,18 +4,24 @@
 /*                                                                   */
 /* Author: JAB      Date: 1/24/2018                                  */
 /*                                                                   */
-/* Comments: none                                                    */
+/* Comments: edited 1/26/2018 for neuralnet compatibility (nc)       */
 /*                                                                   */
 /*********************************************************************/
 	
 #ifndef RANDGEN_H
 #define RANDGEN_H
 
-uint64_t multVal =  6364136223846793005ULL;
-uint64_t seedVal =  9600629759793949339ULL;  
-uint64_t incrVal = 15726070495360670683ULL;
+/* randGen() global variables */
+extern uint64_t multVal, seedVal, incrVal;
+extern uint32_t rnd;
 
-uint32_t rnd = 0;
+/* neuralnet pseudo-global-input variables (nc testing)*/
+extern int m, n, f;
+extern float *A;
+
+/* function(s) */
+float randGen();
+void randReluArray_edited(float *A, int m, int n, int f);
 
 
 #endif
