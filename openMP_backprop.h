@@ -16,7 +16,8 @@ void calerrorOuput(
 void calerrorVal(float* layerVal, float* errorOutput, float* res, int length);
 
 // calculate the gradient descent
-// parameters: output of previous layer, derivative of error w.r.t value
+// parameters: output and weight of the current layer and derivative of error
+// w.r.t to val of next layer
 void calgrad(
     float* prevOutput, float* errorVal, float* res, int lenCur, int lenPrev);
 

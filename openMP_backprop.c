@@ -9,6 +9,7 @@
 #define CORE_NUM 56
 void printOutError(float* error, int lenght)
 {
+  assert(error);
   float sum = 0;
   for (int i = 0; i < lenght; ++i)
     {
@@ -23,10 +24,12 @@ void calerrorOuputO(float* output, float* truth, float* res, int length)
   assert(truth);
   assert(res);
 #pragma omp parallel num_threads(CORE_NUM)
-  for (int i = 0; i < length; ++i)
-    {
-      res[i] = output[i] - truth[i];
-    }
+  {
+    for (int i = 0; i < length; ++i)
+      {
+        res[i] = output[i] - truth[i];
+      }
+  }
 }
 
 // calculate derivative of error with repsect to output, take in weights and
@@ -53,28 +56,32 @@ void calerrorVal(float* layerVal, float* errorOutput, float* res, int length)
   assert(res);
   reluArray(layerVal, length, 1, 1);
 #pragma omp parallel num_threads(CORE_NUM)
-  for (int i = 0; i < length; ++i)
-    {
-      res[i] = layerVal[i] * errorOutput[i];
-    }
+  {
+    for (int i = 0; i < length; ++i)
+      {
+        res[i] = layerVal[i] * errorOutput[i];
+      }
+  }
 }
 
 // calculate the gradient descent
 // parameters: output of previous layer, derivative of error w.r.t value
 void calgrad(
-    float* prevOutput, float* errorVal, float* res, int lenCur, int lenPrev)
+    float* curOutput, float* errorVal, float* res, int lenNext, int lenCur)
 {
-  assert(prevOutput);
+  assert(curOutput);
   assert(errorVal);
   assert(res);
 #pragma omp parallel num_threads(CORE_NUM)
-  for (int i = 0; i < lenCur; ++i)
-    {
-      for (int j = 0; j < lenPrev; ++j)
-        {
-          res[i * lenPrev + j] = prevOutput[j] * errorVal[i];
-        }
-    }
+  {
+    for (int i = 0; i < lenCur; ++i)
+      {
+        for (int j = 0; j < lenNext; ++j)
+          {
+            res[i * lenNext + j] = curOutput[j] * errorVal[i];
+          }
+      }
+  }
 }
 
 void backpropAuto(AUTOW*   autoweights,
@@ -115,14 +122,17 @@ void backpropAuto(AUTOW*   autoweights,
         calerrorOuput((float*)autoweights->weight0,
                       derErrorVal,
                       derErrorOutput,
-                      773,
-                      600);
+                      600,
+                      773);
         free(derErrorVal);
         derErrorVal = NULL;
-        derErrorVal = (float*)malloc(773 * sizeof(float));
-        calerrorVal((float*)autolayer->input, derErrorOutput, derErrorVal, 773);
-        calgrad(
-            derErrorOutput0, derErrorVal, (float*)autograd->weight0, 600, 773);
+        derErrorVal = (float*)malloc(600 * sizeof(float));
+        calerrorVal((float*)autolayer->input, derErrorOutput, derErrorVal, 600);
+        calgrad((float*)autolayer->input,
+                derErrorVal,
+                (float*)autograd->weight0,
+                600,
+                773);
 
         free(derErrorOutput0);
         free(derErrorOutput);
