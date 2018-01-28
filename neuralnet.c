@@ -8,7 +8,7 @@
 #include "randGen.h"
 
 float eta     = 0.001;
-float epsilon = 10e-8;
+float epsilon = 0.00000001;
 float beta1   = 0.9;
 float beta2   = 0.999;
 
@@ -91,7 +91,8 @@ void reluArray(float *array, int m, int n, int flag)
       {
         for (j = 0; j < n; ++j)
           {
-            array[i * j + n] = reluActivation(array[i * j + n], flag);
+            //printf(" \n %d %d", i, j);
+            array[i * n + j] = reluActivation(array[i * n + j], flag);
           }
       }
   }
@@ -115,7 +116,7 @@ void tanhArray(float *array, int m, int n, int flag)
       {
         for (j = 0; j < n; ++j)
           {
-            array[i * j + n] = tanhActivation(array[i * j + n], flag);
+            array[i * n + j] = tanhActivation(array[i * n + j], flag);
           }
       }
   }
@@ -125,13 +126,19 @@ void tanhArray(float *array, int m, int n, int flag)
 void nadam(float *w, float *g, float *m, float *v, int t)
 {
   // Update the Momentum and Variance Vectors
-  *(m) = (*(m)) * beta1 + (1 - beta1) * (*(g));
-  *(v) = (*(v)) * beta2 + (1 - beta2) * (*(g)) * (*(g));
+  *(m) = (*(m)) * beta1 + (1.0 - beta1) * (*(g));
+  *(v) = (*(v)) * beta2 + (1.0 - beta2) * (*(g)) * (*(g));
+  
+  float vt = (*(v)) / (1.0 - pow(beta2,t));
+  float mt = (*(m)) / (1.0 - pow(beta1,t)); 
 
   // Calculate the new weight
-  *(w) = *(w) - (eta / (sqrt((*(v)) / (1 - pow(beta1, t)))) + epsilon) *
-                    (beta1 * ((*(m)) / (1 - pow(beta1, t))) +
-                     ((1 - beta1) * (*(g))) / (1 - pow(beta1, t)));
+  *(w) = *(w) + .001* (*(g));
+  //*(w) = *(w) + ( (eta/(sqrt(vt) + epsilon)) * ((beta1*mt) + (((1.0-beta1)*(*(g)))/(1.0-pow(beta1,t))))); 
+    //- (eta / ((sqrt((*(v)) / (1.0 - pow(beta1, t)))) + epsilon)) *
+                    //(beta1 * ((*(m)) / (1.0 - pow(beta1, t))) +
+                     //((1.0 - beta1) * (*(g))) / (1.0 - pow(beta1, t)));
+  //printf("\n %.5f", *w);
 }
 
 // nadam Array
@@ -151,12 +158,14 @@ void nadamArray(float *W, float *G, float *M, float *V, int m, int n, int t)
     for (i = 0; i < m; ++i)
       {
         for (j = 0; j < n; ++j)
-          {
+          {/*
             nadam(&(W[i * n + j]),
                   &(G[i * n + j]),
                   &(M[i * n + j]),
                   &(V[i * n + j]),
-                  t);
+                  t);*/
+            W[i*n+j] = W[i*n+j] + .001 * G[i*n+j];
+            //printf("\n %.5f",W[i*n+j]);
           }
       }
   }
@@ -286,11 +295,11 @@ void fowardpropAuto(AUTOW *  autoweights,
                            600,
                            773);
       reluArray((float *)decodelayer->output, 1, 773, 0);
-      int ii;
-      for(ii=0; ii < 773; ++ii)
-      {
-          printf("%.4f \n",decodelayer->output[0][ii]);
-      }
+      //int ii;
+      //for(ii=0; ii < 773; ++ii)
+      //{
+      //    printf("%.4f \n",decodelayer->output[0][ii]);
+      //}
     }
 
   // foward prop when the autoencoder is in stage 2
@@ -461,3 +470,50 @@ void randReluArray(float *A, int m, int n, int f)
         }
     }
 }
+
+void backpropAutoN(AUTOW *  autoweights,
+                  AUTOL *  autolayer,
+                  DECODEW *decodeweights,
+                  DECODEL *decodelayer,
+                  AUTOW *  autograd,
+                  DECODEW *decodegrad,
+                  int      stage)
+{
+    if(stage == 1)
+    {
+        float totalerror[1][773];
+        float outputdelta[1][773];
+        float weight3T[773][600];
+
+        float layer1E[1][600];
+        float layer1delta[1][600];
+        float inputT[773][1];
+        float layer1T[600][1];
+        
+        autoencoderE((float *) autolayer->input, (float *) decodelayer->output);
+
+        matrixSubtraction((float *) autolayer->input, (float *) decodelayer->output, (float *) totalerror, 1, 773);
+        matrixDelta((float *) totalerror, (float *) decodelayer->output, (float *) outputdelta, 1, 773);
+
+        
+        TMatrix((float *) decodeweights->weight3, (float *) weight3T, 600, 773);
+        matrixMultiplication((float *) outputdelta, (float *) weight3T, (float *) layer1E, 1, 773,600);
+
+        //not yet tested pass here
+        matrixDelta((float *) layer1E, (float *) autolayer->layer1, (float *) layer1delta, 1, 600);
+        TMatrix((float *) autolayer->layer1, (float *) layer1T, 1, 600);
+        TMatrix((float *) autolayer->input, (float *) inputT, 1, 773);
+
+        //calucalate the weights 
+        matrixMultiplication((float *) layer1T, (float *) outputdelta, (float *) decodegrad->weight3, 600, 1, 773);
+        matrixMultiplication((float *) inputT, (float *) layer1delta, (float *) autograd->weight0, 773, 1, 600);
+
+        //printMatrix((float *) decodegrad->weight3, 600, 773);
+        printMatrix((float *) layer1E, 1, 600);
+               
+    }
+
+
+}
+
+

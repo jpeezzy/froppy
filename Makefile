@@ -5,7 +5,7 @@ MATH= -lm
 randGen.o: randGen.h randGen.c
 	$(CC) $(CFLAGS) -c randGen.c -o randGen.o $(MATH)
 
-matrix.o: matrix.h matrix.c
+matrix.o: matrix.h matrix.c neuralnet.h
 	$(CC) $(CFLAGS) -c matrix.c -o matrix.o $(MATH)
 
 fenToBoardState.o: fenToBoardState.c fenToBoardState.h
@@ -29,9 +29,15 @@ autoencoder.o: autoencoder.c matrix.h fenToBoardState.h boardToVector.h neuralne
 auto: matrix.o fenToBoardState.o boardToVector.o neuralnet.o openMP_backprop.o dataEntry.o autoencoder.o randGen.o
 	$(CC) $(CFLAGS) matrix.o fenToBoardState.o boardToVector.o neuralnet.o openMP_backprop.o dataEntry.o randGen.o autoencoder.o -o Auto $(MATH)
 
+matrixTest.o: matrixTest.c matrix.h
+	$(CC) $(CFLAGS) -c matrixTest.c -o matrixTest.o
+
+MT: matrixTest.o matrix.o
+	$(CC) $(CFLAGS) matrixTest.o matrix.o -o MT
 
 
 
 clean:
 	rm -f *o
 	rm -f auto
+	rm -f MT

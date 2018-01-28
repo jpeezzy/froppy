@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <fenv.h>
 
 #include "boardToVector.h"
 #include "dataEntry.h"
@@ -30,7 +31,6 @@ int main()
   av = malloc(sizeof(AUTOW));
   dm = malloc(sizeof(DECODEW));
   dv = malloc(sizeof(AUTOW));
-
   // Intialize the weights
   randReluArray((float *)aw->weight0, 773, 600, 773);
   randReluArray((float *)dw->weight3, 600, 773, 600);
@@ -39,10 +39,10 @@ int main()
     {
       for (xx = 0; xx < 600; ++xx)
         {
-          am->weight0[yy][xx] = 0;
-          av->weight0[yy][xx] = 0;
-          dm->weight3[xx][yy] = 0;
-          dv->weight3[xx][yy] = 0;
+          am->weight0[yy][xx] = 0.0;
+          av->weight0[yy][xx] = 0.0;
+          dm->weight3[xx][yy] = 0.0;
+          dv->weight3[xx][yy] = 0.0;
         }
     }
 
@@ -59,34 +59,39 @@ int main()
   printf("Finished reading fen file che! \n");
   move = pickRandMove(dataB);
   boardToVector(&move, (float *)vect);
-  int t = 1;
+  int t = 0;
   int i;
   for (int i = 0; i < 773; ++i)
     {
       al->input[0][i] = vect[0][i];
     }
-  for (i = 0; i < 10000; ++i)
-    {
+  feenableexcept(FE_DIVBYZERO | FE_INVALID | FE_OVERFLOW);
+  for (i = 0; i < 1000; ++i)
+    { if(1)
+        {
+          printf("\n %d",i);
+        }
       fowardpropAuto(aw, al, dw, dl, 1);
 #ifdef DEBUG
-      printf("finished fprop\n");
+      //printf("finished fprop\n");
 #endif
-      backpropAuto(aw, al, dw, dl, ag, dg, 1);
+      backpropAutoN(aw, al, dw, dl, ag, dg, 1);
 #ifdef DEBUG
-      printf("finished bprop\n");
+      //printf("finished bprop\n");
 #endif
+      return 1;
       nadamAuto(aw, dw, ag, dg, am, av, dm, dv, t, 1);
       t    = t + 1;
-      exit(0);
       move = pickRandMove(dataB);
       boardToVector(&move, (float *)vect);
 #ifdef DEBUG
-      printf("finished one move\n");
+      //printf("finished one move\n");
 #endif
+      /*
       for (int i = 0; i < 773; ++i)
         {
           al->input[0][i] = vect[0][i];
-        }
+        }*/
     }
   return 0;
 }

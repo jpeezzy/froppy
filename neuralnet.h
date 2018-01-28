@@ -71,6 +71,14 @@ void backpropAuto(AUTOW *  autoweights,
                   DECODEW *decodegrad,
                   int      stage);
 
+void backpropAutoN(AUTOW *  autoweights,
+                  AUTOL *  autolayer,
+                  DECODEW *decodeweights,
+                  DECODEL *decodelayer,
+                  AUTOW *  autograd,
+                  DECODEW *decodegrad,
+                  int      stage);
+
 // RELU Activation
 float reluActivation(float x, int flag);
 
