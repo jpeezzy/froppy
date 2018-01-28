@@ -46,7 +46,7 @@ void *createHead(NODE *first)
 }
 
 /* create mini structure */
-MINI *createMini(BSTATE *board)
+MINI *createMini(BSTATE *board, int depth)
 {
     assert(board);
     MINI *mini = NULL;
@@ -57,8 +57,9 @@ MINI *createMini(BSTATE *board)
         exit(10);
     }
     mini->board = board;
-    mini->move = NULL;
-    mini->store = 1;
+    mini->move = createMentry(0, 0);
+    mini->depth = depth;
+    return mini;
 }
 
 /* create node with float value and add it to the parent node */
@@ -363,11 +364,21 @@ float alphaBetaMax(MINI *mini, float alpha, float beta, int depth)
     		{	
    			    if(value >= beta)
 			      {
+                if(mini->depth == depth)
+                {
+                    mini->move->CLOC = current->CLOC;
+                    mini->move->NLOC = current->NLOC;
+                }
 				        return beta;   // fail hard beta-cutoff
 			      }
 			      alpha = value; // alpha acts like max in MiniMax
 		    }
         current = current->next;
+    }
+    if(mini->depth == depth)
+    {
+        mini->move->CLOC = current->CLOC;
+        mini->move->NLOC = current->NLOC;                
     }
     deleteMovelist(legal);
     legal = NULL;

@@ -34,8 +34,8 @@ struct head
 struct mini
 {
    BSTATE *board;
-   MENTRY *move;
-   int store;      
+   MENTRY *move; 
+   int depth; /* depth used to call minimax function */   
 };
 
 /* enum to define minimizers and maximizers */
