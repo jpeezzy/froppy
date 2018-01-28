@@ -5,22 +5,35 @@
 
 // check how many files we have had then create new data files for other files
 // to write in, return an array of file handle
-FILE** createNewset(FILE* numFile);
+FILE** createNewset(char* fileName, int mode);
 
 // do post processing tasks for file after we are done with training
 void closeNewset(FILE** handleList);
 
 // save everything inlcuding t in NADAM
 // save only weights if too much work
-void SaveNN(AUTOW*   autoweights,
-            AUTOL*   autolayer,
-            DECODEW* decodeweights,
-            DECODEL* decodelayer,
-            AUTOW*   autograd,
-            DECODEW* decodegrad);
+void SaveNN(AUTOW*   aw,
+            AUTOL*   al,
+            DECODEW* dw,
+            DECODEL* dl,
+            AUTOW*   ag,
+            DECODEW* dg,
+            AUTOW*   am,
+            AUTOW*   av,
+            DECODEW* dm,
+            AUTOW*   dv);
 
 // load everything if possible
 // load on weights if too much work
-void LoadNN();
+void LoadNN(AUTOW*   aw,
+            AUTOL*   al,
+            DECODEW* dw,
+            DECODEL* dl,
+            AUTOW*   ag,
+            DECODEW* dg,
+            AUTOW*   am,
+            AUTOW*   av,
+            DECODEW* dm,
+            AUTOW*   dv);
 
 #endif
