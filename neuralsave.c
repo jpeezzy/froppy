@@ -95,7 +95,7 @@ void SaveNN(AUTOW*   aw,
             DECODEW* dm,
             AUTOW*   dv)
 {
-    FILE** fileList = createNewset("test.txt", 1);
+    FILE** fileList = createNewset("auto.txt", 1);
 
     /***************************EncoderWeights**********************************/
     for (int i = 0; i < 773; ++i)
@@ -369,7 +369,72 @@ void SaveNN(AUTOW*   aw,
                 }
         }
 
-    /***************************AV**********************************/
+    /***************************DM**********************************/
+
+    for (int i = 0; i < 100; ++i)
+        {
+            for (int j = 0; j < 200; ++j)
+                {
+                    fprintf(fileList[8], "%f\n", dm->weight0[i][j]);
+                }
+        }
+
+    for (int i = 0; i < 200; ++i)
+        {
+            for (int j = 0; j < 400; ++j)
+                {
+                    fprintf(fileList[8], "%f\n", dm->weight1[i][j]);
+                }
+        }
+
+    for (int i = 0; i < 400; ++i)
+        {
+            for (int j = 0; j < 600; ++j)
+                {
+                    fprintf(fileList[8], "%f\n", dm->weight2[i][j]);
+                }
+        }
+
+    for (int i = 0; i < 600; ++i)
+        {
+            for (int j = 0; j < 773; ++j)
+                {
+                    fprintf(fileList[8], "%f\n", dm->weight3[i][j]);
+                }
+        }
+
+    /***************************DV**********************************/
+    for (int i = 0; i < 773; ++i)
+        {
+            for (int j = 0; j < 600; ++j)
+                {
+                    fprintf(fileList[9], "%f\n", dv->weight0[i][j]);
+                }
+        }
+
+    for (int i = 0; i < 600; ++i)
+        {
+            for (int j = 0; j < 400; ++j)
+                {
+                    fprintf(fileList[9], "%f\n", dv->weight1[i][j]);
+                }
+        }
+
+    for (int i = 0; i < 400; ++i)
+        {
+            for (int j = 0; j < 200; ++j)
+                {
+                    fprintf(fileList[9], "%f\n", dv->weight2[i][j]);
+                }
+        }
+
+    for (int i = 0; i < 200; ++i)
+        {
+            for (int j = 0; j < 100; ++j)
+                {
+                    fprintf(fileList[9], "%f\n", dv->weight3[i][j]);
+                }
+        }
 }
 
 // load everything if possible
@@ -391,13 +456,435 @@ void LoadNN(AUTOW*   aw,
     char   buffer[200];
     // load the encoder weight
     // the numbers are read in the order that they were written in
-    temp = fileList[0];
+
+    // for (int i = 0; i < 773; ++i)
+    //     {
+    //         for (int j = 0; j < 600; ++j)
+    //             {
+    //                 sscanf(
+    //                     fgets(buffer, 100, temp), "%f",
+    //                     &(aw->weight0[i][j]));
+    //             }
+    //     }
+
+    /***************************EncoderWeights**********************************/
     for (int i = 0; i < 773; ++i)
         {
             for (int j = 0; j < 600; ++j)
                 {
-                    sscanf(
-                        fgets(buffer, 100, temp), "%f", &(aw->weight0[i][j]));
+                    sscanf(fgets(buffer, 100, fileList[0]),
+                           "%f",
+                           &(aw->weight0[i][j]));
+                }
+        }
+
+    for (int i = 0; i < 600; ++i)
+        {
+            for (int j = 0; j < 400; ++j)
+                {
+                    sscanf(fgets(buffer, 100, fileList[0]),
+                           "%f",
+                           &(aw->weight1[i][j]));
+                }
+        }
+
+    for (int i = 0; i < 400; ++i)
+        {
+            for (int j = 0; j < 200; ++j)
+                {
+                    sscanf(fgets(buffer, 100, fileList[0]),
+                           "%f",
+                           &(aw->weight2[i][j]));
+                }
+        }
+
+    for (int i = 0; i < 200; ++i)
+        {
+            for (int j = 0; j < 100; ++j)
+                {
+                    sscanf(fgets(buffer, 100, fileList[0]),
+                           "%f",
+                           &(aw->weight3[i][j]));
+                }
+        }
+
+    /***************************EncoderLayers**********************************/
+    for (int i = 0; i < 1; ++i)
+        {
+            for (int j = 0; j < 773; ++j)
+                {
+                    sscanf(fgets(buffer, 100, fileList[1]),
+                           "%f",
+                           &(al->input[i][j]));
+                }
+        }
+
+    for (int i = 0; i < 1; ++i)
+        {
+            for (int j = 0; j < 600; ++j)
+                {
+                    sscanf(fgets(buffer, 100, fileList[1]),
+                           "%f",
+                           &(al->layer1[i][j]));
+                }
+        }
+
+    for (int i = 0; i < 1; ++i)
+        {
+            for (int j = 0; j < 400; ++j)
+                {
+                    sscanf(fgets(buffer, 100, fileList[1]),
+                           "%f",
+                           &(al->layer2[i][j]));
+                }
+        }
+
+    for (int i = 0; i < 1; ++i)
+        {
+            for (int j = 0; j < 200; ++j)
+                {
+                    sscanf(fgets(buffer, 100, fileList[1]),
+                           "%f",
+                           &(al->layer3[i][j]));
+                }
+        }
+
+    for (int i = 0; i < 1; ++i)
+        {
+            for (int j = 0; j < 100; ++j)
+                {
+                    sscanf(fgets(buffer, 100, fileList[1]),
+                           "%f",
+                           &(al->output[i][j]));
+                }
+        }
+
+    /***************************DecoderWeights**********************************/
+    for (int i = 0; i < 100; ++i)
+        {
+            for (int j = 0; j < 200; ++j)
+                {
+                    sscanf(fgets(buffer, 100, fileList[2]),
+                           "%f",
+                           &(dw->weight0[i][j]));
+                }
+        }
+
+    for (int i = 0; i < 200; ++i)
+        {
+            for (int j = 0; j < 400; ++j)
+                {
+                    sscanf(fgets(buffer, 100, fileList[2]),
+                           "%f",
+                           &(dw->weight1[i][j]));
+                }
+        }
+
+    for (int i = 0; i < 400; ++i)
+        {
+            for (int j = 0; j < 600; ++j)
+                {
+                    sscanf(fgets(buffer, 100, fileList[2]),
+                           "%f",
+                           &(dw->weight2[i][j]));
+                }
+        }
+
+    for (int i = 0; i < 600; ++i)
+        {
+            for (int j = 0; j < 773; ++j)
+                {
+                    sscanf(fgets(buffer, 100, fileList[2]),
+                           "%f",
+                           &(dw->weight3[i][j]));
+                }
+        }
+
+    /***************************DecoderLayers**********************************/
+    for (int i = 0; i < 1; ++i)
+        {
+            for (int j = 0; j < 200; ++j)
+                {
+                    sscanf(fgets(buffer, 100, fileList[3]),
+                           "%f",
+                           &(dl->layer1[i][j]));
+                }
+        }
+
+    for (int i = 0; i < 1; ++i)
+        {
+            for (int j = 0; j < 400; ++j)
+                {
+                    sscanf(fgets(buffer, 100, fileList[3]),
+                           "%f",
+                           &(dl->layer2[i][j]));
+                }
+        }
+
+    for (int i = 0; i < 1; ++i)
+        {
+            for (int j = 0; j < 600; ++j)
+                {
+                    sscanf(fgets(buffer, 100, fileList[3]),
+                           "%f",
+                           &(dl->layer3[i][j]));
+                }
+        }
+
+    for (int i = 0; i < 1; ++i)
+        {
+            for (int j = 0; j < 773; ++j)
+                {
+                    sscanf(fgets(buffer, 100, fileList[3]),
+                           "%f",
+                           &(dl->layer4[i][j]));
+                }
+        }
+
+    /***************************AutoGradients**********************************/
+    for (int i = 0; i < 773; ++i)
+        {
+            for (int j = 0; j < 600; ++j)
+                {
+                    sscanf(fgets(buffer, 100, fileList[4]),
+                           "%f",
+                           &(ag->weight0[i][j]));
+                }
+        }
+
+    for (int i = 0; i < 600; ++i)
+        {
+            for (int j = 0; j < 400; ++j)
+                {
+                    sscanf(fgets(buffer, 100, fileList[4]),
+                           "%f",
+                           &(ag->weight1[i][j]));
+                }
+        }
+
+    for (int i = 0; i < 400; ++i)
+        {
+            for (int j = 0; j < 200; ++j)
+                {
+                    sscanf(fgets(buffer, 100, fileList[4]),
+                           "%f",
+                           &(ag->weight2[i][j]));
+                }
+        }
+
+    for (int i = 0; i < 200; ++i)
+        {
+            for (int j = 0; j < 100; ++j)
+                {
+                    sscanf(fgets(buffer, 100, fileList[4]),
+                           "%f",
+                           &(ag->weight3[i][j]));
+                }
+        }
+
+    /***************************DecodeGradients**********************************/
+    for (int i = 0; i < 100; ++i)
+        {
+            for (int j = 0; j < 200; ++j)
+                {
+                    sscanf(fgets(buffer, 100, fileList[5]),
+                           "%f",
+                           &(dg->weight0[i][j]));
+                }
+        }
+
+    for (int i = 0; i < 200; ++i)
+        {
+            for (int j = 0; j < 400; ++j)
+                {
+                    sscanf(fgets(buffer, 100, fileList[5]),
+                           "%f",
+                           &(dg->weight1[i][j]));
+                }
+        }
+
+    for (int i = 0; i < 400; ++i)
+        {
+            for (int j = 0; j < 600; ++j)
+                {
+                    sscanf(fgets(buffer, 100, fileList[5]),
+                           "%f",
+                           &(dg->weight2[i][j]));
+                }
+        }
+
+    for (int i = 0; i < 600; ++i)
+        {
+            for (int j = 0; j < 773; ++j)
+                {
+                    sscanf(fgets(buffer, 100, fileList[5]),
+                           "%f",
+                           &(dg->weight3[i][j]));
+                }
+        }
+
+    /***************************AM**********************************/
+    for (int i = 0; i < 773; ++i)
+        {
+            for (int j = 0; j < 600; ++j)
+                {
+                    sscanf(fgets(buffer, 100, fileList[6]),
+                           "%f",
+                           &(am->weight0[i][j]));
+                }
+        }
+
+    for (int i = 0; i < 600; ++i)
+        {
+            for (int j = 0; j < 400; ++j)
+                {
+                    sscanf(fgets(buffer, 100, fileList[6]),
+                           "%f",
+                           &(am->weight1[i][j]));
+                }
+        }
+
+    for (int i = 0; i < 400; ++i)
+        {
+            for (int j = 0; j < 200; ++j)
+                {
+                    sscanf(fgets(buffer, 100, fileList[6]),
+                           "%f",
+                           &(am->weight2[i][j]));
+                }
+        }
+
+    for (int i = 0; i < 200; ++i)
+        {
+            for (int j = 0; j < 100; ++j)
+                {
+                    sscanf(fgets(buffer, 100, fileList[6]),
+                           "%f",
+                           &(am->weight3[i][j]));
+                }
+        }
+
+    /***************************AV**********************************/
+    for (int i = 0; i < 773; ++i)
+        {
+            for (int j = 0; j < 600; ++j)
+                {
+                    sscanf(fgets(buffer, 100, fileList[7]),
+                           "%f",
+                           &(av->weight0[i][j]));
+                }
+        }
+
+    for (int i = 0; i < 600; ++i)
+        {
+            for (int j = 0; j < 400; ++j)
+                {
+                    sscanf(fgets(buffer, 100, fileList[7]),
+                           "%f",
+                           &(av->weight1[i][j]));
+                }
+        }
+
+    for (int i = 0; i < 400; ++i)
+        {
+            for (int j = 0; j < 200; ++j)
+                {
+                    sscanf(fgets(buffer, 100, fileList[7]),
+                           "%f",
+                           &(av->weight2[i][j]));
+                }
+        }
+
+    for (int i = 0; i < 200; ++i)
+        {
+            for (int j = 0; j < 100; ++j)
+                {
+                    sscanf(fgets(buffer, 100, fileList[7]),
+                           "%f",
+                           &(av->weight3[i][j]));
+                }
+        }
+
+    /***************************DM**********************************/
+
+    for (int i = 0; i < 100; ++i)
+        {
+            for (int j = 0; j < 200; ++j)
+                {
+                    sscanf(fgets(buffer, 100, fileList[8]),
+                           "%f",
+                           &(dm->weight0[i][j]));
+                }
+        }
+
+    for (int i = 0; i < 200; ++i)
+        {
+            for (int j = 0; j < 400; ++j)
+                {
+                    sscanf(fgets(buffer, 100, fileList[8]),
+                           "%f",
+                           &(dm->weight1[i][j]));
+                }
+        }
+
+    for (int i = 0; i < 400; ++i)
+        {
+            for (int j = 0; j < 600; ++j)
+                {
+                    sscanf(fgets(buffer, 100, fileList[8]),
+                           "%f",
+                           &(dm->weight2[i][j]));
+                }
+        }
+
+    for (int i = 0; i < 600; ++i)
+        {
+            for (int j = 0; j < 773; ++j)
+                {
+                    sscanf(fgets(buffer, 100, fileList[8]),
+                           "%f",
+                           &(dm->weight3[i][j]));
+                }
+        }
+
+    /***************************DV**********************************/
+    for (int i = 0; i < 773; ++i)
+        {
+            for (int j = 0; j < 600; ++j)
+                {
+                    sscanf(fgets(buffer, 100, fileList[9]),
+                           "%f",
+                           &(dv->weight0[i][j]));
+                }
+        }
+
+    for (int i = 0; i < 600; ++i)
+        {
+            for (int j = 0; j < 400; ++j)
+                {
+                    sscanf(fgets(buffer, 100, fileList[9]),
+                           "%f",
+                           &(dv->weight1[i][j]));
+                }
+        }
+
+    for (int i = 0; i < 400; ++i)
+        {
+            for (int j = 0; j < 200; ++j)
+                {
+                    sscanf(fgets(buffer, 100, fileList[9]),
+                           "%f",
+                           &(dv->weight2[i][j]));
+                }
+        }
+
+    for (int i = 0; i < 200; ++i)
+        {
+            for (int j = 0; j < 100; ++j)
+                {
+                    sscanf(fgets(buffer, 100, fileList[9]),
+                           "%f",
+                           &(dv->weight3[i][j]));
                 }
         }
 }
