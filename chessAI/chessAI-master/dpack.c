@@ -4,17 +4,17 @@
 #include <time.h>
 #include <string.h>
 /* test */
-int saveArray(long double *A, char *fname, int m, int n, int tnum);
+int saveArray(double *A, char *fname, int m, int n, int tnum);
 int main()
 {
-    long double A[400][200]; 
+    double A[400][200]; 
     int l1,l2;
     srand(1);
     for(l1 = 0; l1 < 400; ++l1)
     {
         for(l2 = 0; l2 < 200; ++l2)
         {
-            A[l1][l2] = ((long double)rand()/(long double)(RAND_MAX)) * 50;
+            A[l1][l2] = ((double)rand()/(double)(RAND_MAX)) * 50;
         }
         
     }
@@ -22,15 +22,15 @@ int main()
     printf("\nflag 0\n");
     struct timespec tstart={0,0}, tend={0,0};
     clock_gettime(CLOCK_MONOTONIC, &tstart);
-    saveArray((long double *)A, fname, 400, 200, 4);
+    saveArray((double *)A, fname, 400, 200, 4);
     clock_gettime(CLOCK_MONOTONIC, &tend);
-    printf("P took about %.5f seconds\n",((long double)tend.tv_sec + 1.0e-9*tend.tv_nsec) - ((long double)tstart.tv_sec + 1.0e-9*tstart.tv_nsec));
+    printf("P took about %.5f seconds\n",((double)tend.tv_sec + 1.0e-9*tend.tv_nsec) - ((double)tstart.tv_sec + 1.0e-9*tstart.tv_nsec));
     return 0;
 }
 
 /* Rows is m and N is colums */
 /* if the array is small tnum should be 1*/
-int saveArray(long double *A, char *fname, int m, int n, int tnum)
+int saveArray(double *A, char *fname, int m, int n, int tnum)
 {
     FILE *file;
     char ftype[] = ".dank";

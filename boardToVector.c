@@ -6,7 +6,7 @@
 #include <malloc.h>
 #include "boardstate.h"
 #include "fenToBoardState.h"
-void boardToVector(BSTATE *board, long double *vector)
+void boardToVector(BSTATE *board, double *vector)
 {
   vector[0] = board->WKCFlag;
   vector[1] = board->WQCFlag;

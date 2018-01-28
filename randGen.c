@@ -27,7 +27,7 @@ uint32_t rnd = 0;
 
 /* ----------------------------------------------------------------- */
 /* ----------------------------------------------------------------- */
-long double randGen()
+double randGen()
 {
     /* generate (sequential) seed value */
     seedVal = seedVal > UINT64_MAX ? UINT64_MAX : seedVal+time(NULL); 
@@ -41,7 +41,7 @@ long double randGen()
 
     rnd = (xorShiftVal >> rotVal) | (xorShiftVal << ((-rotVal) & 31));
 	
-    return (long double) rnd/UINT32_MAX;
+    return (double) rnd/UINT32_MAX;
 	
 } /* end uint32_t rand_PCG_XSH_RR() */
 /* ----------------------------------------------------------------- */

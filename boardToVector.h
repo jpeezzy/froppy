@@ -8,5 +8,5 @@
 #ifndef BOARDSTATE_H
 #define BOARDSTATE_H
 #include "boardstate.h"
-void boardToVector(BSTATE *board, long double *vector);
+void boardToVector(BSTATE *board, double *vector);
 #endif

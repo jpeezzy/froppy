@@ -98,7 +98,7 @@ void pawnmove(MLIST *list, BSTATE *board, int pawnlocation)
     //for white pawns
     if(type == 0)
     {
-        //long double step at begining of game
+        //double step at begining of game
         if(pawnx == 6)
         {   
             newlocation = 8*(4)+pawny;
@@ -151,7 +151,7 @@ void pawnmove(MLIST *list, BSTATE *board, int pawnlocation)
     //for black pawns
     if(type == 1)
     {
-        //long double step at begining of game
+        //double step at begining of game
         if(pawnx == 1)
         {   
             newlocation = 8*(3)+pawny;
