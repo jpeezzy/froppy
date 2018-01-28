@@ -69,7 +69,7 @@ static int piece_square_table[6][8][8] = {
 
 int basicEvaluation(BSTATE* currentboard, MLIST* all_moves)
 {
-    double eval_score = 0.0;
+    long double eval_score = 0.0;
     assert(all_moves);
     MENTRY* current_move = all_moves->First;
     // int     piece_count[12] = {0};

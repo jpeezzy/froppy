@@ -22,6 +22,6 @@ extern uint64_t multVal, seedVal, incrVal;
 extern uint32_t rnd;
 
 /* function(s) */
-double randGen();
+long double randGen();
 
 #endif

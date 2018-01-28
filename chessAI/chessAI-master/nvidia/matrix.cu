@@ -18,7 +18,7 @@ a n X k matrix h_b, and computes the matrix multiplication and
 stores the result int m x k matrix (C)
  */
 
-__global__ void matrixMultiplication(double *h_a, double *h_b, double *h_result, int m, int n, int k)
+__global__ void matrixMultiplication(long double *h_a, long double *h_b, long double *h_result, int m, int n, int k)
 {
 	int row = blockIdx.y * blockDim.y + threadIdx.y;
 	int col = blockIdx.x * blockDim.x + threadIdx.x;
@@ -39,7 +39,7 @@ function: transposeMatrix
 this function takes an rows x cols matrix inputMatrix
 and transposes that matrix to outputMatrix that has dimension cols x row
 i  */
-__global__ void transposeMatrix(double *inputMatrix, double* outputMatrix, const unsigned int rows, const unsigned int cols)
+__global__ void transposeMatrix(long double *inputMatrix, long double* outputMatrix, const unsigned int rows, const unsigned int cols)
 {
 	unsigned int idx = blockIdx.x * blockDim.x + threadIdx.x;
 	unsigned int idy = blockIdx.y * blockDim.y + threadIdx.y;
@@ -57,7 +57,7 @@ function: printMatrixCuda
 this function prints out the matrix using CUDA
  */
 
-__global__ void printMatrixCuda(double *C, int M, int N)
+__global__ void printMatrixCuda(long double *C, int M, int N)
 {
 	cuPrintf("nothing is happening \n");
 	for(int i = 0; i < M; i++)
@@ -77,9 +77,9 @@ function: main
 int main(void)
 {
 	printf("Hello world Matrix cuda function\n");
-	double inputA[3][3];
-	double inputB[3][3];
-	double output[3][3];
+	long double inputA[3][3];
+	long double inputB[3][3];
+	long double output[3][3];
 	int m = 3;
 	int n = 3;
 	int k = 3;
@@ -99,9 +99,9 @@ int main(void)
 	dim3 dimBlock(BLOCK_SIZE, BLOCK_SIZE);
 	/*setting up how many blocks and threads we will need based on block size */
 	/*mallocing temps for cuda gpu */
-	double *cuda_inputA = NULL;
-	double *cuda_inputB = NULL;
-	double *cuda_output = NULL;
+	long double *cuda_inputA = NULL;
+	long double *cuda_inputB = NULL;
+	long double *cuda_output = NULL;
 
 	int sizeA = sizeof(inputA);
 	int sizeB = sizeof(inputB);
@@ -134,24 +134,24 @@ int main(void)
 	printMatrixCuda<<<1,1>>>(cuda_inputA, m, n);
 	cudaPrintfDisplay(NULL, true);
 	cudaPrintfEnd();
-//	printMatrix((double*)inputA, m, n);
+//	printMatrix((long double*)inputA, m, n);
 	printf("Matrix B\n");
 	cudaPrintfInit();
 	printMatrixCuda<<<1,1>>>(cuda_inputB, n, k);
 	cudaPrintfDisplay(NULL, true);
 	cudaPrintfEnd();
-//	printMatrix((double*)inputB, n, k);
+//	printMatrix((long double*)inputB, n, k);
 	printf("Matrix Out: \n");
 	cudaPrintfInit();
 	printMatrixCuda<<<1,1>>>(cuda_output, m, k);
 	cudaPrintfDisplay(NULL, true);
 	cudaPrintfEnd();
-//	printMatrix((double*)output, m, k);
+//	printMatrix((long double*)output, m, k);
 	//cudaPrintfEnd();
 	return 0;
 }
 
-void printMatrix(double *C, int M, int N)
+void printMatrix(long double *C, int M, int N)
 {
 	assert(C);
 	for(int i = 0; i < M; i++)

@@ -6,7 +6,7 @@
 #include "neuralnet.h"
 
 /* Standard RelU */
-double reluActivation(double x, int flag)
+long double reluActivation(long double x, int flag)
 {   if(flag == 0)
     {
         if( x > 0)
@@ -32,7 +32,7 @@ double reluActivation(double x, int flag)
 }
 
 /* tanh function */
-double tanhActivation(double x, int flag)
+long double tanhActivation(long double x, int flag)
 {
     if(flag == 0)
     {
@@ -45,7 +45,7 @@ double tanhActivation(double x, int flag)
 }
 
 /*Applay RElU to array*/
-void reluArray(double *A, int m, int n, int flag)
+void reluArray(long double *A, int m, int n, int flag)
 {
     int i,j;
     for(i = 0; i < m; ++i)
@@ -58,7 +58,7 @@ void reluArray(double *A, int m, int n, int flag)
 }
 
 /* apply tanh function to an Array */
-void tanhArray(double *A, int m, int n, int flag)
+void tanhArray(long double *A, int m, int n, int flag)
 {
     int i,j;
     for(i = 0; i < m; ++i)
@@ -70,7 +70,7 @@ void tanhArray(double *A, int m, int n, int flag)
     }
 }
 
-void nadamArray( double *W, double *V, double *M, double *G, int m, int n, int t)
+void nadamArray( long double *W, long double *V, long double *M, long double *G, int m, int n, int t)
 {
     int i,j;
     for(i = 0; i < m; ++i)
@@ -84,10 +84,10 @@ void nadamArray( double *W, double *V, double *M, double *G, int m, int n, int t
     t = t+1;
 }
 
-void nadam(double *w, double *v, double *m, double *g, int t)
+void nadam(long double *w, long double *v, long double *m, long double *g, int t)
 {
     /*maybe this should be global for a speed increase?*/
-    double b1 = .9, b2 = .999, e = pow(10,-8), eta = .001;
+    long double b1 = .9, b2 = .999, e = pow(10,-8), eta = .001;
     
     /* Update the Momentum and Variance Vectors */
     /*m = m*b1 + (1-b1)*g;
@@ -100,7 +100,7 @@ void nadam(double *w, double *v, double *m, double *g, int t)
 /* only used once to intialize the weights*/
 /* also on the the to do list get a better random number generater*/
 /* Xavier Intialization */
-void intializetanh(double *A, int m, int n, int f)
+void intializetanh(long double *A, int m, int n, int f)
 {
     int i,j;
     srand(time(NULL));
@@ -114,7 +114,7 @@ void intializetanh(double *A, int m, int n, int f)
     }
 }
 
-void intializerelu(double *A, int m, int n, int f)
+void intializerelu(long double *A, int m, int n, int f)
 {
     int i,j;
     srand(time(NULL));

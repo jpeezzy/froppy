@@ -134,7 +134,7 @@ typedef struct __align__(16) {
 
 // Because we can't write an element which is not aligned to its bit-size,
 // we have to align all sizes and variables on maximum-size boundaries.
-// That means sizeof(double) in this case, but we'll use (long long) for
+// That means sizeof(long double) in this case, but we'll use (long long) for
 // better arch<1.3 support
 #define CUPRINTF_ALIGN_SIZE      sizeof(long long)
 
@@ -302,7 +302,7 @@ __device__ static char *cuPrintfStrncpy(char *dest, const char *src, int n, char
 //  string I can't think of one.
 //
 //  The length of the data type is inserted at the beginning (so that
-//  the display can distinguish between double and double), and the
+//  the display can distinguish between long double and long double), and the
 //  pointer to the end of the entry is returned.
 //
 __device__ static char *copyArg(char *ptr, const char *arg, char *end)
@@ -614,7 +614,7 @@ static int outputPrintfData(char *fmt, char *data)
                 fprintf(printf_fp, format, *((int *)data));
                 break;
 
-            // These all take double arguments
+            // These all take long double arguments
             case 'e':
             case 'E':
             case 'f':
@@ -622,10 +622,10 @@ static int outputPrintfData(char *fmt, char *data)
             case 'G':
             case 'a':
             case 'A':
-                if(arglen == 4)     // double vs. Double thing
-                    fprintf(printf_fp, format, *((double *)data));
+                if(arglen == 4)     // long double vs. long double thing
+                    fprintf(printf_fp, format, *((long double *)data));
                 else
-                    fprintf(printf_fp, format, *((double *)data));
+                    fprintf(printf_fp, format, *((long double *)data));
                 break;
 
             // Strings are handled in a special way

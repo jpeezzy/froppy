@@ -6,7 +6,7 @@
 #include "matrix.h"
 #include "neuralnet.h"
 
-void matrixMultiplication(double *h_a, double *h_b, double *h_result, int m, int n, int k) 
+void matrixMultiplication(long double *h_a, long double *h_b, long double *h_result, int m, int n, int k) 
 {
 	int	tid, nthreads, chunk;
 	tid = nthreads = chunk = 0;
@@ -35,7 +35,7 @@ void matrixMultiplication(double *h_a, double *h_b, double *h_result, int m, int
 	}
 } 
 
-void printMatrix(double *C, int M, int N)
+void printMatrix(long double *C, int M, int N)
 {
 	assert(C);
 	for(int i = 0; i < M; i++)
@@ -48,9 +48,9 @@ void printMatrix(double *C, int M, int N)
 	}
 }
 
-double *transposeMatrix(double *matrix, int row, int column)
+long double *transposeMatrix(long double *matrix, int row, int column)
 {
-	double* temp = (double*)malloc(column*row*sizeof(double*));
+	long double* temp = (long double*)malloc(column*row*sizeof(long double*));
 	
 	int	tid, nthreads, chunk;
 	tid = nthreads = chunk = 0;
@@ -76,7 +76,7 @@ double *transposeMatrix(double *matrix, int row, int column)
 	return temp;
 }
 
-void combine3Matrix(double*a, double*b,double*c, double*combine, int rowa, int rowb, int rowc)
+void combine3Matrix(long double*a, long double*b,long double*c, long double*combine, int rowa, int rowb, int rowc)
 {
 	assert(a); assert(b); assert(c); assert(combine);
 	if(sizeof(combine) < (sizeof(a)+ sizeof(b) + sizeof(c)))
@@ -93,13 +93,13 @@ void combine3Matrix(double*a, double*b,double*c, double*combine, int rowa, int r
 	}
 }
 
-void mm(double *h_a, double *h_b, double *h_result, int m, int n, int k) 
+void mm(long double *h_a, long double *h_b, long double *h_result, int m, int n, int k) 
 {
     for (int i = 0; i < m; ++i) 
     {
         for (int j = 0; j < k; ++j) 
         {
-            double tmp = 0.0;
+            long double tmp = 0.0;
             for (int h = 0; h < n; ++h) 
             {
                 tmp += h_a[i * n + h] * h_b[h * k + j];
@@ -110,7 +110,7 @@ void mm(double *h_a, double *h_b, double *h_result, int m, int n, int k)
 }
 
 
-void TMatrix(double *A, double *B, int m, int n)
+void TMatrix(long double *A, long double *B, int m, int n)
 {
 	
 	int	tid, nthreads, chunk;
@@ -135,7 +135,7 @@ void TMatrix(double *A, double *B, int m, int n)
 }
 
 
-void matrixSubtraction(double *h_a, double *h_b, double *h_result, int m, int n) 
+void matrixSubtraction(long double *h_a, long double *h_b, long double *h_result, int m, int n) 
 {
 	int	tid, nthreads, chunk;
 	tid = nthreads = chunk = 0;
@@ -160,7 +160,7 @@ void matrixSubtraction(double *h_a, double *h_b, double *h_result, int m, int n)
 	}
 } 
 
-void matrixScalarMul(double *h_a, double *h_b, double *h_result, int m, int n) 
+void matrixScalarMul(long double *h_a, long double *h_b, long double *h_result, int m, int n) 
 {
 	int	tid, nthreads, chunk;
 	tid = nthreads = chunk = 0;
@@ -185,7 +185,7 @@ void matrixScalarMul(double *h_a, double *h_b, double *h_result, int m, int n)
 	}
 }
 
-void matrixDelta(double *e, double *layer, double *delta, int m, int n)
+void matrixDelta(long double *e, long double *layer, long double *delta, int m, int n)
 {
 	int	tid, nthreads, chunk;
 	tid = nthreads = chunk = 0;
@@ -211,9 +211,9 @@ void matrixDelta(double *e, double *layer, double *delta, int m, int n)
 }
 
 
-void autoencoderE(double *a, double *b) 
+void autoencoderE(long double *a, long double *b) 
 {
-    double te;
+    long double te;
 	for (int i = 0; i < 1; ++i) 
 	{
 	    for (int j = 0; j < 773; ++j) 

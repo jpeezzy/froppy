@@ -7,10 +7,10 @@
 #include "matrix.h"
 #include "randGen.h"
 
-double eta     = 0.001;
-double epsilon = 0.00000001;
-double beta1   = 0.9;
-double beta2   = 0.999;
+long double eta     = 0.001;
+long double epsilon = 0.00000001;
+long double beta1   = 0.9;
+long double beta2   = 0.999;
 
 AUTOW *createAutoW(void)
 {
@@ -33,7 +33,7 @@ DECODEL *createDecoL(void)
   return temp;
 }
 // Calculates the relu activation of a single input 0 is normal 1 is deriv
-double reluActivation(double x, int flag)
+long double reluActivation(long double x, int flag)
 {
   if (flag == 0)
     {
@@ -60,7 +60,7 @@ double reluActivation(double x, int flag)
   return 10;
 }
 
-double tanhActivation(double x, int flag)
+long double tanhActivation(long double x, int flag)
 {
   if (flag == 0)
     {
@@ -74,7 +74,7 @@ double tanhActivation(double x, int flag)
 }
 
 // Applies relu activation to an array
-void reluArray(double *array, int m, int n, int flag)
+void reluArray(long double *array, int m, int n, int flag)
 {
   int i, j;
   int tid, nthreads, chunk;
@@ -99,7 +99,7 @@ void reluArray(double *array, int m, int n, int flag)
 }
 
 // Applies tanh activation to an array
-void tanhArray(double *array, int m, int n, int flag)
+void tanhArray(long double *array, int m, int n, int flag)
 {
   int i, j;
   int tid, nthreads, chunk;
@@ -123,14 +123,14 @@ void tanhArray(double *array, int m, int n, int flag)
 }
 
 // Nadam for a single part
-void nadam(double *w, double *g, double *m, double *v, int t)
+void nadam(long double *w, long double *g, long double *m, long double *v, int t)
 {
   // Update the Momentum and Variance Vectors
   *(m) = (*(m)) * beta1 + (1.0 - beta1) * (*(g));
   *(v) = (*(v)) * beta2 + (1.0 - beta2) * (*(g)) * (*(g));
   
-  double vt = (*(v)) / (1.0 - pow(beta2,t));
-  double mt = (*(m)) / (1.0 - pow(beta1,t)); 
+  long double vt = (*(v)) / (1.0 - pow(beta2,t));
+  long double mt = (*(m)) / (1.0 - pow(beta1,t)); 
 
   // Calculate the new weight
   *(w) = *(w) + .001* (*(g));
@@ -142,7 +142,7 @@ void nadam(double *w, double *g, double *m, double *v, int t)
 }
 
 // nadam Array
-void nadamArray(double *W, double *G, double *M, double *V, int m, int n, int t)
+void nadamArray(long double *W, long double *G, long double *M, long double *V, int m, int n, int t)
 {
   int i, j;
   int chunk, nthreads, tid;
@@ -195,17 +195,17 @@ void nadamAuto(AUTOW *  autoweights,
     // stage 1 of the auto encoder
     if (stage == 1)
       {
-        nadamArray((double *)autoweights->weight0,
-                   (double *)autograd->weight0,
-                   (double *)autoM->weight0,
-                   (double *)autoV->weight0,
+        nadamArray((long double *)autoweights->weight0,
+                   (long double *)autograd->weight0,
+                   (long double *)autoM->weight0,
+                   (long double *)autoV->weight0,
                    773,
                    600,
                    t);
-        nadamArray((double *)decodeweights->weight3,
-                   (double *)decodegrad->weight3,
-                   (double *)decodeM->weight3,
-                   (double *)decodeV->weight3,
+        nadamArray((long double *)decodeweights->weight3,
+                   (long double *)decodegrad->weight3,
+                   (long double *)decodeM->weight3,
+                   (long double *)decodeV->weight3,
                    600,
                    773,
                    t);
@@ -214,17 +214,17 @@ void nadamAuto(AUTOW *  autoweights,
     // stage 2 of the auto encoder
     if (stage == 2)
       {
-        nadamArray((double *)autoweights->weight1,
-                   (double *)autograd->weight1,
-                   (double *)autoM->weight1,
-                   (double *)autoV->weight1,
+        nadamArray((long double *)autoweights->weight1,
+                   (long double *)autograd->weight1,
+                   (long double *)autoM->weight1,
+                   (long double *)autoV->weight1,
                    600,
                    400,
                    t);
-        nadamArray((double *)decodeweights->weight2,
-                   (double *)decodegrad->weight2,
-                   (double *)decodeM->weight2,
-                   (double *)decodeV->weight2,
+        nadamArray((long double *)decodeweights->weight2,
+                   (long double *)decodegrad->weight2,
+                   (long double *)decodeM->weight2,
+                   (long double *)decodeV->weight2,
                    400,
                    600,
                    t);
@@ -233,17 +233,17 @@ void nadamAuto(AUTOW *  autoweights,
     // stage 3 of the auto encoder
     if (stage == 3)
       {
-        nadamArray((double *)autoweights->weight2,
-                   (double *)autograd->weight2,
-                   (double *)autoM->weight2,
-                   (double *)autoV->weight2,
+        nadamArray((long double *)autoweights->weight2,
+                   (long double *)autograd->weight2,
+                   (long double *)autoM->weight2,
+                   (long double *)autoV->weight2,
                    400,
                    200,
                    t);
-        nadamArray((double *)decodeweights->weight1,
-                   (double *)decodegrad->weight1,
-                   (double *)decodeM->weight1,
-                   (double *)decodeV->weight1,
+        nadamArray((long double *)decodeweights->weight1,
+                   (long double *)decodegrad->weight1,
+                   (long double *)decodeM->weight1,
+                   (long double *)decodeV->weight1,
                    200,
                    400,
                    t);
@@ -252,17 +252,17 @@ void nadamAuto(AUTOW *  autoweights,
     // stage 4 of the auto encoder
     if (stage == 4)
       {
-        nadamArray((double *)autoweights->weight3,
-                   (double *)autograd->weight3,
-                   (double *)autoM->weight3,
-                   (double *)autoV->weight3,
+        nadamArray((long double *)autoweights->weight3,
+                   (long double *)autograd->weight3,
+                   (long double *)autoM->weight3,
+                   (long double *)autoV->weight3,
                    200,
                    100,
                    t);
-        nadamArray((double *)decodeweights->weight0,
-                   (double *)decodegrad->weight0,
-                   (double *)decodeM->weight0,
-                   (double *)decodeV->weight0,
+        nadamArray((long double *)decodeweights->weight0,
+                   (long double *)decodegrad->weight0,
+                   (long double *)decodeM->weight0,
+                   (long double *)decodeV->weight0,
                    100,
                    200,
                    t);
@@ -280,21 +280,21 @@ void fowardpropAuto(AUTOW *  autoweights,
   // foward prop when the autoencoder is in stage 1
   if (stage == 1)
     {
-      matrixMultiplication((double *)autolayer->input,
-                           (double *)autoweights->weight0,
-                           (double *)autolayer->layer1,
+      matrixMultiplication((long double *)autolayer->input,
+                           (long double *)autoweights->weight0,
+                           (long double *)autolayer->layer1,
                            1,
                            773,
                            600);
-      reluArray((double *)autolayer->layer1, 1, 600, 0);
+      reluArray((long double *)autolayer->layer1, 1, 600, 0);
 
-      matrixMultiplication((double *)autolayer->layer1,
-                           (double *)decodeweights->weight3,
-                           (double *)decodelayer->output,
+      matrixMultiplication((long double *)autolayer->layer1,
+                           (long double *)decodeweights->weight3,
+                           (long double *)decodelayer->output,
                            1,
                            600,
                            773);
-      reluArray((double *)decodelayer->output, 1, 773, 0);
+      reluArray((long double *)decodelayer->output, 1, 773, 0);
       //int ii;
       //for(ii=0; ii < 773; ++ii)
       //{
@@ -305,161 +305,161 @@ void fowardpropAuto(AUTOW *  autoweights,
   // foward prop when the autoencoder is in stage 2
   if (stage == 2)
     {
-      matrixMultiplication((double *)autolayer->input,
-                           (double *)autoweights->weight0,
-                           (double *)autolayer->layer1,
+      matrixMultiplication((long double *)autolayer->input,
+                           (long double *)autoweights->weight0,
+                           (long double *)autolayer->layer1,
                            1,
                            773,
                            600);
-      reluArray((double *)autolayer->layer1, 1, 600, 0);
+      reluArray((long double *)autolayer->layer1, 1, 600, 0);
 
-      matrixMultiplication((double *)autolayer->layer1,
-                           (double *)autoweights->weight1,
-                           (double *)autolayer->layer2,
+      matrixMultiplication((long double *)autolayer->layer1,
+                           (long double *)autoweights->weight1,
+                           (long double *)autolayer->layer2,
                            1,
                            600,
                            400);
-      reluArray((double *)autolayer->layer2, 1, 400, 0);
+      reluArray((long double *)autolayer->layer2, 1, 400, 0);
 
-      matrixMultiplication((double *)autolayer->layer2,
-                           (double *)decodeweights->weight2,
-                           (double *)decodelayer->layer3,
+      matrixMultiplication((long double *)autolayer->layer2,
+                           (long double *)decodeweights->weight2,
+                           (long double *)decodelayer->layer3,
                            1,
                            400,
                            600);
-      reluArray((double *)decodelayer->layer3, 1, 600, 0);
+      reluArray((long double *)decodelayer->layer3, 1, 600, 0);
 
-      matrixMultiplication((double *)decodelayer->layer3,
-                           (double *)decodeweights->weight3,
-                           (double *)decodelayer->output,
+      matrixMultiplication((long double *)decodelayer->layer3,
+                           (long double *)decodeweights->weight3,
+                           (long double *)decodelayer->output,
                            1,
                            600,
                            773);
-      reluArray((double *)decodelayer->output, 1, 773, 0);
+      reluArray((long double *)decodelayer->output, 1, 773, 0);
     }
 
   // foward prop at stage 3
   if (stage == 3)
     {
-      matrixMultiplication((double *)autolayer->input,
-                           (double *)autoweights->weight0,
-                           (double *)autolayer->layer1,
+      matrixMultiplication((long double *)autolayer->input,
+                           (long double *)autoweights->weight0,
+                           (long double *)autolayer->layer1,
                            1,
                            773,
                            600);
-      reluArray((double *)autolayer->layer1, 1, 600, 0);
+      reluArray((long double *)autolayer->layer1, 1, 600, 0);
 
-      matrixMultiplication((double *)autolayer->layer1,
-                           (double *)autoweights->weight1,
-                           (double *)autolayer->layer2,
+      matrixMultiplication((long double *)autolayer->layer1,
+                           (long double *)autoweights->weight1,
+                           (long double *)autolayer->layer2,
                            1,
                            600,
                            400);
-      reluArray((double *)autolayer->layer2, 1, 400, 0);
+      reluArray((long double *)autolayer->layer2, 1, 400, 0);
 
-      matrixMultiplication((double *)autolayer->layer2,
-                           (double *)autoweights->weight2,
-                           (double *)autolayer->layer3,
+      matrixMultiplication((long double *)autolayer->layer2,
+                           (long double *)autoweights->weight2,
+                           (long double *)autolayer->layer3,
                            1,
                            400,
                            200);
-      reluArray((double *)autolayer->layer3, 1, 200, 0);
+      reluArray((long double *)autolayer->layer3, 1, 200, 0);
 
-      matrixMultiplication((double *)autolayer->layer3,
-                           (double *)decodeweights->weight1,
-                           (double *)decodelayer->layer2,
+      matrixMultiplication((long double *)autolayer->layer3,
+                           (long double *)decodeweights->weight1,
+                           (long double *)decodelayer->layer2,
                            1,
                            200,
                            400);
-      reluArray((double *)decodelayer->layer2, 1, 400, 0);
+      reluArray((long double *)decodelayer->layer2, 1, 400, 0);
 
-      matrixMultiplication((double *)decodelayer->layer2,
-                           (double *)decodeweights->weight2,
-                           (double *)decodelayer->layer3,
+      matrixMultiplication((long double *)decodelayer->layer2,
+                           (long double *)decodeweights->weight2,
+                           (long double *)decodelayer->layer3,
                            1,
                            400,
                            600);
-      reluArray((double *)decodelayer->layer3, 1, 600, 0);
+      reluArray((long double *)decodelayer->layer3, 1, 600, 0);
 
-      matrixMultiplication((double *)decodelayer->layer3,
-                           (double *)decodeweights->weight3,
-                           (double *)decodelayer->output,
+      matrixMultiplication((long double *)decodelayer->layer3,
+                           (long double *)decodeweights->weight3,
+                           (long double *)decodelayer->output,
                            1,
                            600,
                            773);
-      reluArray((double *)decodelayer->output, 1, 773, 0);
+      reluArray((long double *)decodelayer->output, 1, 773, 0);
     }
 
   // foward prop at stage 4
   if (stage == 4)
     {
-      matrixMultiplication((double *)autolayer->input,
-                           (double *)autoweights->weight0,
-                           (double *)autolayer->layer1,
+      matrixMultiplication((long double *)autolayer->input,
+                           (long double *)autoweights->weight0,
+                           (long double *)autolayer->layer1,
                            1,
                            773,
                            600);
-      reluArray((double *)autolayer->layer1, 1, 600, 0);
+      reluArray((long double *)autolayer->layer1, 1, 600, 0);
 
-      matrixMultiplication((double *)autolayer->layer1,
-                           (double *)autoweights->weight1,
-                           (double *)autolayer->layer2,
+      matrixMultiplication((long double *)autolayer->layer1,
+                           (long double *)autoweights->weight1,
+                           (long double *)autolayer->layer2,
                            1,
                            600,
                            400);
-      reluArray((double *)autolayer->layer2, 1, 400, 0);
+      reluArray((long double *)autolayer->layer2, 1, 400, 0);
 
-      matrixMultiplication((double *)autolayer->layer2,
-                           (double *)autoweights->weight2,
-                           (double *)autolayer->layer3,
+      matrixMultiplication((long double *)autolayer->layer2,
+                           (long double *)autoweights->weight2,
+                           (long double *)autolayer->layer3,
                            1,
                            400,
                            200);
-      reluArray((double *)autolayer->layer3, 1, 200, 0);
+      reluArray((long double *)autolayer->layer3, 1, 200, 0);
 
-      matrixMultiplication((double *)autolayer->layer3,
-                           (double *)autoweights->weight3,
-                           (double *)autolayer->output,
+      matrixMultiplication((long double *)autolayer->layer3,
+                           (long double *)autoweights->weight3,
+                           (long double *)autolayer->output,
                            1,
                            200,
                            100);
-      reluArray((double *)autolayer->output, 1, 100, 0);
+      reluArray((long double *)autolayer->output, 1, 100, 0);
 
-      matrixMultiplication((double *)autolayer->output,
-                           (double *)decodeweights->weight0,
-                           (double *)decodelayer->layer1,
+      matrixMultiplication((long double *)autolayer->output,
+                           (long double *)decodeweights->weight0,
+                           (long double *)decodelayer->layer1,
                            1,
                            100,
                            200);
-      reluArray((double *)decodelayer->layer1, 1, 200, 0);
+      reluArray((long double *)decodelayer->layer1, 1, 200, 0);
 
-      matrixMultiplication((double *)decodelayer->layer1,
-                           (double *)decodeweights->weight1,
-                           (double *)decodelayer->layer2,
+      matrixMultiplication((long double *)decodelayer->layer1,
+                           (long double *)decodeweights->weight1,
+                           (long double *)decodelayer->layer2,
                            1,
                            200,
                            400);
-      reluArray((double *)decodelayer->layer2, 1, 400, 0);
+      reluArray((long double *)decodelayer->layer2, 1, 400, 0);
 
-      matrixMultiplication((double *)decodelayer->layer2,
-                           (double *)decodeweights->weight2,
-                           (double *)decodelayer->layer3,
+      matrixMultiplication((long double *)decodelayer->layer2,
+                           (long double *)decodeweights->weight2,
+                           (long double *)decodelayer->layer3,
                            1,
                            400,
                            600);
-      reluArray((double *)decodelayer->layer3, 1, 600, 0);
+      reluArray((long double *)decodelayer->layer3, 1, 600, 0);
 
-      matrixMultiplication((double *)decodelayer->layer3,
-                           (double *)decodeweights->weight3,
-                           (double *)decodelayer->output,
+      matrixMultiplication((long double *)decodelayer->layer3,
+                           (long double *)decodeweights->weight3,
+                           (long double *)decodelayer->output,
                            1,
                            600,
                            773);
-      reluArray((double *)decodelayer->output, 1, 773, 0);
+      reluArray((long double *)decodelayer->output, 1, 773, 0);
     }
 }
 
-void randReluArray(double *A, int m, int n, int f)
+void randReluArray(long double *A, int m, int n, int f)
 {
   int i, j;
   for (i = 0; i < m; ++i)
@@ -481,35 +481,35 @@ void backpropAutoN(AUTOW *  autoweights,
 {
     if(stage == 1)
     {
-        double totalerror[1][773];
-        double outputdelta[1][773];
-        double weight3T[773][600];
+        long double totalerror[1][773];
+        long double outputdelta[1][773];
+        long double weight3T[773][600];
 
-        double layer1E[1][600];
-        double layer1delta[1][600];
-        double inputT[773][1];
-        double layer1T[600][1];
+        long double layer1E[1][600];
+        long double layer1delta[1][600];
+        long double inputT[773][1];
+        long double layer1T[600][1];
         
-        autoencoderE((double *) autolayer->input, (double *) decodelayer->output);
+        autoencoderE((long double *) autolayer->input, (long double *) decodelayer->output);
 
-        matrixSubtraction((double *) autolayer->input, (double *) decodelayer->output, (double *) totalerror, 1, 773);
-        matrixDelta((double *) totalerror, (double *) decodelayer->output, (double *) outputdelta, 1, 773);
+        matrixSubtraction((long double *) autolayer->input, (long double *) decodelayer->output, (long double *) totalerror, 1, 773);
+        matrixDelta((long double *) totalerror, (long double *) decodelayer->output, (long double *) outputdelta, 1, 773);
 
         
-        TMatrix((double *) decodeweights->weight3, (double *) weight3T, 600, 773);
-        matrixMultiplication((double *) outputdelta, (double *) weight3T, (double *) layer1E, 1, 773,600);
+        TMatrix((long double *) decodeweights->weight3, (long double *) weight3T, 600, 773);
+        matrixMultiplication((long double *) outputdelta, (long double *) weight3T, (long double *) layer1E, 1, 773,600);
 
         //not yet tested pass here
-        matrixDelta((double *) layer1E, (double *) autolayer->layer1, (double *) layer1delta, 1, 600);
-        TMatrix((double *) autolayer->layer1, (double *) layer1T, 1, 600);
-        TMatrix((double *) autolayer->input, (double *) inputT, 1, 773);
+        matrixDelta((long double *) layer1E, (long double *) autolayer->layer1, (long double *) layer1delta, 1, 600);
+        TMatrix((long double *) autolayer->layer1, (long double *) layer1T, 1, 600);
+        TMatrix((long double *) autolayer->input, (long double *) inputT, 1, 773);
 
         //calucalate the weights 
-        matrixMultiplication((double *) layer1T, (double *) outputdelta, (double *) decodegrad->weight3, 600, 1, 773);
-        matrixMultiplication((double *) inputT, (double *) layer1delta, (double *) autograd->weight0, 773, 1, 600);
+        matrixMultiplication((long double *) layer1T, (long double *) outputdelta, (long double *) decodegrad->weight3, 600, 1, 773);
+        matrixMultiplication((long double *) inputT, (long double *) layer1delta, (long double *) autograd->weight0, 773, 1, 600);
 
-        //printMatrix((double *) decodegrad->weight3, 600, 773);
-        printMatrix((double *) layer1E, 1, 600);
+        //printMatrix((long double *) decodegrad->weight3, 600, 773);
+        printMatrix((long double *) layer1E, 1, 600);
                
     }
 
