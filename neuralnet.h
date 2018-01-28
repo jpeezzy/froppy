@@ -1,10 +1,10 @@
 #ifndef NEURALNET_H
 #define NEURALNET_H
 
-extern float eta;
-extern float epsilon;
-extern float beta1;
-extern float beta2;
+extern double eta;
+extern double epsilon;
+extern double beta1;
+extern double beta2;
 
 typedef struct AUTOENCODERWEIGHTS AUTOW;
 typedef struct DECODERWEIGHTS     DECODEW;
@@ -14,39 +14,39 @@ typedef struct DECODERLAYER       DECODEL;
 // Struct for the auto encoder weight information
 struct AUTOENCODERWEIGHTS
 {
-  float weight0[773][600];
-  float weight1[600][400];
-  float weight2[400][200];
-  float weight3[200][100];
+  double weight0[773][600];
+  double weight1[600][400];
+  double weight2[400][200];
+  double weight3[200][100];
 };
 
 // Struct for auto encoder layers
 struct AUTOENCODERLAYER
 {
-  float input[1][773];
-  float layer1[1][600];
-  float layer2[1][400];
-  float layer3[1][200];
-  float output[1][100];
+  double input[1][773];
+  double layer1[1][600];
+  double layer2[1][400];
+  double layer3[1][200];
+  double output[1][100];
 };
 
 // Struct for the auto encode weight information
 struct DECODERWEIGHTS
 {
-  float weight0[100][200];
-  float weight1[200][400];
-  float weight2[400][600];
-  float weight3[600][773];
+  double weight0[100][200];
+  double weight1[200][400];
+  double weight2[400][600];
+  double weight3[600][773];
 };
 
 // Struct for the decoder layers
 struct DECODERLAYER
 {
   // input of decoder is the output of the autoencoder
-  float layer1[1][200];
-  float layer2[1][400];
-  float layer3[1][600];
-  float output[1][773];
+  double layer1[1][200];
+  double layer2[1][400];
+  double layer3[1][600];
+  double output[1][773];
 };
 
 AUTOW *  createAutoW(void);
@@ -80,22 +80,22 @@ void backpropAutoN(AUTOW *  autoweights,
                   int      stage);
 
 // RELU Activation
-float reluActivation(float x, int flag);
+double reluActivation(double x, int flag);
 
 // Tanh Activation
-float tanhActivation(float x, int flag);
+double tanhActivation(double x, int flag);
 
 // Apply Activation Function on an array
-void tanhArray(float *array, int m, int n, int flag);
+void tanhArray(double *array, int m, int n, int flag);
 
 // Apply Activation Function on an array
-void reluArray(float *array, int m, int n, int flag);
+void reluArray(double *array, int m, int n, int flag);
 
 // nadam update
-void nadam(float *w, float *g, float *m, float *v, int t);
+void nadam(double *w, double *g, double *m, double *v, int t);
 
 // nadam on an a array
-void nadamArray(float *W, float *G, float *M, float *V, int m, int n, int t);
+void nadamArray(double *W, double *G, double *M, double *V, int m, int n, int t);
 
 // nadam optimzation algorithm
 void nadamAuto(AUTOW *  autoweights,
@@ -110,6 +110,6 @@ void nadamAuto(AUTOW *  autoweights,
                int      stage);
 
 // intialize the relu
-void randReluArray(float *A, int m, int n, int f);
+void randReluArray(double *A, int m, int n, int f);
 
 #endif

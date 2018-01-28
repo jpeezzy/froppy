@@ -4,7 +4,7 @@
 #include <assert.h>
 #include "matrix.h"
 
-void matrixMultiplication(float *h_a, float *h_b, float *h_result, int m, int n, int k) 
+void matrixMultiplication(double *h_a, double *h_b, double *h_result, int m, int n, int k) 
 {
 	int	tid, nthreads, chunk;
 	tid = nthreads = chunk = 0;
@@ -33,7 +33,7 @@ void matrixMultiplication(float *h_a, float *h_b, float *h_result, int m, int n,
 	}
 } 
 
-void printMatrix(float *C, int M, int N)
+void printMatrix(double *C, int M, int N)
 {
 	assert(C);
 	for(int i = 0; i < M; i++)
@@ -46,9 +46,9 @@ void printMatrix(float *C, int M, int N)
 	}
 }
 
-float *transposeMatrix(float *matrix, int row, int column)
+double *transposeMatrix(double *matrix, int row, int column)
 {
-	float* temp = (float*)malloc(column*row*sizeof(float*));
+	double* temp = (double*)malloc(column*row*sizeof(double*));
 	
 	int	tid, nthreads, chunk;
 	tid = nthreads = chunk = 0;
@@ -74,7 +74,7 @@ float *transposeMatrix(float *matrix, int row, int column)
 	return temp;
 }
 
-void combine3Matrix(float*a, float*b,float*c, float*combine, int rowa, int rowb, int rowc)
+void combine3Matrix(double*a, double*b,double*c, double*combine, int rowa, int rowb, int rowc)
 {
 	assert(a); assert(b); assert(c); assert(combine);
 	if(sizeof(combine) < (sizeof(a)+ sizeof(b) + sizeof(c)))

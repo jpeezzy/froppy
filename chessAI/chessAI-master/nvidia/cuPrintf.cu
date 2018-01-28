@@ -302,7 +302,7 @@ __device__ static char *cuPrintfStrncpy(char *dest, const char *src, int n, char
 //  string I can't think of one.
 //
 //  The length of the data type is inserted at the beginning (so that
-//  the display can distinguish between float and double), and the
+//  the display can distinguish between double and double), and the
 //  pointer to the end of the entry is returned.
 //
 __device__ static char *copyArg(char *ptr, const char *arg, char *end)
@@ -622,8 +622,8 @@ static int outputPrintfData(char *fmt, char *data)
             case 'G':
             case 'a':
             case 'A':
-                if(arglen == 4)     // Float vs. Double thing
-                    fprintf(printf_fp, format, *((float *)data));
+                if(arglen == 4)     // double vs. Double thing
+                    fprintf(printf_fp, format, *((double *)data));
                 else
                     fprintf(printf_fp, format, *((double *)data));
                 break;

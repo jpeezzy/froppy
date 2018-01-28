@@ -32,8 +32,8 @@ int main()
   dm = malloc(sizeof(DECODEW));
   dv = malloc(sizeof(AUTOW));
   // Intialize the weights
-  randReluArray((float *)aw->weight0, 773, 600, 773);
-  randReluArray((float *)dw->weight3, 600, 773, 600);
+  randReluArray((double *)aw->weight0, 773, 600, 773);
+  randReluArray((double *)dw->weight3, 600, 773, 600);
   int yy, xx;
   for (yy = 0; yy < 773; ++yy)
     {
@@ -47,7 +47,7 @@ int main()
     }
 
   // load the data in
-  float     vect[1][773];
+  double     vect[1][773];
   DATABASE *dataB;
   dataB = createDataB();
   assert(dataB);
@@ -58,7 +58,7 @@ int main()
   readFenfile((FILE *)che, dataB);
   printf("Finished reading fen file che! \n");
   move = pickRandMove(dataB);
-  boardToVector(&move, (float *)vect);
+  boardToVector(&move, (double *)vect);
   int t = 0;
   int i;
   for (int i = 0; i < 773; ++i)
@@ -83,7 +83,7 @@ int main()
       nadamAuto(aw, dw, ag, dg, am, av, dm, dv, t, 1);
       t    = t + 1;
       move = pickRandMove(dataB);
-      boardToVector(&move, (float *)vect);
+      boardToVector(&move, (double *)vect);
 #ifdef DEBUG
       //printf("finished one move\n");
 #endif

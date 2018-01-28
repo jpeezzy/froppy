@@ -6,7 +6,7 @@
 #include "neuralnet.h"
 
 /* Standard RelU */
-float reluActivation(float x, int flag)
+double reluActivation(double x, int flag)
 {   if(flag == 0)
     {
         if( x > 0)
@@ -32,7 +32,7 @@ float reluActivation(float x, int flag)
 }
 
 /* tanh function */
-float tanhActivation(float x, int flag)
+double tanhActivation(double x, int flag)
 {
     if(flag == 0)
     {
@@ -45,7 +45,7 @@ float tanhActivation(float x, int flag)
 }
 
 /*Applay RElU to array*/
-void reluArray(float *A, int m, int n, int flag)
+void reluArray(double *A, int m, int n, int flag)
 {
     int i,j;
     for(i = 0; i < m; ++i)
@@ -58,7 +58,7 @@ void reluArray(float *A, int m, int n, int flag)
 }
 
 /* apply tanh function to an Array */
-void tanhArray(float *A, int m, int n, int flag)
+void tanhArray(double *A, int m, int n, int flag)
 {
     int i,j;
     for(i = 0; i < m; ++i)
@@ -70,7 +70,7 @@ void tanhArray(float *A, int m, int n, int flag)
     }
 }
 
-void nadamArray( float *W, float *V, float *M, float *G, int m, int n, int t)
+void nadamArray( double *W, double *V, double *M, double *G, int m, int n, int t)
 {
     int i,j;
     for(i = 0; i < m; ++i)
@@ -84,10 +84,10 @@ void nadamArray( float *W, float *V, float *M, float *G, int m, int n, int t)
     t = t+1;
 }
 
-void nadam(float *w, float *v, float *m, float *g, int t)
+void nadam(double *w, double *v, double *m, double *g, int t)
 {
     /*maybe this should be global for a speed increase?*/
-    float b1 = .9, b2 = .999, e = pow(10,-8), eta = .001;
+    double b1 = .9, b2 = .999, e = pow(10,-8), eta = .001;
     
     /* Update the Momentum and Variance Vectors */
     /*m = m*b1 + (1-b1)*g;
@@ -100,7 +100,7 @@ void nadam(float *w, float *v, float *m, float *g, int t)
 /* only used once to intialize the weights*/
 /* also on the the to do list get a better random number generater*/
 /* Xavier Intialization */
-void intializetanh(float *A, int m, int n, int f)
+void intializetanh(double *A, int m, int n, int f)
 {
     int i,j;
     srand(time(NULL));
@@ -114,7 +114,7 @@ void intializetanh(float *A, int m, int n, int f)
     }
 }
 
-void intializerelu(float *A, int m, int n, int f)
+void intializerelu(double *A, int m, int n, int f)
 {
     int i,j;
     srand(time(NULL));

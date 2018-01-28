@@ -7,9 +7,9 @@
 
 int main()
 {
-    float a[600][773];
-    float b[773][1];
-    float c[600][1];
+    double a[600][773];
+    double b[773][1];
+    double c[600][1];
     srand(time(NULL));
 
     int i,j;
@@ -24,7 +24,7 @@ int main()
     }
     printf("\narrays intialized");
 
-    matrixMultiplication((float *) a, (float *) b, (float *) c, 600, 773,1);
+    matrixMultiplication((double *) a, (double *) b, (double *) c, 600, 773,1);
 
 
 

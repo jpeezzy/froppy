@@ -894,9 +894,9 @@ int main(void)
 {
     FILE* allFiles = fopen("test.txt", "w");
     char  buffer[100];
-    float data[2][5] = {{5.4, 3.8, 9.5, 8.55555, 9.12312321},
+    double data[2][5] = {{5.4, 3.8, 9.5, 8.55555, 9.12312321},
                         {9, 10, 5, 4.5, 2.3}};
-    float received[2][5];
+    double received[2][5];
     for (int i = 0; i < 2; ++i)
         {
             for (int j = 0; j < 5; ++j)
