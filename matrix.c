@@ -25,11 +25,17 @@ void matrixMultiplication(double *h_a, double *h_b, double *h_result, int m, int
 			{
 				for (int j = 0; j < k; ++j) 
 				{
+                    double temp = 0.0;
 					for (int h = 0; h < n; ++h) 
-					{
-						
-						h_result[i * k + j] += h_a[i * n + h] * h_b[h * k + j];
+					{	
+						temp += h_a[i * n + h] * h_b[h * k + j];
+                        if(temp != temp)
+                        {
+                            temp = 0.0;
+                            printf("\n nan");
+                        }
 					}
+                    h_result[i*k+j] = temp;
 				}
 			}
 	}
@@ -42,6 +48,10 @@ void printMatrix(double *C, int M, int N)
 	{
 		for(int j = 0; j < N; j++)
 		{
+            if(C[i*N+j] != C[i*N+j])
+            {
+                printf("\n nandetected");
+            }
 			printf("%f ", *((C+i*N) + j));
 		}
 		printf("\n");
@@ -202,9 +212,10 @@ void matrixDelta(double *e, double *layer, double *delta, int m, int n)
 	#pragma omp for schedule(static, chunk)
 			for (int i = 0; i < m; ++i) 
 			{
+                
 				for (int j = 0; j < n; ++j) 
 				{
-				    delta[i*n+j] = e[i*n+j] * reluActivation(layer[i*n+j],1);
+				    delta[i*n+j]  = e[i*n+j] * reluActivation(layer[i*n+j],1);
 				}
 			}
 	}

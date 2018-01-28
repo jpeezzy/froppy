@@ -43,7 +43,7 @@ double reluActivation(double x, int flag)
         }
       else
         {
-          return 0.0;
+          return 0.01 * x;
         }
     }
   else if (flag == 1)
@@ -54,7 +54,7 @@ double reluActivation(double x, int flag)
         }
       else
         {
-          return 0.0;
+          return 0.01;
         }
     }
   return 10;
@@ -466,7 +466,7 @@ void randReluArray(double *A, int m, int n, int f)
     {
       for (j = 0; j < n; ++j)
         {
-          A[i * n + j] = randGen() * (sqrt(6.0) / f);
+          A[i * n + j] = randGen() * .01;
         }
     }
 }
@@ -509,7 +509,7 @@ void backpropAutoN(AUTOW *  autoweights,
         matrixMultiplication((double *) inputT, (double *) layer1delta, (double *) autograd->weight0, 773, 1, 600);
 
         //printMatrix((double *) decodegrad->weight3, 600, 773);
-        printMatrix((double *) layer1E, 1, 600);
+        //printMatrix((double *) layer1delta, 1, 600);
                
     }
 
