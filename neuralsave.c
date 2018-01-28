@@ -473,7 +473,7 @@ void LoadNN(AUTOW*   aw,
             for (int j = 0; j < 600; ++j)
                 {
                     sscanf(fgets(buffer, 100, fileList[0]),
-                           "%f",
+                           "%lf",
                            &(aw->weight0[i][j]));
                 }
         }
@@ -483,7 +483,7 @@ void LoadNN(AUTOW*   aw,
             for (int j = 0; j < 400; ++j)
                 {
                     sscanf(fgets(buffer, 100, fileList[0]),
-                           "%f",
+                           "%lf",
                            &(aw->weight1[i][j]));
                 }
         }
@@ -493,7 +493,7 @@ void LoadNN(AUTOW*   aw,
             for (int j = 0; j < 200; ++j)
                 {
                     sscanf(fgets(buffer, 100, fileList[0]),
-                           "%f",
+                           "%lf",
                            &(aw->weight2[i][j]));
                 }
         }
@@ -503,7 +503,7 @@ void LoadNN(AUTOW*   aw,
             for (int j = 0; j < 100; ++j)
                 {
                     sscanf(fgets(buffer, 100, fileList[0]),
-                           "%f",
+                           "%lf",
                            &(aw->weight3[i][j]));
                 }
         }
@@ -514,7 +514,7 @@ void LoadNN(AUTOW*   aw,
             for (int j = 0; j < 773; ++j)
                 {
                     sscanf(fgets(buffer, 100, fileList[1]),
-                           "%f",
+                           "%lf",
                            &(al->input[i][j]));
                 }
         }
@@ -524,7 +524,7 @@ void LoadNN(AUTOW*   aw,
             for (int j = 0; j < 600; ++j)
                 {
                     sscanf(fgets(buffer, 100, fileList[1]),
-                           "%f",
+                           "%lf",
                            &(al->layer1[i][j]));
                 }
         }
@@ -534,7 +534,7 @@ void LoadNN(AUTOW*   aw,
             for (int j = 0; j < 400; ++j)
                 {
                     sscanf(fgets(buffer, 100, fileList[1]),
-                           "%f",
+                           "%lf",
                            &(al->layer2[i][j]));
                 }
         }
@@ -544,7 +544,7 @@ void LoadNN(AUTOW*   aw,
             for (int j = 0; j < 200; ++j)
                 {
                     sscanf(fgets(buffer, 100, fileList[1]),
-                           "%f",
+                           "%lf",
                            &(al->layer3[i][j]));
                 }
         }
@@ -554,7 +554,7 @@ void LoadNN(AUTOW*   aw,
             for (int j = 0; j < 100; ++j)
                 {
                     sscanf(fgets(buffer, 100, fileList[1]),
-                           "%f",
+                           "%lf",
                            &(al->output[i][j]));
                 }
         }
@@ -565,7 +565,7 @@ void LoadNN(AUTOW*   aw,
             for (int j = 0; j < 200; ++j)
                 {
                     sscanf(fgets(buffer, 100, fileList[2]),
-                           "%f",
+                           "%lf",
                            &(dw->weight0[i][j]));
                 }
         }
@@ -575,7 +575,7 @@ void LoadNN(AUTOW*   aw,
             for (int j = 0; j < 400; ++j)
                 {
                     sscanf(fgets(buffer, 100, fileList[2]),
-                           "%f",
+                           "%lf",
                            &(dw->weight1[i][j]));
                 }
         }
@@ -585,7 +585,7 @@ void LoadNN(AUTOW*   aw,
             for (int j = 0; j < 600; ++j)
                 {
                     sscanf(fgets(buffer, 100, fileList[2]),
-                           "%f",
+                           "%lf",
                            &(dw->weight2[i][j]));
                 }
         }
@@ -595,7 +595,7 @@ void LoadNN(AUTOW*   aw,
             for (int j = 0; j < 773; ++j)
                 {
                     sscanf(fgets(buffer, 100, fileList[2]),
-                           "%f",
+                           "%lf",
                            &(dw->weight3[i][j]));
                 }
         }
@@ -606,7 +606,7 @@ void LoadNN(AUTOW*   aw,
             for (int j = 0; j < 200; ++j)
                 {
                     sscanf(fgets(buffer, 100, fileList[3]),
-                           "%f",
+                           "%lf",
                            &(dl->layer1[i][j]));
                 }
         }
@@ -616,7 +616,7 @@ void LoadNN(AUTOW*   aw,
             for (int j = 0; j < 400; ++j)
                 {
                     sscanf(fgets(buffer, 100, fileList[3]),
-                           "%f",
+                           "%lf",
                            &(dl->layer2[i][j]));
                 }
         }
@@ -626,7 +626,7 @@ void LoadNN(AUTOW*   aw,
             for (int j = 0; j < 600; ++j)
                 {
                     sscanf(fgets(buffer, 100, fileList[3]),
-                           "%f",
+                           "%lf",
                            &(dl->layer3[i][j]));
                 }
         }
@@ -636,8 +636,8 @@ void LoadNN(AUTOW*   aw,
             for (int j = 0; j < 773; ++j)
                 {
                     sscanf(fgets(buffer, 100, fileList[3]),
-                           "%f",
-                           &(dl->layer4[i][j]));
+                           "%lf",
+                           &(dl->output[i][j]));
                 }
         }
 
@@ -647,7 +647,7 @@ void LoadNN(AUTOW*   aw,
             for (int j = 0; j < 600; ++j)
                 {
                     sscanf(fgets(buffer, 100, fileList[4]),
-                           "%f",
+                           "%lf",
                            &(ag->weight0[i][j]));
                 }
         }
@@ -657,7 +657,7 @@ void LoadNN(AUTOW*   aw,
             for (int j = 0; j < 400; ++j)
                 {
                     sscanf(fgets(buffer, 100, fileList[4]),
-                           "%f",
+                           "%lf",
                            &(ag->weight1[i][j]));
                 }
         }
@@ -667,7 +667,7 @@ void LoadNN(AUTOW*   aw,
             for (int j = 0; j < 200; ++j)
                 {
                     sscanf(fgets(buffer, 100, fileList[4]),
-                           "%f",
+                           "%lf",
                            &(ag->weight2[i][j]));
                 }
         }
@@ -677,7 +677,7 @@ void LoadNN(AUTOW*   aw,
             for (int j = 0; j < 100; ++j)
                 {
                     sscanf(fgets(buffer, 100, fileList[4]),
-                           "%f",
+                           "%lf",
                            &(ag->weight3[i][j]));
                 }
         }
@@ -688,7 +688,7 @@ void LoadNN(AUTOW*   aw,
             for (int j = 0; j < 200; ++j)
                 {
                     sscanf(fgets(buffer, 100, fileList[5]),
-                           "%f",
+                           "%lf",
                            &(dg->weight0[i][j]));
                 }
         }
@@ -698,7 +698,7 @@ void LoadNN(AUTOW*   aw,
             for (int j = 0; j < 400; ++j)
                 {
                     sscanf(fgets(buffer, 100, fileList[5]),
-                           "%f",
+                           "%lf",
                            &(dg->weight1[i][j]));
                 }
         }
@@ -708,7 +708,7 @@ void LoadNN(AUTOW*   aw,
             for (int j = 0; j < 600; ++j)
                 {
                     sscanf(fgets(buffer, 100, fileList[5]),
-                           "%f",
+                           "%lf",
                            &(dg->weight2[i][j]));
                 }
         }
@@ -718,7 +718,7 @@ void LoadNN(AUTOW*   aw,
             for (int j = 0; j < 773; ++j)
                 {
                     sscanf(fgets(buffer, 100, fileList[5]),
-                           "%f",
+                           "%lf",
                            &(dg->weight3[i][j]));
                 }
         }
@@ -729,7 +729,7 @@ void LoadNN(AUTOW*   aw,
             for (int j = 0; j < 600; ++j)
                 {
                     sscanf(fgets(buffer, 100, fileList[6]),
-                           "%f",
+                           "%lf",
                            &(am->weight0[i][j]));
                 }
         }
@@ -739,7 +739,7 @@ void LoadNN(AUTOW*   aw,
             for (int j = 0; j < 400; ++j)
                 {
                     sscanf(fgets(buffer, 100, fileList[6]),
-                           "%f",
+                           "%lf",
                            &(am->weight1[i][j]));
                 }
         }
@@ -749,7 +749,7 @@ void LoadNN(AUTOW*   aw,
             for (int j = 0; j < 200; ++j)
                 {
                     sscanf(fgets(buffer, 100, fileList[6]),
-                           "%f",
+                           "%lf",
                            &(am->weight2[i][j]));
                 }
         }
@@ -759,7 +759,7 @@ void LoadNN(AUTOW*   aw,
             for (int j = 0; j < 100; ++j)
                 {
                     sscanf(fgets(buffer, 100, fileList[6]),
-                           "%f",
+                           "%lf",
                            &(am->weight3[i][j]));
                 }
         }
@@ -770,7 +770,7 @@ void LoadNN(AUTOW*   aw,
             for (int j = 0; j < 600; ++j)
                 {
                     sscanf(fgets(buffer, 100, fileList[7]),
-                           "%f",
+                           "%lf",
                            &(av->weight0[i][j]));
                 }
         }
@@ -780,7 +780,7 @@ void LoadNN(AUTOW*   aw,
             for (int j = 0; j < 400; ++j)
                 {
                     sscanf(fgets(buffer, 100, fileList[7]),
-                           "%f",
+                           "%lf",
                            &(av->weight1[i][j]));
                 }
         }
@@ -790,7 +790,7 @@ void LoadNN(AUTOW*   aw,
             for (int j = 0; j < 200; ++j)
                 {
                     sscanf(fgets(buffer, 100, fileList[7]),
-                           "%f",
+                           "%lf",
                            &(av->weight2[i][j]));
                 }
         }
@@ -800,7 +800,7 @@ void LoadNN(AUTOW*   aw,
             for (int j = 0; j < 100; ++j)
                 {
                     sscanf(fgets(buffer, 100, fileList[7]),
-                           "%f",
+                           "%lf",
                            &(av->weight3[i][j]));
                 }
         }
@@ -812,7 +812,7 @@ void LoadNN(AUTOW*   aw,
             for (int j = 0; j < 200; ++j)
                 {
                     sscanf(fgets(buffer, 100, fileList[8]),
-                           "%f",
+                           "%lf",
                            &(dm->weight0[i][j]));
                 }
         }
@@ -822,7 +822,7 @@ void LoadNN(AUTOW*   aw,
             for (int j = 0; j < 400; ++j)
                 {
                     sscanf(fgets(buffer, 100, fileList[8]),
-                           "%f",
+                           "%lf",
                            &(dm->weight1[i][j]));
                 }
         }
@@ -832,7 +832,7 @@ void LoadNN(AUTOW*   aw,
             for (int j = 0; j < 600; ++j)
                 {
                     sscanf(fgets(buffer, 100, fileList[8]),
-                           "%f",
+                           "%lf",
                            &(dm->weight2[i][j]));
                 }
         }
@@ -842,7 +842,7 @@ void LoadNN(AUTOW*   aw,
             for (int j = 0; j < 773; ++j)
                 {
                     sscanf(fgets(buffer, 100, fileList[8]),
-                           "%f",
+                           "%lf",
                            &(dm->weight3[i][j]));
                 }
         }
@@ -853,7 +853,7 @@ void LoadNN(AUTOW*   aw,
             for (int j = 0; j < 600; ++j)
                 {
                     sscanf(fgets(buffer, 100, fileList[9]),
-                           "%f",
+                           "%lf",
                            &(dv->weight0[i][j]));
                 }
         }
@@ -863,7 +863,7 @@ void LoadNN(AUTOW*   aw,
             for (int j = 0; j < 400; ++j)
                 {
                     sscanf(fgets(buffer, 100, fileList[9]),
-                           "%f",
+                           "%lf",
                            &(dv->weight1[i][j]));
                 }
         }
@@ -873,7 +873,7 @@ void LoadNN(AUTOW*   aw,
             for (int j = 0; j < 200; ++j)
                 {
                     sscanf(fgets(buffer, 100, fileList[9]),
-                           "%f",
+                           "%lf",
                            &(dv->weight2[i][j]));
                 }
         }
@@ -883,7 +883,7 @@ void LoadNN(AUTOW*   aw,
             for (int j = 0; j < 100; ++j)
                 {
                     sscanf(fgets(buffer, 100, fileList[9]),
-                           "%f",
+                           "%lf",
                            &(dv->weight3[i][j]));
                 }
         }
@@ -905,7 +905,7 @@ int main(void)
                     printf(" %f ", data[i][j]);
                     printf("\n");
                 }
-        }
+        } 
     printf("\n");
     fclose(allFiles);
     allFiles = fopen("test.txt", "r");
@@ -913,7 +913,7 @@ int main(void)
         {
             for (int j = 0; j < 5; ++j)
                 {
-                    sscanf(fgets(buffer, 100, allFiles), "%f", &received[i][j]);
+                    sscanf(fgets(buffer, 100, allFiles), "%lf", &received[i][j]);
                 }
         }
     for (int i = 0; i < 2; ++i)
