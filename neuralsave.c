@@ -38,20 +38,26 @@ FILE** createNewset(char* fileName, int mode)
     fscanf(numFile, "%d", &numberofFile);
     // new file will have new serial number to distinguish
     assert(numberofFile);
-    ++numberofFile;
+    if (mode)
+        {
+            ++numberofFile;
 
-    // write new number into the file
+            // write new number into the file
+            fclose(numFile);
+            numFile = fopen(fileName, "w+");
+            fprintf(numFile, "%d", numberofFile);
+
+            // create the directory to be save and move the working directory
+            // there
+            sprintf(tempnum, "%d", numberofFile);
+            mkdir(strcat(dirName, tempnum), 0777);
+            chdir(dirName);
+        }
+    else
+        {
+            sprintf(tempnum, "%d", numberofFile);
+        }
     fclose(numFile);
-    numFile = fopen(fileName, "w+");
-    fprintf(numFile, "%d", numberofFile);
-    fclose(numFile);
-
-    // create the directory to be save and move the working directory there
-    sprintf(tempnum, "%d", numberofFile);
-    mkdir(strcat(dirName, tempnum), 0777);
-    chdir(dirName);
-    fopen("test.txt", "w+");
-
     // make one file handle for every variable that needs to be saved in the
     // neural net
 
@@ -450,22 +456,8 @@ void LoadNN(AUTOW*   aw,
             DECODEW* dm,
             AUTOW*   dv)
 {
-    FILE** fileList  = createNewset("test.txt", 0);
-    int    lineCount = 0;
-    FILE*  temp      = NULL;
+    FILE** fileList = createNewset("auto.txt", 0);
     char   buffer[200];
-    // load the encoder weight
-    // the numbers are read in the order that they were written in
-
-    // for (int i = 0; i < 773; ++i)
-    //     {
-    //         for (int j = 0; j < 600; ++j)
-    //             {
-    //                 sscanf(
-    //                     fgets(buffer, 100, temp), "%f",
-    //                     &(aw->weight0[i][j]));
-    //             }
-    //     }
 
     /***************************EncoderWeights**********************************/
     for (int i = 0; i < 773; ++i)
@@ -892,10 +884,10 @@ void LoadNN(AUTOW*   aw,
 // USED FOR TESTING ONLY
 int main(void)
 {
-    FILE* allFiles = fopen("test.txt", "w");
-    char  buffer[100];
+    FILE*  allFiles = fopen("test.txt", "w");
+    char   buffer[100];
     double data[2][5] = {{5.4, 3.8, 9.5, 8.55555, 9.12312321},
-                        {9, 10, 5, 4.5, 2.3}};
+                         {9, 10, 5, 4.5, 2.3}};
     double received[2][5];
     for (int i = 0; i < 2; ++i)
         {
@@ -905,7 +897,7 @@ int main(void)
                     printf(" %f ", data[i][j]);
                     printf("\n");
                 }
-        } 
+        }
     printf("\n");
     fclose(allFiles);
     allFiles = fopen("test.txt", "r");
@@ -913,7 +905,8 @@ int main(void)
         {
             for (int j = 0; j < 5; ++j)
                 {
-                    sscanf(fgets(buffer, 100, allFiles), "%lf", &received[i][j]);
+                    sscanf(
+                        fgets(buffer, 100, allFiles), "%lf", &received[i][j]);
                 }
         }
     for (int i = 0; i < 2; ++i)
