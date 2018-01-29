@@ -977,6 +977,7 @@ int checkmove(BSTATE *board, int currentlocation, int newlocation)
     mov(temp->boardarray, currentlocation, newlocation);
     int flag = board->sidetomove;
     int result = checkchecker(temp, flag);
+    deleteBstate(temp);
     if( result == 0)
     {
         return 1;
@@ -994,7 +995,7 @@ int checkchecker(BSTATE *board, int flag)
     int s = searchforking(board, flag);
     int kingx = s/8;
     int kingy = s%8;
-    int i;
+    int i,j;
 
     
         //Check along the horizontal lines
@@ -1074,12 +1075,207 @@ int checkchecker(BSTATE *board, int flag)
                 }
             }
         }
+     
+    //horse moves 
+    if(kingx>2 && kingy != 0 && ((board->boardarray[kingx-2][kingy-1])/10 != flag ) && board->boardarray[kingx-2][kingy-1] %10 == 2 )
+    {
+        return 1;
+    }
+    if(kingx<6 && kingy != 0 && ((board->boardarray[kingx+2][kingy-1])/10 != flag ) && board->boardarray[kingx+2][kingy-1] %10 == 2)
+    {
+        return 1;
+    }
+    if(kingx<6 && kingy != 7 && ((board->boardarray[kingx+2][kingy+1])/10 != flag ) && board->boardarray[kingx+2][kingy+1] %10 == 2)
+    {
+        return 1;
+    }
+    if(kingx>2 && kingy != 7 && ((board->boardarray[kingx-2][kingy+1])/10 != flag ) && board->boardarray[kingx-2][kingy+1] %10 == 2)
+    {
+        return 1;
+    }
 
+    if(kingx != 0 && kingy > 2 && ((board->boardarray[kingx-1][kingy-2])/10 != flag ) && board->boardarray[kingx-1][kingy-2] %10 == 2)
+    {
+        return 1;
+    }
+    if(kingx != 0 && kingy < 6 && ((board->boardarray[kingx+1][kingy-2])/10 != flag ) && board->boardarray[kingx+1][kingy-2] %10 == 2)
+    {
+        return 1;
+    }
+    if(kingx != 7 && kingy < 6 && ((board->boardarray[kingx+1][kingy+2])/10 != flag ) && board->boardarray[kingx+1][kingy+2] %10 == 2)
+    {
+        return 1;
+    }
+    if(kingx != 7 && kingy > 2 && ((board->boardarray[kingx-1][kingy+2])/10 != flag ) && board->boardarray[kingx-1][kingy+2] %10 == 2)
+    {
+        return 1;
+    }
+        
 
+    // diagonal
     
-
-
+    // got up to the left
     
+        if(kingx < kingy)
+        {
+            j = kingx;
+        }
+        else
+        {
+            j = kingy;
+        }
+
+        for(i=1; i<=j; ++i)
+        {
+            if( (board->boardarray[kingx-i][kingy-i]/10 == flag) && (board->boardarray[kingx-i][kingy-i] != 0))
+            {
+                return 1;
+            }
+            else if( (board->boardarray[kingx-i][kingy-i]/10 != flag) && (board->boardarray[kingx-i][kingy-i] != 0))
+            {
+                break;
+            }
+            
+        }
+     
+
+    // got up to the right
+    
+        if(kingx < 7 - kingy)
+        {
+            j = kingx;
+        }
+        else
+        {
+            j = 7 - kingy;
+        }
+
+        for(i=1; i<=j; ++i)
+        {
+            if( (board->boardarray[kingx-i][kingy+i]/10 != flag) && (board->boardarray[kingx-i][kingy+i] != 0))
+            {
+                return 1;
+            }
+            else if( (board->boardarray[kingx-i][kingy+i]/10 == flag) && (board->boardarray[kingx-i][kingy+i] != 0))
+            {
+                break;
+            }
+        }
+     
+
+    // go down to the right
+    
+        if(7-kingx < 7 - kingy)
+        {
+            j = 7 - kingx;
+        }
+        else
+        {
+            j = 7 - kingy;
+        }
+
+        for(i=1; i<=j; ++i)
+        {
+            if( (board->boardarray[kingx+i][kingy+i]/10 != flag) && (board->boardarray[kingx+i][kingy+i] != 0))
+            {
+                return 1;
+                
+            }
+            else if( (board->boardarray[kingx+i][kingy+i]/10 == flag) && (board->boardarray[kingx+i][kingy+i] != 0))
+            {
+                break;
+            }
+        }
+     
+
+    // go down to the left
+    
+        if(7-kingx <  kingy)
+        {
+            j = 7- kingx;
+        }
+        else
+        {
+            j = kingy;
+        }
+
+        for(i=1; i<=j; ++i)
+        {
+            if( (board->boardarray[kingx+i][kingy-i]/10 != flag) && (board->boardarray[kingx+i][kingy-i] != 0))
+            {
+                return 1;
+            }
+            else if( (board->boardarray[kingx+i][kingy-i]/10 == flag) && (board->boardarray[kingx+i][kingy-i] != 0))
+            {
+                break;
+            }
+        }
+     
+
+     
+        //pawn check
+        
+        //for white king
+        if(flag == 0)
+        {
+            if(kingx != 0)
+            {
+                //left
+                if(kingy > 0)
+                {
+                    if(board->boardarray[kingx-1][kingy-1]/10 != flag && board->boardarray[kingx-1][kingy-1] != 0)
+                    {
+                        if(board->boardarray[kingx-1][kingy-1]%10 == 1)
+                        {
+                            return 1;
+                        }
+                    }
+                }
+                //right
+                if(kingy < 7)
+                {
+                    if(board->boardarray[kingx-1][kingy+1]/10 != flag && board->boardarray[kingx-1][kingy+1] != 0)
+                    {
+                        if(board->boardarray[kingx-1][kingy+1]%10 == 1)
+                        {
+                            return 1;
+                        }
+                    }
+                }
+
+            }
+        }
+        
+        //for black king
+        if(flag == 1)
+        {
+            if(kingx != 0)
+            {
+                //left
+                if(kingy > 0)
+                {
+                    if(board->boardarray[kingx+1][kingy-1]/10 != flag && board->boardarray[kingx+1][kingy-1] != 0)
+                    {
+                        if(board->boardarray[kingx+1][kingy-1]%10 == 1)
+                        {
+                            return 1;
+                        }
+                    }
+                }
+                //right
+                if(kingy < 7)
+                {
+                    if(board->boardarray[kingx+1][kingy+1]/10 != flag && board->boardarray[kingx+1][kingy+1] != 0)
+                    {
+                        if(board->boardarray[kingx+1][kingy+1]%10 == 1)
+                        {
+                            return 1;
+                        }
+                    }
+                }
+
+            }
+        }
 
 
     return 0;
