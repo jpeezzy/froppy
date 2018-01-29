@@ -35,7 +35,11 @@ matrixTest.o: matrixTest.c matrix.h neuralnet.h
 MT: matrixTest.o matrix.o neuralnet.o randGen.o
 	$(CC) $(CFLAGS) matrixTest.o matrix.o neuralnet.o randGen.o -o MT -lm
 
+ChessGUI.o: ChessGUI.h ChessGUI.c
+	gcc -Wall -ansi -std=c99 -lSDL ChessGUI.c -g -c -o ChessGUI.o
 
+ChessGUI: ChessGUI.o main.c
+	gcc -Wall -ansi -std=c99 -lSDL main.c ChessGUI.o -g -o ChessGUI
 
 clean:
 	rm -f *o
