@@ -23,4 +23,7 @@ void deleteBstate(BSTATE *board);
 // This will load the start of the game to the inputted board
 void loadStart(BSTATE *currentboard);
 
+//This will copy the board to another board
+void copyBstate(BSTATE *old, BSTATE *new);
+
 #endif
