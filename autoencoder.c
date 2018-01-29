@@ -84,15 +84,15 @@ int main()
 
     int t = 1;
     int epochs, stagenum, iter;
-    int batch = 200, bint;
+    int batch = 100, bint;
 
     //this is where the training starts
     for(stagenum = 1; stagenum <= 4; ++stagenum)
     {   
         t = 1;
-        for (epochs = 0; epochs < 200; ++epochs)
+        for (epochs = 0; epochs < 1; ++epochs)
         {
-            for(iter=0; iter<10000; ++iter)
+            for(iter=0; iter<1; ++iter)
             {   
                 
                 for(bint = 0; bint < batch; ++bint)
