@@ -20,7 +20,7 @@ neuralnet.o: neuralnet.c neuralnet.h matrix.h randGen.h
 openMP_backprop.o: openMP_backprop.c openMP_backprop.h matrix.h neuralnet.h
 	$(CC) $(CFLAGS) -c openMP_backprop.c -o openMP_backprop.o $(MATH)
 
-dataEntry.o: dataEntry.c dataEntry.h fenToBoardState.h
+dataEntry.o: dataEntry.c dataEntry.h fenToBoardState.h dataEntry.h
 	$(CC) $(CFLAGS) -c dataEntry.c -o dataEntry.o $(MATH)
 
 autoencoder.o: autoencoder.c matrix.h fenToBoardState.h boardToVector.h neuralnet.h openMP_backprop.h dataEntry.h database.h randGen.h

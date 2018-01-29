@@ -1,0 +1,8 @@
+{
+    "files.associations": {
+        "*.cu": "c",
+        "randgen.h": "c",
+        "dataentry.h": "c",
+        "stdio.h": "c"
+    }
+}

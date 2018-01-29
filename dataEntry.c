@@ -5,6 +5,7 @@
 
 #include "dataEntry.h"
 #include "fenToBoardState.h"
+#include "randGen.h"
 
 DATABASE* createDataB(void)
 {
@@ -61,7 +62,7 @@ BSTATE pickRandMove(DATABASE* dataMain)
     assert(dataMain);
     srand(time(NULL));
     ENTRY* curEntry = NULL;
-    int    num      = randGenerate() % (dataMain->totalData);
+    int    num      = (int)randGenerate() % (dataMain->totalData);
     int    count    = 0;
     curEntry        = dataMain->firstMove;
     while (count < num)
