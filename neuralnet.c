@@ -545,57 +545,150 @@ void backpropAutoN(AUTOW *  autoweights,
         {
             double totalerror[1][773];
             double outputdelta[1][773];
-            double weight3T[773][600];
 
-            double layer1E[1][600];
-            double layer1delta[1][600];
-            double inputT[773][1];
-            double layer1T[600][1];
+            double Dweight3T[773][600];
+            double Dlayer3E[1][600];
+            double Dlayer3delta[1][600];
 
-            autoencoderE((double *)autolayer->input,
-                         (double *)decodelayer->output);
+            double Alayer2E[1][400];
+            double Aweight2T[600][400];
+            double Alayer2delta[1][400];
 
-            matrixSubtraction((double *)autolayer->input,
-                              (double *)decodelayer->output,
-                              (double *)totalerror,
-                              1,
-                              773);
-            matrixDelta((double *)totalerror,
-                        (double *)decodelayer->output,
-                        (double *)outputdelta,
-                        1,
-                        773);
+            double Alayer1E[1][600];
+            double Aweight1T[400][600];
+            double Alayer1delta[1][600];
 
-            TMatrix(
-                (double *)decodeweights->weight3, (double *)weight3T, 600, 773);
-            matrixMultiplication((double *)outputdelta,
-                                 (double *)weight3T,
-                                 (double *)layer1E,
-                                 1,
-                                 773,
-                                 600);
+            double Alayer2T[400][1];
+            double Alayer1T[600][1];
 
-            // not yet tested pass here
-            matrixDelta((double *)layer1E,
-                        (double *)autolayer->layer1,
-                        (double *)layer1delta,
-                        1,
-                        600);
-            TMatrix((double *)autolayer->layer1, (double *)layer1T, 1, 600);
-            TMatrix((double *)autolayer->input, (double *)inputT, 1, 773);
+            autoencoderE((double *)autolayer->input,(double *)decodelayer->output);
+            matrixSubtraction((double *)autolayer->input,(double *)decodelayer->output, (double *)totalerror, 1, 773);
+            matrixDelta((double *)totalerror, (double *)decodelayer->output, (double *)outputdelta, 1, 773);
+
+            TMatrix((double *)decodeweights->weight3, (double *)Dweight3T, 600, 773);
+            matrixMultiplication((double *)outputdelta, (double *)Dweight3T, (double *)Dlayer3E, 1, 773, 600);
+            matrixDelta((double *)Dlayer3E, (double *)decodelayer->layer3, (double *)Dlayer3delta, 1, 600);
+
+            TMatrix((double *) Autoweights->weight2, (double *)Aweight2T, 400, 600);
+            matrixMultiplication((double *)Dlayer3delta, (double *)Aweight2T, (double *) Alayer2E, 1, 600, 400);
+            matrixDelta((double *) Alayer2E, (double *) autolayer->layer2, (double *) Alayer2delta,1,400); 
+
+            TMatrix((double *)autolayer->layer2, (double *)Alayer2T, 1, 400);
+            TMatrix((double *)autolayer->layer1, (double *)Alayer1T, 1, 600);
 
             // calucalate the weights
-            matrixMultiplication((double *)layer1T,
-                                 (double *)outputdelta,
-                                 (double *)decodegrad->weight3,
-                                 600,
-                                 1,
-                                 773);
-            matrixMultiplication((double *)inputT,
-                                 (double *)layer1delta,
-                                 (double *)autograd->weight0,
-                                 773,
-                                 1,
-                                 600);
+            matrixMultiplication((double *)Alayer2T, (double *)Dlayer3delta, (double *)decodegrad->weight2, 400, 1, 600);
+            matrixMultiplication((double *)Alayer1T, (double *)Alayer2delta, (double *)autograd->weight1, 600, 1, 400);
+        }
+    if (stage == 3)
+        {
+            double totalerror[1][773];
+            double outputdelta[1][773];
+
+            double Dweight3T[773][600];
+            double Dlayer3E[1][600];
+            double Dlayer3delta[1][600];
+    
+            double Dweight2T[600][400];
+            double Dlayer2E[1][400];
+            double Dlayer2delta[1][400];
+
+            double Alayer3E[1][200];
+            double Aweight3T[400][200];
+            double Alayer3delta[1][200];
+
+            double Alayer2E[1][400];
+            double Aweight2T[600][400];
+            double Alayer2delta[1][400];
+
+            double Alayer2T[400][1];
+            double Alayer1T[600][1];
+
+            autoencoderE((double *)autolayer->input,(double *)decodelayer->output);
+            matrixSubtraction((double *)autolayer->input,(double *)decodelayer->output, (double *)totalerror, 1, 773);
+            matrixDelta((double *)totalerror, (double *)decodelayer->output, (double *)outputdelta, 1, 773);
+
+            TMatrix((double *)decodeweights->weight3, (double *)Dweight3T, 600, 773);
+            matrixMultiplication((double *)outputdelta, (double *)Dweight3T, (double *)Dlayer3E, 1, 773, 600);
+            matrixDelta((double *)Dlayer3E, (double *)decodelayer->layer3, (double *)Dlayer3delta, 1, 600);
+
+            TMatrix((double *)decodeweights->weight2, (double *)Dweight2T, 400, 600);
+            matrixMultiplication((double *)Dlayer3delta, (double *)Dweight2T, (double *)Dlayer2E, 1, 600, 400);
+            matrixDelta((double *)Dlayer2E, (double *)decodelayer->layer2, (double *)Dlayer2delta, 1, 400);
+
+            TMatrix((double *) Autoweights->weight3, (double *)Aweight3T, 200, 400);
+            matrixMultiplication((double *)Dlayer2delta, (double *)Aweight3T, (double *) Alayer3E, 1, 400, 200);
+            matrixDelta((double *) Alayer3E, (double *) autolayer->layer3, (double *) Alayer3delta,1, 200);
+    
+            Tmatrix((double*) autoweights->weight2, (float *) Aweight2T, 1, 400, 200);
+            matrixMultiplication((double *)Alayer3delta, (double *) Aweight2T, (double *) Alayer2E, 1, 200, 400);
+            matrixDelta((double *) Alayer2E, (double *) autolayer->layer2, (double *) Alayer2delta, 1, 400); 
+
+            TMatrix((double *)autolayer->layer3, (double *)Alayer3T, 1, 200);
+            TMatrix((double *)autolayer->layer2, (double *)Alayer3T, 1, 400);
+
+            // calucalate the weights
+            matrixMultiplication((double *)Alayer3T, (double *)Dlayer2delta, (double *)decodegrad->weight3, 200, 1, 400);
+            matrixMultiplication((double *)Alayer2T, (double *)Alayer3delta, (double *)autograd->weight2, 400, 1, 200);
+        }
+
+    if (stage == 4)
+        {
+            double totalerror[1][773];
+            double outputdelta[1][773];
+
+            double Dweight3T[773][600];
+            double Dlayer3E[1][600];
+            double Dlayer3delta[1][600];
+    
+            double Dweight2T[600][400];
+            double Dlayer2E[1][400];
+            double Dlayer2delta[1][400];
+            
+            double Dweight1T[400][200];
+            double Dlayer1E[1][200];
+            double Dlayer1delta[1][200];
+            
+            double Dweight0T[100][200];
+            double AoutputE[1][100];
+            double Aoutputdelta[1][100];
+
+            double Alayer3E[1][200];
+            double Aweight3T[400][200];
+            double Alayer3delta[1][200];
+
+            double Alayer2E[1][400];
+            double Aweight2T[600][400];
+            double Alayer2delta[1][400];
+
+            double Alayer2T[400][1];
+            double Alayer1T[600][1];
+
+            autoencoderE((double *)autolayer->input,(double *)decodelayer->output);
+            matrixSubtraction((double *)autolayer->input,(double *)decodelayer->output, (double *)totalerror, 1, 773);
+            matrixDelta((double *)totalerror, (double *)decodelayer->output, (double *)outputdelta, 1, 773);
+
+            TMatrix((double *)decodeweights->weight3, (double *)Dweight3T, 600, 773);
+            matrixMultiplication((double *)outputdelta, (double *)Dweight3T, (double *)Dlayer3E, 1, 773, 600);
+            matrixDelta((double *)Dlayer3E, (double *)decodelayer->layer3, (double *)Dlayer3delta, 1, 600);
+
+            TMatrix((double *)decodeweights->weight2, (double *)Dweight2T, 400, 600);
+            matrixMultiplication((double *)Dlayer3delta, (double *)Dweight2T, (double *)Dlayer2E, 1, 600, 400);
+            matrixDelta((double *)Dlayer2E, (double *)decodelayer->layer2, (double *)Dlayer2delta, 1, 400);
+
+            TMatrix((double *) Autoweights->weight3, (double *)Aweight3T, 200, 400);
+            matrixMultiplication((double *)Dlayer2delta, (double *)Aweight3T, (double *) Alayer3E, 1, 400, 200);
+            matrixDelta((double *) Alayer3E, (double *) autolayer->layer3, (double *) Alayer3delta,1, 200);
+    
+            Tmatrix((double*) autoweights->weight2, (float *) Aweight2T, 1, 400, 200);
+            matrixMultiplication((double *)Alayer3delta, (double *) Aweight2T, (double *) Alayer2E, 1, 200, 400);
+            matrixDelta((double *) Alayer2E, (double *) autolayer->layer2, (double *) Alayer2delta, 1, 400); 
+
+            TMatrix((double *)autolayer->layer3, (double *)Alayer3T, 1, 200);
+            TMatrix((double *)autolayer->layer2, (double *)Alayer3T, 1, 400);
+
+            // calucalate the weights
+            matrixMultiplication((double *)Alayer3T, (double *)Dlayer2delta, (double *)decodegrad->weight3, 200, 1, 400);
+            matrixMultiplication((double *)Alayer2T, (double *)Alayer3delta, (double *)autograd->weight2, 400, 1, 200);
         }
 }

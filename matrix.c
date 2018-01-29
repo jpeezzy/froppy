@@ -298,7 +298,7 @@ void matrixCopy(double *h_a, double *h_b, int m, int n)
 			{
 				for (int j = 0; j < n; ++j) 
 				{
-				    h_b[i*n+j] = h_a[i*n+j];
+				    h_a[i*n+j] = h_b[i*n+j];
 				}
 			}
 	}
