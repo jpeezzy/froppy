@@ -27,7 +27,7 @@ struct head
 {
     int length;
     NODE *first; /* pointer to first node in current depth */
-  	HEAD *next; /* pointer to the head struct of next depth */
+    HEAD *next; /* pointer to the head struct of next depth */
 };
 
 /* structure to store board and best move for new implementation of minimax */
@@ -42,19 +42,19 @@ struct mini
 typedef enum player{Min, Max} PLAYER; 
 
 /* create a Node with input float value */
-NODE *createNode(float value, MENTRY *move, BSTATE *board);
+NODE *createNode(MENTRY *move, BSTATE *board);
 
 /* create a head structure */
 void *createHead(NODE *root);
 
 /* create mini structure */
-MINI *createMini(BSTATE *board);
+MINI *createMini(BSTATE *board, int depth);
 
 /* add a child to the parent node with input float value */
-NODE *addChild(NODE* parent, float value, MENTRY *move, BSTATE *board);
+NODE *addChild(NODE* parent, MENTRY *move, BSTATE *board);
 
 /* add sibling next to the child node with input float value */
-NODE *addSibling(NODE *child, float value, MENTRY *move, BSTATE *board);
+NODE *addSibling(NODE *child, MENTRY *move, BSTATE *board);
 
 /* remove the node along with its siblings and children and head struct*/
 void removeNode(NODE *node);
@@ -75,9 +75,9 @@ float alphabeta(NODE* node, float alpha, float beta, PLAYER minmax);
 MENTRY *minmax (BSTATE *currentBoard);
 
 /* maximizer function for minimax with alpha-beta pruning that uses depth */
-float alphaBetaMax(BSTATE* board, float alpha, float beta, int depth);
+float max(MINI *mini, float alpha, float beta, int depth);
  
 /* minimizer function for minimax with alpha-beta pruning that uses depth */ 
-float alphaBetaMin(BSTATE *board, float alpha, float beta, int depth); 
+float min(MINI *mini, float alpha, float beta, int depth); 
 
 #endif
