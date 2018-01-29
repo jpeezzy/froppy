@@ -29,11 +29,11 @@ autoencoder.o: autoencoder.c matrix.h fenToBoardState.h boardToVector.h neuralne
 auto: matrix.o fenToBoardState.o boardToVector.o neuralnet.o openMP_backprop.o dataEntry.o autoencoder.o randGen.o
 	$(CC) $(CFLAGS) matrix.o fenToBoardState.o boardToVector.o neuralnet.o openMP_backprop.o dataEntry.o randGen.o autoencoder.o -o Auto $(MATH)
 
-matrixTest.o: matrixTest.c matrix.h
+matrixTest.o: matrixTest.c matrix.h neuralnet.h
 	$(CC) $(CFLAGS) -c matrixTest.c -o matrixTest.o
 
-MT: matrixTest.o matrix.o
-	$(CC) $(CFLAGS) matrixTest.o matrix.o -o MT
+MT: matrixTest.o matrix.o neuralnet.o randGen.o
+	$(CC) $(CFLAGS) matrixTest.o matrix.o neuralnet.o randGen.o -o MT -lm
 
 
 

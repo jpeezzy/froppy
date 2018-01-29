@@ -43,7 +43,7 @@ double reluActivation(double x, int flag)
         }
       else
         {
-          return 0.01 * x;
+          return 0.0;
         }
     }
   else if (flag == 1)
@@ -54,10 +54,10 @@ double reluActivation(double x, int flag)
         }
       else
         {
-          return 0.01;
+          return 0.0;
         }
     }
-  return 10;
+  return 0.0 ;
 }
 
 double tanhActivation(double x, int flag)
@@ -133,11 +133,9 @@ void nadam(double *w, double *g, double *m, double *v, int t)
   double mt = (*(m)) / (1.0 - pow(beta1,t)); 
 
   // Calculate the new weight
-  *(w) = *(w) + .001* (*(g));
-  //*(w) = *(w) + ( (eta/(sqrt(vt) + epsilon)) * ((beta1*mt) + (((1.0-beta1)*(*(g)))/(1.0-pow(beta1,t))))); 
-    //- (eta / ((sqrt((*(v)) / (1.0 - pow(beta1, t)))) + epsilon)) *
-                    //(beta1 * ((*(m)) / (1.0 - pow(beta1, t))) +
-                     //((1.0 - beta1) * (*(g))) / (1.0 - pow(beta1, t)));
+  //*(w) = *(w) + .01* (*(g));
+  *(w) = *(w) + ( (eta/(sqrt(vt) + epsilon)) * ((beta1*mt) + (((1.0-beta1)*(*(g)))/(1.0-pow(beta1,t))))); 
+  //*(w) = *(w) - (eta / ((sqrt((*(vt)) / (1.0 - pow(beta1, t)))) + epsilon)) * (beta1 * ((*(mt)) / (1.0 - pow(beta1, t))) + ((1.0 - beta1) * (*(g))) / (1.0 - pow(beta1, t)));
   //printf("\n %.5f", *w);
 }
 
@@ -158,13 +156,13 @@ void nadamArray(double *W, double *G, double *M, double *V, int m, int n, int t)
     for (i = 0; i < m; ++i)
       {
         for (j = 0; j < n; ++j)
-          {/*
+          {
             nadam(&(W[i * n + j]),
                   &(G[i * n + j]),
                   &(M[i * n + j]),
                   &(V[i * n + j]),
-                  t);*/
-            W[i*n+j] = W[i*n+j] + .001 * G[i*n+j];
+                  t);
+            //W[i*n+j] = W[i*n+j] + .001 * G[i*n+j];
             //printf("\n %.5f",W[i*n+j]);
           }
       }
@@ -466,7 +464,7 @@ void randReluArray(double *A, int m, int n, int f)
     {
       for (j = 0; j < n; ++j)
         {
-          A[i * n + j] = randGen() * .01;
+          A[i * n + j] = randGen() * 2.0/f;
         }
     }
 }
@@ -497,7 +495,7 @@ void backpropAutoN(AUTOW *  autoweights,
 
         
         TMatrix((double *) decodeweights->weight3, (double *) weight3T, 600, 773);
-        matrixMultiplication((double *) outputdelta, (double *) weight3T, (double *) layer1E, 1, 773,600);
+        mm((double *) outputdelta, (double *) weight3T, (double *) layer1E, 1, 773,600);
 
         //not yet tested pass here
         matrixDelta((double *) layer1E, (double *) autolayer->layer1, (double *) layer1delta, 1, 600);
@@ -505,8 +503,8 @@ void backpropAutoN(AUTOW *  autoweights,
         TMatrix((double *) autolayer->input, (double *) inputT, 1, 773);
 
         //calucalate the weights 
-        matrixMultiplication((double *) layer1T, (double *) outputdelta, (double *) decodegrad->weight3, 600, 1, 773);
-        matrixMultiplication((double *) inputT, (double *) layer1delta, (double *) autograd->weight0, 773, 1, 600);
+        mm((double *) layer1T, (double *) outputdelta, (double *) decodegrad->weight3, 600, 1, 773);
+        mm((double *) inputT, (double *) layer1delta, (double *) autograd->weight0, 773, 1, 600);
 
         //printMatrix((double *) decodegrad->weight3, 600, 773);
         //printMatrix((double *) layer1delta, 1, 600);

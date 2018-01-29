@@ -7,25 +7,15 @@
 
 int main()
 {
-    double a[600][773];
-    double b[773][1];
-    double c[600][1];
+    double a[2][4] = {{1,2,3,4},{5,6,7,8}};
+    double b[4][2]= {{1,2},{3,4},{5,6},{7,8}};
+    double c[2][2];
     srand(time(NULL));
 
-    int i,j;
-    for(i=0; i<600; ++i)
-    {
-        for(j=0; j<773; ++j)
-        {
-            a[i][j] = rand();
-            b[j][0] = rand();
-        }
-        c[i][0] = rand();
-    }
     printf("\narrays intialized");
 
-    matrixMultiplication((double *) a, (double *) b, (double *) c, 600, 773,1);
-
+    matrixMultiplication((double *) a, (double *) b, (double *) c, 2, 4,2);
+    printMatrix((double *)c,2,2);
 
 
 }

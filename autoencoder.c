@@ -59,7 +59,7 @@ int main()
   printf("Finished reading fen file che! \n");
   move = pickRandMove(dataB);
   boardToVector(&move, (double *)vect);
-  int t = 0;
+  int t = 1;
   int i;
   for (int i = 0; i < 773; ++i)
     {
@@ -69,7 +69,7 @@ int main()
   for (i = 0; i < 100; ++i)
     { if(1)
         {
-          printf("\n %d",i);
+          printf("\n %d  ",i);
         }
       fowardpropAuto(aw, al, dw, dl, 1);
 #ifdef DEBUG
@@ -81,17 +81,16 @@ int main()
 #endif
       nadamAuto(aw, dw, ag, dg, am, av, dm, dv, t, 1);
       t    = t + 1;
-      //move = pickRandMove(dataB);
-      //boardToVector(&move, (double *)vect);
+      move = pickRandMove(dataB);
+      boardToVector(&move, (double *)vect);
 #ifdef DEBUG
       //printf("finished one move\n");
 #endif
     
-      //for (int i = 0; i < 773; ++i)
-        //{
-          //al->input[0][i] = vect[0][i];
-        //}
+        for (int i = 0; i < 773; ++i)
+        {
+            al->input[0][i] = vect[0][i];
+        }
     }
-  printMatrix((double *)aw->weight0,600,773);
   return 0;
 }
