@@ -23,5 +23,6 @@ extern uint32_t rnd;
 
 /* function(s) */
 double randGen();
+double randGenerate();
 
 #endif

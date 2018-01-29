@@ -71,6 +71,7 @@ int main()
     matrixZero((double *) dv->weight3, 600, 773);
 
     // load the data in
+    double vect[1][773];
     DATABASE *dataB;
     dataB = createDataB();
     assert(dataB);
@@ -96,14 +97,12 @@ int main()
                 
                 for(bint = 0; bint < batch; ++bint)
                 {
-                    double    vect[1][773] = {0};
                     BSTATE move = pickRandMove(dataB);
                     boardToVector(&move, (double *) vect);
 
                     
                     matrixCopy((double *)al->input, (double *)vect, 1, 773);
-                    printMatrix((double *)vect, 1, 773);                
-                    return 0;
+                    
                     fowardpropAuto(aw, al, dw, dl, stagenum);
                     backpropAutoN(aw, al, dw, dl, ag, dg, stagenum);
                     
