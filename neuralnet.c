@@ -496,7 +496,8 @@ void backpropAutoN(AUTOW *  autoweights,
 
         
         TMatrix((double *) decodeweights->weight3, (double *) weight3T, 600, 773);
-        mm((double *) outputdelta, (double *) weight3T, (double *) layer1E, 1, 773,600);
+        matrixMultiplication((double *) outputdelta, (double *) weight3T, (double *) layer1E, 1, 773,600);
+		//mm((double *) outputdelta, (double *) weight3T, (double *) layer1E, 1, 773,600);
 
         //not yet tested pass here
         matrixDelta((double *) layer1E, (double *) autolayer->layer1, (double *) layer1delta, 1, 600);
@@ -504,8 +505,10 @@ void backpropAutoN(AUTOW *  autoweights,
         TMatrix((double *) autolayer->input, (double *) inputT, 1, 773);
 
         //calucalate the weights 
-        mm((double *) layer1T, (double *) outputdelta, (double *) decodegrad->weight3, 600, 1, 773);
-        mm((double *) inputT, (double *) layer1delta, (double *) autograd->weight0, 773, 1, 600);
+        matrixMultiplication((double *) layer1T, (double *) outputdelta, (double *) decodegrad->weight3, 600, 1, 773);
+        matrixMultiplication((double *) inputT, (double *) layer1delta, (double *) autograd->weight0, 773, 1, 600);
+		//mm((double *) layer1T, (double *) outputdelta, (double *) decodegrad->weight3, 600, 1, 773);
+       // mm((double *) inputT, (double *) layer1delta, (double *) autograd->weight0, 773, 1, 600);
 
         //printMatrix((double *) decodegrad->weight3, 600, 773);
         //printMatrix((double *) layer1delta, 1, 600);

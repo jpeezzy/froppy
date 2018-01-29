@@ -11,31 +11,22 @@ void matrixMultiplication(double *h_a, double *h_b, double *h_result, int m, int
 	int	tid, nthreads, chunk;
 	tid = nthreads = chunk = 0;
 	chunk = 10;                    /* set loop iteration chunk size */
+	int i =0;
+	int j = 0;
+	int h = 0;
 
-#pragma omp parallel num_threads(56)
+#pragma omp parallel num_threads(56) shared(h_a, h_b, h_result) private(i,j,h)
 	{
-		tid = omp_get_thread_num();
-		if (tid == 0)
-		{
-			nthreads = omp_get_num_threads();
-		}
-        /*printf("Thread %d starting matrix multiply...\n"i,tid);*/
-	#pragma omp for schedule(static, chunk)
-			for (int i = 0; i < m; ++i) 
+	#pragma omp for schedule(static)
+			for (i =0; i < m; ++i) 
 			{
-				for (int j = 0; j < k; ++j) 
+				for (j = 0; j < k; ++j) 
 				{
-                    double temp = 0.0;
-					for (int h = 0; h < n; ++h) 
-					{	
-						temp += h_a[i * n + h] * h_b[h * k + j];
-                        if(temp != temp)
-                        {
-                            temp = 0.0;
-                            printf("\n nan");
-                        }
+					h_result[i*k + j] = 0.0;
+					for (h = 0; h < n; ++h) 
+					{
+						h_result[i*k+j]= h_result[i*k+j] +  h_a[i * n + h] * h_b[h * k + j];
 					}
-                    h_result[i*k+j] = temp;
 				}
 			}
 	}
