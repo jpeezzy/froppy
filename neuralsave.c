@@ -15,6 +15,7 @@
 #include "neuralsave.h"
 
 #define FILENUM 10
+#define NUMFILE "auto.txt"
 
 // check how many files we have had then create new data files for other files
 // to write in, return an array of file handle
@@ -56,6 +57,7 @@ FILE** createNewset(char* fileName, int mode)
     else
         {
             sprintf(tempnum, "%d", numberofFile);
+            chdir(strcat(dirName, tempnum));
         }
     fclose(numFile);
     // make one file handle for every variable that needs to be saved in the
@@ -101,7 +103,7 @@ void SaveNN(AUTOW*   aw,
             DECODEW* dm,
             AUTOW*   dv)
 {
-    FILE** fileList = createNewset("auto.txt", 1);
+    FILE** fileList = createNewset(NUMFILE, 1);
 
     /***************************EncoderWeights**********************************/
     for (int i = 0; i < 773; ++i)
@@ -441,10 +443,11 @@ void SaveNN(AUTOW*   aw,
                     fprintf(fileList[9], "%f\n", dv->weight3[i][j]);
                 }
         }
+
+    closeNewset(fileList);
 }
 
-// load everything if possible
-// load on weights if too much work
+// used for completely recreate an entire encoder/decoder in case of power loss
 void LoadNN(AUTOW*   aw,
             AUTOL*   al,
             DECODEW* dw,
@@ -456,7 +459,7 @@ void LoadNN(AUTOW*   aw,
             DECODEW* dm,
             AUTOW*   dv)
 {
-    FILE** fileList = createNewset("auto.txt", 0);
+    FILE** fileList = createNewset(NUMFILE, 0);
     char   buffer[200];
 
     /***************************EncoderWeights**********************************/
@@ -879,6 +882,97 @@ void LoadNN(AUTOW*   aw,
                            &(dv->weight3[i][j]));
                 }
         }
+    closeNewset(fileList);
+}
+
+// used for loading the weight of the last match for training the next match
+void RetrWeight(AUTOW* aw, DECODEW* dw)
+{
+    FILE** fileList = createNewset(NUMFILE, 0);
+    char   buffer[200];
+
+    /***************************EncoderWeights**********************************/
+    for (int i = 0; i < 773; ++i)
+        {
+            for (int j = 0; j < 600; ++j)
+                {
+                    sscanf(fgets(buffer, 100, fileList[0]),
+                           "%lf",
+                           &(aw->weight0[i][j]));
+                }
+        }
+
+    for (int i = 0; i < 600; ++i)
+        {
+            for (int j = 0; j < 400; ++j)
+                {
+                    sscanf(fgets(buffer, 100, fileList[0]),
+                           "%lf",
+                           &(aw->weight1[i][j]));
+                }
+        }
+
+    for (int i = 0; i < 400; ++i)
+        {
+            for (int j = 0; j < 200; ++j)
+                {
+                    sscanf(fgets(buffer, 100, fileList[0]),
+                           "%lf",
+                           &(aw->weight2[i][j]));
+                }
+        }
+
+    for (int i = 0; i < 200; ++i)
+        {
+            for (int j = 0; j < 100; ++j)
+                {
+                    sscanf(fgets(buffer, 100, fileList[0]),
+                           "%lf",
+                           &(aw->weight3[i][j]));
+                }
+        }
+
+    /***************************DecoderWeights**********************************/
+    for (int i = 0; i < 100; ++i)
+        {
+            for (int j = 0; j < 200; ++j)
+                {
+                    sscanf(fgets(buffer, 100, fileList[2]),
+                           "%lf",
+                           &(dw->weight0[i][j]));
+                }
+        }
+
+    for (int i = 0; i < 200; ++i)
+        {
+            for (int j = 0; j < 400; ++j)
+                {
+                    sscanf(fgets(buffer, 100, fileList[2]),
+                           "%lf",
+                           &(dw->weight1[i][j]));
+                }
+        }
+
+    for (int i = 0; i < 400; ++i)
+        {
+            for (int j = 0; j < 600; ++j)
+                {
+                    sscanf(fgets(buffer, 100, fileList[2]),
+                           "%lf",
+                           &(dw->weight2[i][j]));
+                }
+        }
+
+    for (int i = 0; i < 600; ++i)
+        {
+            for (int j = 0; j < 773; ++j)
+                {
+                    sscanf(fgets(buffer, 100, fileList[2]),
+                           "%lf",
+                           &(dw->weight3[i][j]));
+                }
+        }
+    closeNewset(fileList);
 }
 
 // USED FOR TESTING ONLY
