@@ -1,4 +1,3 @@
-
 CC = gcc
 CFLAGS = -std=c99 -fopenmp -Wall -g -DDEBUG
 MATH= -lm 

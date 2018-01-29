@@ -309,7 +309,7 @@ MENTRY *minmax(BSTATE *currentBoard)
     clock_t start_time = clock();
     clock_t time_elapsed; 
     
-    /* creates first 2 depths of the tree */
+    // creates first 2 depths of the tree 
     tree = createNode(NULL, currentBoard);
     current = tree;
     start = generateLayer(current);

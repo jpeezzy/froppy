@@ -1,6 +1,5 @@
 #ifndef MINMAX_H
 #define MINMAX_H
-
 #include "movelist.h"
 #include "boardstate.h"
 
