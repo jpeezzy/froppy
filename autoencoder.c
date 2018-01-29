@@ -83,7 +83,7 @@ int main()
     printf("Finished reading fen file che! \n");
 
     int t = 1;
-    int epochs, stagenum, i, iter;
+    int epochs, stagenum, iter;
     int batch = 200, bint;
 
     //this is where the training starts
