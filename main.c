@@ -6,7 +6,6 @@ int main(int argc, char *args[])
 {
     SDL_Surface *screen = NULL;     /* Main surface to be displayed */
     SDL_Surface *baseBoard = NULL;  /* Surface that will be the reference chess board */
-    SDL_Rect pieceArray[8][8];      /* Keeps track of where each piece is on the board */
  
 
     SDL_Init(SDL_INIT_VIDEO);   /* Initializes SDL Environment */
@@ -71,21 +70,22 @@ int main(int argc, char *args[])
 
 
 /** Start of user interaction loop  **********************************************************/
+    SDL_Event introEvent;
     SDL_Event event; 
-    
+   
+ 
     int quit = 0;   /* Flag for ending menu while loop */
     
-
-    while (SDL_WaitEvent(&event))
+    while (SDL_PollEvent(&introEvent))
     {
-        if (event.type == SDL_MOUSEBUTTONDOWN)  
+        if (introEvent.type == SDL_MOUSEBUTTONDOWN)  
         {
             Add_BoxFile("Menu1.bmp", screen, 0,0);
             SDL_Flip(screen);   
             break;
         }
     }         
-
+    
     while (quit != 1)
     {
         while(SDL_PollEvent(&event))    /* Starting poll for Menu */
