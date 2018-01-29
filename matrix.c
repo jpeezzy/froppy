@@ -15,7 +15,7 @@ void matrixMultiplication(double *h_a, double *h_b, double *h_result, int m, int
 	int j = 0;
 	int h = 0;
 
-#pragma omp parallel num_threads(56) shared(h_a, h_b, h_result) private(i,j,h)
+#pragma omp parallel shared(h_a, h_b, h_result) private(i,j,h)
 	{
 	#pragma omp for schedule(static)
 			for (i =0; i < m; ++i) 
@@ -142,7 +142,7 @@ void matrixSubtraction(double *h_a, double *h_b, double *h_result, int m, int n)
 	tid = nthreads = chunk = 0;
 	chunk = 10;                    /* set loop iteration chunk size */
 
-#pragma omp parallel num_threads(56)
+#pragma omp parallel
 	{
 		tid = omp_get_thread_num();
 		if (tid == 0)
@@ -167,7 +167,7 @@ void matrixScalarMul(double *h_a, double *h_b, double *h_result, int m, int n)
 	tid = nthreads = chunk = 0;
 	chunk = 10;                    /* set loop iteration chunk size */
 
-#pragma omp parallel num_threads(56)
+#pragma omp parallel
 	{
 		tid = omp_get_thread_num();
 		if (tid == 0)
@@ -192,7 +192,7 @@ void matrixDelta(double *e, double *layer, double *delta, int m, int n)
 	tid = nthreads = chunk = 0;
 	chunk = 10;                    /* set loop iteration chunk size */
 
-#pragma omp parallel num_threads(56)
+#pragma omp parallel
 	{
 		tid = omp_get_thread_num();
 		if (tid == 0)
@@ -226,5 +226,80 @@ void autoencoderE(double *a, double *b)
     printf("\n %.5f",te);
 } 
 
+// not real matirx add has a multiplier
+void matrixAddition(double *h_a, double *h_b, int m, int n) 
+{
+	int	tid, nthreads, chunk;
+	tid = nthreads = chunk = 0;
+	chunk = 10;                    /* set loop iteration chunk size */
+
+#pragma omp parallel
+	{
+		tid = omp_get_thread_num();
+		if (tid == 0)
+		{
+			nthreads = omp_get_num_threads();
+		}
+        /*printf("Thread %d starting matrix multiply...\n"i,tid);*/
+	#pragma omp for schedule(static, chunk)
+			for (int i = 0; i < m; ++i) 
+			{
+				for (int j = 0; j < n; ++j) 
+				{
+				    h_a[i*n+j] = h_a[i*n+j] + (1.0/200.) * h_b[i*n+j];
+				}
+			}
+	}
+} 
 
 
+void matrixZero(double *h_a,  int m, int n) 
+{
+	int	tid, nthreads, chunk;
+	tid = nthreads = chunk = 0;
+	chunk = 10;                    /* set loop iteration chunk size */
+
+#pragma omp parallel
+	{
+		tid = omp_get_thread_num();
+		if (tid == 0)
+		{
+			nthreads = omp_get_num_threads();
+		}
+        /*printf("Thread %d starting matrix multiply...\n"i,tid);*/
+	#pragma omp for schedule(static, chunk)
+			for (int i = 0; i < m; ++i) 
+			{
+				for (int j = 0; j < n; ++j) 
+				{
+				    h_a[i*n+j] = 0.0;
+				}
+			}
+	}
+}
+
+
+void matrixCopy(double *h_a, double *h_b, int m, int n) 
+{
+	int	tid, nthreads, chunk;
+	tid = nthreads = chunk = 0;
+	chunk = 10;                    /* set loop iteration chunk size */
+
+#pragma omp parallel
+	{
+		tid = omp_get_thread_num();
+		if (tid == 0)
+		{
+			nthreads = omp_get_num_threads();
+		}
+        /*printf("Thread %d starting matrix multiply...\n"i,tid);*/
+	#pragma omp for schedule(static, chunk)
+			for (int i = 0; i < m; ++i) 
+			{
+				for (int j = 0; j < n; ++j) 
+				{
+				    h_b[i*n+j] = h_a[i*n+j];
+				}
+			}
+	}
+}

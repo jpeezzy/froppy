@@ -12,4 +12,8 @@ void matrixSubtraction(double *h_a, double *h_b, double *h_result, int m, int n)
 void matrixScalarMul(double *h_a, double *h_b, double *h_result, int m, int n);
 void matrixDelta(double *e, double *layer, double *delta, int m, int n);
 void autoencoderE(double *a, double *b);
+void matrixAddition(double *h_a, double *h_b, int m, int n);
+void matrixZero(double *h_a, int m, int n);
+void matrixCopy(double *h_a, double *h_b, int m, int n);
+
 #endif

@@ -144,7 +144,7 @@ void backpropAuto(AUTOW*   autoweights,
 
         for (int l = 0; l < 10; ++l)
           {
-            printf("\n decode grad:%f ", decodegrad->weight3[l]);
+            //printf("\n decode grad:%f ", decodegrad->weight3[l]);
           }
 
         // train input layer of encoder
@@ -173,7 +173,7 @@ void backpropAuto(AUTOW*   autoweights,
                 773);
         for (int l = 0; l < 10; ++l)
           {
-            printf("\n auto grad: %f ", autograd->weight0[l]);
+            //printf("\n auto grad: %f ", autograd->weight0[l]);
           }
 
         free(derErrorOutput0);
