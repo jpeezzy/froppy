@@ -19,7 +19,7 @@
 
 // material value of a piece
 static int piece_value[6]  = {100, 280, 320, 479, 929, 60000};
-static int piece_weight[6] = {1, 3, 3, 5, 9, 200}
+static int piece_weight[6] = {1, 3, 3, 5, 9, 200};
 
 // position score is used for evaluation piece based on their coordinates
 // piece square tables
@@ -69,7 +69,7 @@ static int piece_square_table[6][8][8] = {
 
 int basicEvaluation(BSTATE* currentboard, MLIST* all_moves)
 {
-    float eval_score = 0.0;
+    double eval_score = 0.0;
     assert(all_moves);
     MENTRY* current_move = all_moves->First;
     // int     piece_count[12] = {0};

@@ -45,7 +45,7 @@ typedef enum player{Min, Max} PLAYER;
 NODE *createNode(MENTRY *move, BSTATE *board);
 
 /* create a head structure */
-void *createHead(NODE *root);
+void createHead(NODE *first);
 
 /* create mini structure */
 MINI *createMini(BSTATE *board, int depth);

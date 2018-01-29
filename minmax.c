@@ -29,7 +29,7 @@ NODE *createNode(MENTRY *move, BSTATE *board)
 }
 
 /* create a head structure*/
-void *createHead(NODE *first)
+void createHead(NODE *first)
 {
     assert(first);
     HEAD *head = NULL;

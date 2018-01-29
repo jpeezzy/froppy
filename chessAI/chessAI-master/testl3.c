@@ -8,21 +8,21 @@
 
 int main()
 {
-    float input[1][360];
-    float w0[360][540];
-    float w1[540][540];
-    float w2[540][540];
-    float w3[540][1];
-    float l1[1][540];
-    float l2[1][540];
-    float l3[1][540];
-    float output[1][1];
+    double input[1][360];
+    double w0[360][540];
+    double w1[540][540];
+    double w2[540][540];
+    double w3[540][1];
+    double l1[1][540];
+    double l2[1][540];
+    double l3[1][540];
+    double output[1][1];
 
     int i,j;
     srand(1);
     for(i = 0; i < 360; ++i)
     {
-        input[0][i] = (((float)rand()/(float)(RAND_MAX)));
+        input[0][i] = (((double)rand()/(double)(RAND_MAX)));
         /*printf("\n%f\n", input[0][i]);*/ 
     }
     printf("\ninput\n");
@@ -30,7 +30,7 @@ int main()
     {
         for(j = 0; j < 540; ++j)
         {
-            w0[i][j] = (((float)rand()/(float)(RAND_MAX)))*.07;       
+            w0[i][j] = (((double)rand()/(double)(RAND_MAX)))*.07;       
         }
     }
     printf("\nw0\n");
@@ -38,7 +38,7 @@ int main()
     {
         for(j = 0; j < 540; ++j)
         {
-            w1[i][j] = (((float)rand()/(float)(RAND_MAX)))*.06;  
+            w1[i][j] = (((double)rand()/(double)(RAND_MAX)))*.06;  
 
         }
     }
@@ -46,7 +46,7 @@ int main()
     {
         for(j = 0; j < 540; ++j)
         {
-            w2[i][j] = (((float)rand()/(float)(RAND_MAX)))*.06;  
+            w2[i][j] = (((double)rand()/(double)(RAND_MAX)))*.06;  
 
         }
     }
@@ -61,15 +61,15 @@ int main()
     struct timespec tstart = {0,0}, tend = {0,0};
     clock_gettime(CLOCK_MONOTONIC, &tstart);
 
-    matrixMultiplication((float*)input, (float *)w0,(float *)l1, 1, 360, 540);
-    reluArray((float *)l1,1,540,0);
-    matrixMultiplication((float*)l1, (float *)w1,(float *)l2, 1, 540, 540);
-    reluArray((float *)l2,1,540,0);
-    matrixMultiplication((float*)l2, (float *)w2,(float *)l3, 1, 540, 540);
-    reluArray((float *)l3,1,540,0);
-    matrixMultiplication((float*)l3, (float *)w3,(float *)output, 1, 540, 1);
+    matrixMultiplication((double*)input, (double *)w0,(double *)l1, 1, 360, 540);
+    reluArray((double *)l1,1,540,0);
+    matrixMultiplication((double*)l1, (double *)w1,(double *)l2, 1, 540, 540);
+    reluArray((double *)l2,1,540,0);
+    matrixMultiplication((double*)l2, (double *)w2,(double *)l3, 1, 540, 540);
+    reluArray((double *)l3,1,540,0);
+    matrixMultiplication((double*)l3, (double *)w3,(double *)output, 1, 540, 1);
     printf("\n %f \n", output[0][0]);
-    tanhArray((float *)output,1,1,0);
+    tanhArray((double *)output,1,1,0);
     
     clock_gettime(CLOCK_MONOTONIC, &tend);
     printf("Took about %.5f seconds\n", ((double)tend.tv_sec + 1.0e-9*tend.tv_nsec) - ((double)tstart.tv_sec + 1.0e-9*tstart.tv_nsec));

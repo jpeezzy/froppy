@@ -1,11 +1,11 @@
 #ifndef NEURALNET_H
 #define NEURALNET_H
 
-float reluActivation(float x, int flag);
-float tanhActivation(float x, int flag);
-void reluArray(float *A, int m, int n, int flag);
-void tanhArray(float *A, int m, int n, int flag);
-void nadamArray( float *W, float *V, float *M, float *G, int m, int n, int t);
-void nadam(float *w, float *v, float *m, float *g, int t);
+double reluActivation(double x, int flag);
+double tanhActivation(double x, int flag);
+void reluArray(double *A, int m, int n, int flag);
+void tanhArray(double *A, int m, int n, int flag);
+void nadamArray( double *W, double *V, double *M, double *G, int m, int n, int t);
+void nadam(double *w, double *v, double *m, double *g, int t);
 
 #endif
