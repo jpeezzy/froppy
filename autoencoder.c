@@ -81,16 +81,16 @@ int main()
 #endif
       nadamAuto(aw, dw, ag, dg, am, av, dm, dv, t, 1);
       t    = t + 1;
-      move = pickRandMove(dataB);
-      boardToVector(&move, (double *)vect);
+      //move = pickRandMove(dataB);
+      //boardToVector(&move, (double *)vect);
 #ifdef DEBUG
       //printf("finished one move\n");
 #endif
     
-        for (int i = 0; i < 773; ++i)
-        {
-            al->input[0][i] = vect[0][i];
-        }
+        //for (int i = 0; i < 773; ++i)
+        //{
+        //    al->input[0][i] = vect[0][i];
+        //}
     }
   return 0;
 }

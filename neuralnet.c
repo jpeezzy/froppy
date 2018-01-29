@@ -293,6 +293,7 @@ void fowardpropAuto(AUTOW *  autoweights,
                            600,
                            773);
       reluArray((double *)decodelayer->output, 1, 773, 0);
+      //printMatrix((double *) decodelayer->output, 1, 773);
       //int ii;
       //for(ii=0; ii < 773; ++ii)
       //{
