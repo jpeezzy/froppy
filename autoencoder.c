@@ -72,13 +72,7 @@ int main()
           printf("\n %d  ",i);
         }
       fowardpropAuto(aw, al, dw, dl, 1);
-#ifdef DEBUG
-      //printf("finished fprop\n");
-#endif
       backpropAutoN(aw, al, dw, dl, ag, dg, 1);
-#ifdef DEBUG
-      //printf("finished bprop\n");
-#endif
       nadamAuto(aw, dw, ag, dg, am, av, dm, dv, t, 1);
       t    = t + 1;
       //move = pickRandMove(dataB);
