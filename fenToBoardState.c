@@ -15,6 +15,10 @@ void  fenToBoardState(char* fen, BSTATE* b)
   char* board[13];
   int   n     = 0;
   char* buf   = malloc(sizeof(char*) * 30);
+  if(!buf){
+	  perror("Out of Memory aborting");
+	  exit(10);
+  }
   int   count = 0;
   /*tolkenizing the input */
   while (count < 13)
