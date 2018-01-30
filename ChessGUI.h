@@ -9,6 +9,8 @@
 #define  HEIGHT  640 /* height of screen*/
 #define  BPP     24   /* bits per pixel  */
 
+    
+
 /* Displays one screen */
 void DisplayWindow(char *file, SDL_Surface *screen, int delay);
 

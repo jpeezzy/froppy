@@ -39,7 +39,24 @@ int main(int argc, char *args[])
     Uint32 color = SDL_MapRGB(chessPieces->format, 0xFF,0xFF,0xFF); /* Filtering out the unwanted background color */
     SDL_SetColorKey(chessPieces, SDL_SRCCOLORKEY, color);    
     
-    /* Creating Array or SDL_Rect's to keep track of chess board. 
+    SDL_Surface *highlights = NULL;         /* Making surface for square highlight */
+    highlights = SDL_LoadBMP("SquareHighlight.bmp");
+    color = SDL_MapRGB(highlights->format, 0xFF, 0xFF, 0xFF);/* Filtering out all white color */
+    SDL_SetColorKey(highlights, SDL_SRCCOLORKEY, color);
+    /* Setting rectangles for highlight outlines */
+    SDL_Rect yellow;  /* yellow outline definitions */  
+    yellow.x = 0;
+    yellow.y = 0;
+    yellow.w = 80;
+    yellow.h = 80;
+    SDL_Rect red;     /* red outline definitons */
+    red.x = 80; 
+    red.y = 0;
+    red.w = 80;
+    red.h = 80;
+
+    
+    /* Creating array of SDL_Rects to keep track of chess board. 
               Each SDL_Rect correlates to one square on the board      */
     SDL_Rect boardArray[8][8];
     for (int i = 0; i < 8; i ++)
@@ -51,8 +68,20 @@ int main(int argc, char *args[])
             boardArray[i][j].h = 80;
         }
     }
+
+    /* Creating array for piece positions */
+    SDL_Rect pieceArray[8][8];
+    SDL_Rect empty; /* placeholder variable to denote an empty square */
+        empty.x = 0; empty.y = 0; empty.w = 1; empty.h = 1; 
+  
+    for (int i = 0; i < 8; i++)
+    {   for (int j = 0; j < 8; j++)
+        {
+            pieceArray[i][j] = empty;
+        }
+    }
      
-    /******** Creating SDL_Rect's for each individual piece from the sprite sheet ************/
+    /******** Creating SDL_Rects for each individual piece from the sprite sheet ************/
     /* Pieces:      King         Queen        Rook        Bishop       Horse        Pawn    */
     /* Black: */ SDL_Rect bK; SDL_Rect bQ; SDL_Rect bR; SDL_Rect bB; SDL_Rect bH; SDL_Rect bP;
     /* White: */ SDL_Rect wK; SDL_Rect wQ; SDL_Rect wR; SDL_Rect wB; SDL_Rect wH; SDL_Rect wP;
@@ -141,35 +170,53 @@ int main(int argc, char *args[])
                  	          /* Pawns */
                  	    for (int i = 0; i < 8; i++) 
                 	    { 
-                 	        SDL_BlitSurface(chessPieces, &bP, screen, &boardArray[i][1]);  
-                	         SDL_BlitSurface(chessPieces, &wP, screen, &boardArray[i][6]);
-                	    }
+                 	        SDL_BlitSurface(chessPieces, &bP, screen, &boardArray[i][1]); 
+                                pieceArray[i][1] = bP; 
+                	        SDL_BlitSurface(chessPieces, &wP, screen, &boardArray[i][6]);
+                                pieceArray[i][6] = wP;
+                 	    }
         
 	                         /* Rooks */
         	            SDL_BlitSurface(chessPieces, &bR, screen, &boardArray[0][0]);
+                            pieceArray[0][0] = bR;   
         	            SDL_BlitSurface(chessPieces, &bR, screen, &boardArray[7][0]);
+                            pieceArray[7][0] = bR;
                	        SDL_BlitSurface(chessPieces, &wR, screen, &boardArray[0][7]);
+                            pieceArray[0][7] = wR;
                		    SDL_BlitSurface(chessPieces, &wR, screen, &boardArray[7][7]);
+                            pieceArray[7][7] = wR;
 
 			            	/* Knights */
                	 	    SDL_BlitSurface(chessPieces, &bH, screen, &boardArray[1][0]);
+                            pieceArray[1][0] = bH;
                	        SDL_BlitSurface(chessPieces, &bH, screen, &boardArray[6][0]);
-                 	    SDL_BlitSurface(chessPieces, &wH, screen, &boardArray[1][7]);
-                	    SDL_BlitSurface(chessPieces, &wH, screen, &boardArray[6][7]);
-                                
+                 	        pieceArray[6][0] = bH;
+                        SDL_BlitSurface(chessPieces, &wH, screen, &boardArray[1][7]);
+                	        pieceArray[1][7] = wH;
+                        SDL_BlitSurface(chessPieces, &wH, screen, &boardArray[6][7]);
+                            pieceArray[6][7] = wH;                       
+         
 		      	    	    /* Bishops */
              		    SDL_BlitSurface(chessPieces, &bB, screen, &boardArray[2][0]);
-              	        SDL_BlitSurface(chessPieces, &bB, screen, &boardArray[5][0]);
-             	        SDL_BlitSurface(chessPieces, &wB, screen, &boardArray[2][7]);
-               	        SDL_BlitSurface(chessPieces, &wB, screen, &boardArray[5][7]);
-	
+              	            pieceArray[2][0] = bB;
+                        SDL_BlitSurface(chessPieces, &bB, screen, &boardArray[5][0]);
+             	            pieceArray[5][0] = bB;
+                        SDL_BlitSurface(chessPieces, &wB, screen, &boardArray[2][7]);
+               	            pieceArray[2][7] = wB;
+                        SDL_BlitSurface(chessPieces, &wB, screen, &boardArray[5][7]);
+                            pieceArray[5][7] = wB;	
+
                     		/* Queens */
                    	    SDL_BlitSurface(chessPieces, &bQ, screen, &boardArray[4][0]);
+                            pieceArray[4][0] = bQ;
                    	    SDL_BlitSurface(chessPieces, &wQ, screen, &boardArray[4][7]);
+                            pieceArray[4][7] = wQ;
 
 				            /* Kings */
                    	    SDL_BlitSurface(chessPieces, &bK, screen, &boardArray[3][0]);
+                            pieceArray[3][0] = bK;
                    	    SDL_BlitSurface(chessPieces, &wK, screen, &boardArray[3][7]);
+                            pieceArray[3][7] = wK;
 
                             quit = 1;
                      	} /* end elseif */
@@ -187,16 +234,72 @@ int main(int argc, char *args[])
 
     SDL_Flip(screen);
 
-    quit = 0;      /* Starting game loop. Resetting quit flag */
+    quit = 0;       /* Starting game loop. Resetting quit flag */
+    int select = 0; /* flag for initial selection of a piece */
+    int x = 0;      /* storing previous array coordinate (x) */
+    int y = 0;      /* storing previous array coordinate (y) */
+
+
     while (quit !=1)
     {
-        UpdateWindow(screen, 100);  /* Updates window at the beginning of every loop */
         while (SDL_PollEvent(&event))
         {
             switch (event.type)
             {
                 case SDL_MOUSEBUTTONDOWN: /* clicking on a piece */
-                //   if (event.motion.x    event.motion.y 
+                    for (int i = 0; i < 8; i++)
+                    {   for (int j = 0; j < 8; j++)
+                        {       /* checking location of click */
+                            if (  event.motion.x >= boardArray[i][j].x && event.motion.x <= boardArray[i][j].x + 80 
+                               && event.motion.y >= boardArray[i][j].y && event.motion.y <= boardArray[i][j].y + 80)
+                            {   if (select == 0)        /******* initial click to select piece ********/
+                                {
+                                    if (pieceArray[i][j].h == 1)    /* checking if the selection is empty */
+                                    {
+                                        break;
+                                    }
+                                    x = i; y = j;   
+                                    SDL_BlitSurface(highlights, &yellow, screen, &boardArray[i][j]);    /* highlight selected piece */
+                                    SDL_Flip(screen);   /* update display */
+                                    select = 1;         /* set select flag up */
+                                    break;
+                                }
+                                else if (select == 1)   /***** second click to decide destination *****/
+                                {
+                                    if (&pieceArray[i][j] ==  &pieceArray[x][y])    /* if user clicks on the same square as desination */
+                                    {
+                                        SDL_BlitSurface(baseBoard, &boardArray[i][j], screen, &boardArray[i][j]);   /* removes the yellow highlight */
+                                        SDL_BlitSurface(chessPieces, &pieceArray[x][y], screen, &boardArray[x][y]); /*                              */
+                                        SDL_Flip(screen);   /* update screen*/
+                                        select = 0;         /* select down */
+                                        break;
+                                    }
+                                    if (pieceArray[i][j].h != 1)    /* in the case of eating a piece */ 
+                                    {
+                                        SDL_BlitSurface(baseBoard, &boardArray[i][j], screen, &boardArray[i][j]);   /* paste base square */  
+                                        SDL_BlitSurface(chessPieces, &pieceArray[x][y], screen, &boardArray[i][j]); /* place piece */
+                                        SDL_BlitSurface(baseBoard, &boardArray[x][y], screen, &boardArray[x][y]);   /* replace old square with base */
+                                        pieceArray[i][j] = pieceArray[x][y];                                        /* set new square on piece array */
+                                        pieceArray[x][y] = empty;                                                   /* set old square to empty */
+                                        SDL_Flip(screen);   /* update screen */
+                                        select = 0;         /* select down */
+                                        break;
+                                    }
+                                    else                            /* in the case of moving to empty square */
+                                    {
+                                        SDL_BlitSurface(chessPieces, &pieceArray[x][y], screen, &boardArray[i][j]); /* place piece */
+                                        SDL_BlitSurface(baseBoard, &boardArray[x][y], screen, &boardArray[x][y]);   /* replace old square with base */
+                                        pieceArray[i][j] = pieceArray[x][y];                                        /* set new square on piece array */
+                                        pieceArray[x][y] = empty;                                                   /* set old square to empty */
+                                        SDL_Flip(screen);   /* update screen */
+                                        select = 0;
+                                        break;
+                                    }
+                                }
+                            } /* end first if */  
+                             
+                        }   
+                    }   /* end first for */
                     break;
                 
                 case SDL_QUIT:  /* Handles if user presses "x" button on window */
@@ -214,7 +317,8 @@ int main(int argc, char *args[])
     SDL_FreeSurface(whiteBoard); /* white board surface */ 
     SDL_FreeSurface(greenBoard); /* green board surface */
     SDL_FreeSurface(chessPieces);/* chess pieces surface */ 
-    
+    SDL_FreeSurface(highlights); /* square outlines */
+        
     return 0;
 }
 
