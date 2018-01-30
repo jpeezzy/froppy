@@ -38,7 +38,7 @@ int main()
     am = malloc(sizeof(AUTOW));
     av = malloc(sizeof(AUTOW));
     dm = malloc(sizeof(DECODEW));
-    dv = malloc(sizeof(AUTOW));
+    dv = malloc(sizeof(DECODEW));
 
     // Intialize the weights
     randReluArray((double *)aw->weight0, 773, 600, 773);
