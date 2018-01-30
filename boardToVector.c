@@ -20,13 +20,15 @@ void boardToVector(BSTATE *board, double *vector)
   int shift = 5; /** shifts array by 5 b/c first 5 inputs
                    are used up */
   int piece = 0;
-  for (int color = 0; color < 2; color++)
+  int color, rank, i, j;
+#pragma omp parallel for schedule(static) private(color,rank,i,j)
+  for (color = 0; color < 2; color++)
     {
-      for (int rank = 0; rank < 6; rank++)
+      for (rank = 0; rank < 6; rank++)
         {
-          for (int i = 0; i < 8; i++)
+          for (i = 0; i < 8; i++)
             {
-              for (int j = 0; j < 8; j++)
+              for (j = 0; j < 8; j++)
                 {
                   piece = board->boardarray[i][j];
                   if (piece / 10 == (color) && piece % 10 == (rank + 1) &&
