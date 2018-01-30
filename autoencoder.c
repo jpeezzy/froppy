@@ -81,10 +81,15 @@ int main()
 
     readFenfile((FILE *)che, dataB);
     printf("Finished reading fen file che! \n");
+    BSTATE move = pickRandMove(dataB);
+    boardToVector(&move, (double *) vect);
+
+                    
+    matrixCopy((double *)al->input, (double *)vect, 1, 773);
 
     int t = 1;
     int epochs, stagenum, iter;
-    int batch = 100, bint;
+    int batch = 1, bint;
 
     //this is where the training starts
     for(stagenum = 1; stagenum <= 4; ++stagenum)
@@ -92,16 +97,16 @@ int main()
         t = 1;
         for (epochs = 0; epochs < 1; ++epochs)
         {
-            for(iter=0; iter<1; ++iter)
+            for(iter=0; iter<200; ++iter)
             {   
                 
                 for(bint = 0; bint < batch; ++bint)
                 {
-                    BSTATE move = pickRandMove(dataB);
-                    boardToVector(&move, (double *) vect);
+                    //BSTATE move = pickRandMove(dataB);
+                    //boardToVector(&move, (double *) vect);
 
                     
-                    matrixCopy((double *)al->input, (double *)vect, 1, 773);
+                    //matrixCopy((double *)al->input, (double *)vect, 1, 773);
                     
                     fowardpropAuto(aw, al, dw, dl, stagenum);
                     backpropAutoN(aw, al, dw, dl, ag, dg, stagenum);
@@ -151,6 +156,7 @@ int main()
                 t = t+1;   
             }
         }
+        printf("\n on the next one now \n");
     }
 
 
