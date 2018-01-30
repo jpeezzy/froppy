@@ -1,7 +1,7 @@
 
 CC = gcc
 CFLAGS = -std=c99 -fopenmp -Wall -g -DDEBUG
-MATH= -lm 
+MATH= -lm
 
 randGen.o: randGen.h randGen.c
 	$(CC) $(CFLAGS) -c randGen.c -o randGen.o $(MATH)
@@ -15,6 +15,9 @@ fenToBoardState.o: fenToBoardState.c fenToBoardState.h
 boardToVector.o: boardToVector.c boardToVector.h
 	$(CC) $(CFLAGS) -c boardToVector.c -o boardToVector.o $(MATH)
 
+neuralsave.o: neuralsave.h neuralnet.c
+	$(CC) $(CFLAGS) -c neuralsave.c -o neuralsave.o
+
 neuralnet.o: neuralnet.c neuralnet.h matrix.h randGen.h
 	$(CC) $(CFLAGS) -c neuralnet.c -o neuralnet.o $(MATH)
 
@@ -27,8 +30,8 @@ dataEntry.o: dataEntry.c dataEntry.h fenToBoardState.h dataEntry.h
 autoencoder.o: autoencoder.c matrix.h fenToBoardState.h boardToVector.h neuralnet.h openMP_backprop.h dataEntry.h database.h randGen.h
 	$(CC) $(CFLAGS) -c autoencoder.c -o autoencoder.o $(MATH)
 
-auto: matrix.o fenToBoardState.o boardToVector.o neuralnet.o openMP_backprop.o dataEntry.o autoencoder.o randGen.o
-	$(CC) $(CFLAGS) matrix.o fenToBoardState.o boardToVector.o neuralnet.o openMP_backprop.o dataEntry.o randGen.o autoencoder.o -o Auto $(MATH)
+auto: matrix.o fenToBoardState.o boardToVector.o neuralnet.o openMP_backprop.o dataEntry.o autoencoder.o randGen.o neuralsave.o
+	$(CC) $(CFLAGS) matrix.o fenToBoardState.o boardToVector.o neuralnet.o openMP_backprop.o dataEntry.o randGen.o autoencoder.o neuralsave.o -o Auto $(MATH)
 
 matrixTest.o: matrixTest.c matrix.h neuralnet.h
 	$(CC) $(CFLAGS) -c matrixTest.c -o matrixTest.o

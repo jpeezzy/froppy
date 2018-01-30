@@ -101,7 +101,7 @@ void SaveNN(AUTOW*   aw,
             AUTOW*   am,
             AUTOW*   av,
             DECODEW* dm,
-            AUTOW*   dv)
+            DECODEW*   dv)
 {
     FILE** fileList = createNewset(NUMFILE, 1);
 
@@ -457,7 +457,7 @@ void LoadNN(AUTOW*   aw,
             AUTOW*   am,
             AUTOW*   av,
             DECODEW* dm,
-            AUTOW*   dv)
+            DECODEW*   dv)
 {
     FILE** fileList = createNewset(NUMFILE, 0);
     char   buffer[200];
