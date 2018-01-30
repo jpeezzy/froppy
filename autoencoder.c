@@ -97,7 +97,7 @@ int main()
         t = 1;
         for (epochs = 0; epochs < 1; ++epochs)
         {
-            for(iter=0; iter<200; ++iter)
+            for(iter=0; iter<100; ++iter)
             {   
                 
                 for(bint = 0; bint < batch; ++bint)
