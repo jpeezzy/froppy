@@ -11,6 +11,8 @@ DATABASE* createDataB(void)
 {
     DATABASE* temp  = malloc(sizeof(DATABASE));
     temp->totalData = 0;
+    temp->firstMove=NULL;
+    temp->lastMove=NULL;
     return temp;
 }
 
@@ -19,6 +21,8 @@ ENTRY* createEntry(DATABASE* datab, BSTATE* state)
     ENTRY* temp = malloc(sizeof(ENTRY));
     temp->base  = datab;
     temp->state = state;
+    temp->next=NULL;
+    temp->prev=NULL;
     return temp;
 }
 
@@ -53,6 +57,34 @@ void readFenfile(FILE* fenFilehandle, DATABASE* dataMain)
             dataMain->totalData = dataMain->totalData + 1;
         }
     dataMain->lastMove = curEntry;
+}
+
+//free the fen file in the RAM
+void freeFenfile(DATABASE* dataMain)
+{
+    assert(dataMain);
+    assert(dataMain->totalData);
+    ENTRY* curEntry     = NULL;
+    ENTRY* temp=NULL;
+    curEntry=dataMain->firstMove;
+    assert(curEntry);
+    while(curEntry!=NULL)
+    {
+        free(curEntry->state);
+        if((curEntry->next)!=NULL)
+        {
+            temp=curEntry;
+            curEntry=curEntry->next;
+            free(temp);
+        }
+        else
+        {
+          free(curEntry);
+          break;
+        }
+    }
+    dataMain->totalData=0;
+    free(dataMain);
 }
 
 // pick and return a random move
