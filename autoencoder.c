@@ -100,8 +100,9 @@ int main()
     for(stagenum = 1; stagenum <= 4; ++stagenum)
     {
         t = 1;
-        for (epochs = 0; epochs < 200; ++epochs)
-        {
+        for (epochs = 0; epochs < 10; ++epochs)
+        {   
+            printf("\n on epoch number:%d", epochs);
             for(iter=0; iter<10000; ++iter)
             {
 
@@ -161,7 +162,7 @@ int main()
                 t = t+1;
             }
         }
-        printf("\n on the next one now %d \n", stagenum);
+        printf("\n on stage %d \n", stagenum);
 
     }
 
