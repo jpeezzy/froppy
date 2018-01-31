@@ -1,6 +1,6 @@
 
 CC = gcc
-CFLAGS = -std=c99 -fopenmp -Wall -g -DDEBUG
+CFLAGS = -std=c99 -fopenmp -Wall -g -o2
 MATH= -lm
 
 randGen.o: randGen.h randGen.c
@@ -27,7 +27,7 @@ openMP_backprop.o: openMP_backprop.c openMP_backprop.h matrix.h neuralnet.h
 dataEntry.o: dataEntry.c dataEntry.h fenToBoardState.h dataEntry.h
 	$(CC) $(CFLAGS) -c dataEntry.c -o dataEntry.o $(MATH)
 
-autoencoder.o: autoencoder.c matrix.h fenToBoardState.h boardToVector.h neuralnet.h openMP_backprop.h dataEntry.h database.h randGen.h
+autoencoder.o: autoencoder.c matrix.h fenToBoardState.h boardToVector.h neuralnet.h openMP_backprop.h dataEntry.h database.h randGen.h neuralsave.h
 	$(CC) $(CFLAGS) -c autoencoder.c -o autoencoder.o $(MATH)
 
 auto: matrix.o fenToBoardState.o boardToVector.o neuralnet.o openMP_backprop.o dataEntry.o autoencoder.o randGen.o neuralsave.o
