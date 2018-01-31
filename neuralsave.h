@@ -21,7 +21,7 @@ void SaveNN(AUTOW*   aw,
             AUTOW*   am,
             AUTOW*   av,
             DECODEW* dm,
-            AUTOW*   dv);
+            DECODEW*   dv);
 
 // load everything if possible
 // load on weights if too much work
@@ -34,6 +34,6 @@ void LoadNN(AUTOW*   aw,
             AUTOW*   am,
             AUTOW*   av,
             DECODEW* dm,
-            AUTOW*   dv);
+            DECODEW*   dv);
 
 #endif

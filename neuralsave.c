@@ -976,40 +976,40 @@ void RetrWeight(AUTOW* aw, DECODEW* dw)
 }
 
 // USED FOR TESTING ONLY
-int main(void)
-{
-    FILE*  allFiles = fopen("test.txt", "w");
-    char   buffer[100];
-    double data[2][5] = {{5.4, 3.8, 9.5, 8.55555, 9.12312321},
-                         {9, 10, 5, 4.5, 2.3}};
-    double received[2][5];
-    for (int i = 0; i < 2; ++i)
-        {
-            for (int j = 0; j < 5; ++j)
-                {
-                    fprintf(allFiles, "%f\n", data[i][j]);
-                    printf(" %f ", data[i][j]);
-                    printf("\n");
-                }
-        }
-    printf("\n");
-    fclose(allFiles);
-    allFiles = fopen("test.txt", "r");
-    for (int i = 0; i < 2; ++i)
-        {
-            for (int j = 0; j < 5; ++j)
-                {
-                    sscanf(
-                        fgets(buffer, 100, allFiles), "%lf", &received[i][j]);
-                }
-        }
-    for (int i = 0; i < 2; ++i)
-        {
-            for (int j = 0; j < 5; ++j)
-                {
-                    printf(" %f ", received[i][j]);
-                    printf("\n");
-                }
-        }
-    return 0;
-}
+// int main(void)
+// {
+//     FILE*  allFiles = fopen("test.txt", "w");
+//     char   buffer[100];
+//     double data[2][5] = {{5.4, 3.8, 9.5, 8.55555, 9.12312321},
+//                          {9, 10, 5, 4.5, 2.3}};
+//     double received[2][5];
+//     for (int i = 0; i < 2; ++i)
+//         {
+//             for (int j = 0; j < 5; ++j)
+//                 {
+//                     fprintf(allFiles, "%f\n", data[i][j]);
+//                     printf(" %f ", data[i][j]);
+//                     printf("\n");
+//                 }
+//         }
+//     printf("\n");
+//     fclose(allFiles);
+//     allFiles = fopen("test.txt", "r");
+//     for (int i = 0; i < 2; ++i)
+//         {
+//             for (int j = 0; j < 5; ++j)
+//                 {
+//                     sscanf(
+//                         fgets(buffer, 100, allFiles), "%lf", &received[i][j]);
+//                 }
+//         }
+//     for (int i = 0; i < 2; ++i)
+//         {
+//             for (int j = 0; j < 5; ++j)
+//                 {
+//                     printf(" %f ", received[i][j]);
+//                     printf("\n");
+//                 }
+//         }
+//     return 0;
+// }
