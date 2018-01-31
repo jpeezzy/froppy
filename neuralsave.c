@@ -24,10 +24,12 @@
 FILE** createNewset(char* fileName, int mode)
 {
     FILE* numFile = fopen(fileName, "r");
+
     assert(numFile);
     int    numberofFile = 0;
     char   tempnum[5];
-    char   dirName[30] = "./";
+    char   dirName[100] = "./";
+    char   prevDir[20]="..";
     FILE** handleList  = malloc(sizeof(FILE*) * FILENUM);
     assert(handleList);
     // wl is the last weight, which will be loaded to the next iteration
@@ -46,6 +48,7 @@ FILE** createNewset(char* fileName, int mode)
             // write new number into the file
             fclose(numFile);
             numFile = fopen(fileName, "w+");
+            assert(numFile);
             fprintf(numFile, "%d", numberofFile);
 
             // create the directory to be save and move the working directory
@@ -76,6 +79,10 @@ FILE** createNewset(char* fileName, int mode)
                         fopen(strcat(strcpy(temp, nameAll[i]), tempnum), "r");
                 }
         }
+        //return to original directory
+        if(mode){
+          chdir(prevDir);
+        }
 
     return handleList;
 }
@@ -101,9 +108,9 @@ void SaveNN(AUTOW*   aw,
             AUTOW*   am,
             AUTOW*   av,
             DECODEW* dm,
-            DECODEW*   dv)
+            DECODEW*   dv, char* name)
 {
-    FILE** fileList = createNewset(NUMFILE, 1);
+    FILE** fileList = createNewset(name, 1);
 
     /***************************EncoderWeights**********************************/
     for (int i = 0; i < 773; ++i)
@@ -457,9 +464,9 @@ void LoadNN(AUTOW*   aw,
             AUTOW*   am,
             AUTOW*   av,
             DECODEW* dm,
-            DECODEW*   dv)
+            DECODEW*   dv, char* name)
 {
-    FILE** fileList = createNewset(NUMFILE, 0);
+    FILE** fileList = createNewset(name, 0);
     char   buffer[200];
 
     /***************************EncoderWeights**********************************/
@@ -886,9 +893,9 @@ void LoadNN(AUTOW*   aw,
 }
 
 // used for loading the weight of the last match for training the next match
-void RetrWeight(AUTOW* aw, DECODEW* dw)
+void RetrWeight(AUTOW* aw, DECODEW* dw, char* name)
 {
-    FILE** fileList = createNewset(NUMFILE, 0);
+    FILE** fileList = createNewset(name, 0);
     char   buffer[200];
 
     /***************************EncoderWeights**********************************/
