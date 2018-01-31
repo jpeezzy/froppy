@@ -13,6 +13,8 @@
 #include "neuralnet.h"
 #include "openMP_backprop.h"
 #include "randGen.h"
+#include "neuralsave.h"
+
 int main()
 {
     // create the structs
@@ -75,7 +77,7 @@ int main()
     DATABASE *dataB;
     dataB = createDataB();
     assert(dataB);
-    FILE *che = fopen("res1.txt", "r");
+    FILE *che = fopen("finaldata.txt", "r");
     assert(che);
     printf("Finished asserting che! \n");
 
@@ -89,24 +91,24 @@ int main()
 
     int t = 1;
     int epochs, stagenum, iter;
-    int batch = 1, bint;
-
+    int batch = 200, bint;
+    printf("\n Running \n");
     //this is where the training starts
     for(stagenum = 1; stagenum <= 4; ++stagenum)
     {   
         t = 1;
-        for (epochs = 0; epochs < 1; ++epochs)
+        for (epochs = 0; epochs < 200; ++epochs)
         {
-            for(iter=0; iter<100; ++iter)
+            for(iter=0; iter<10000; ++iter)
             {   
                 
                 for(bint = 0; bint < batch; ++bint)
                 {
-                    //BSTATE move = pickRandMove(dataB);
-                    //boardToVector(&move, (double *) vect);
+                    BSTATE move = pickRandMove(dataB);
+                    boardToVector(&move, (double *) vect);
 
                     
-                    //matrixCopy((double *)al->input, (double *)vect, 1, 773);
+                    matrixCopy((double *)al->input, (double *)vect, 1, 773);
                     
                     fowardpropAuto(aw, al, dw, dl, stagenum);
                     backpropAutoN(aw, al, dw, dl, ag, dg, stagenum);
@@ -156,7 +158,8 @@ int main()
                 t = t+1;   
             }
         }
-        printf("\n on the next one now \n");
+        printf("\n on the next one now %d \n", stagenum);
+        SaveNN(aw,al,dw,dl,ag,dg,am,av,dm,dv);
     }
 
 

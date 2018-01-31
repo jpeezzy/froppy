@@ -489,7 +489,7 @@ void backpropAutoN(AUTOW *  autoweights,
         double inputT[773][1];
         double layer1T[600][1];
 
-        autoencoderE((double *) autolayer->input, (double *) decodelayer->output);
+        //autoencoderE((double *) autolayer->input, (double *) decodelayer->output);
 
         matrixSubtraction((double *) autolayer->input, (double *) decodelayer->output, (double *) totalerror, 1, 773);
         matrixDelta((double *) totalerror, (double *) decodelayer->output, (double *) outputdelta, 1, 773);
@@ -525,7 +525,7 @@ void backpropAutoN(AUTOW *  autoweights,
         double Alayer1T[600][1];
 
         // loss functions
-        autoencoderE((double *)autolayer->input, (double *)decodelayer->output);
+        //autoencoderE((double *)autolayer->input, (double *)decodelayer->output);
 
         // find the error of the entire auto encoder
         matrixSubtraction((double *)autolayer->input, (double *)decodelayer->output,(double *)totalerror, 1, 773);
@@ -573,8 +573,8 @@ void backpropAutoN(AUTOW *  autoweights,
         double Alayer2T[400][1];
         //double Alayer1T[600][1];
 
-        autoencoderE((double *)autolayer->input,
-                (double *)decodelayer->output);
+        //autoencoderE((double *)autolayer->input,
+                //(double *)decodelayer->output);
         matrixSubtraction((double *)autolayer->input,
                 (double *)decodelayer->output,
                 (double *)totalerror,
@@ -688,7 +688,7 @@ void backpropAutoN(AUTOW *  autoweights,
         double AoutputT[100][1];
         double Alayer3T[200][1];
 
-        autoencoderE((double *)autolayer->input, (double *)decodelayer->output);
+        //autoencoderE((double *)autolayer->input, (double *)decodelayer->output);
         matrixSubtraction((double *)autolayer->input, (double *)decodelayer->output, (double *)totalerror, 1, 773);
         matrixDelta((double *)totalerror, (double *)decodelayer->output, (double *)outputdelta, 1, 773);
     
