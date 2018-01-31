@@ -162,9 +162,9 @@ int main()
             }
         }
         printf("\n on the next one now %d \n", stagenum);
-        SaveNN(aw,al,dw,dl,ag,dg,am,av,dm,dv, NUMFILE);
-    }
 
+    }
+SaveNN(aw,al,dw,dl,ag,dg,am,av,dm,dv, NUMFILE);
 
     //free the structs
     free(aw);
