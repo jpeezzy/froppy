@@ -30,6 +30,7 @@ DATABASE* createDataB(void);
 ENTRY* createEntry(DATABASE* datab, BSTATE* state);
 
 void   readFenfile(FILE* fenFilehandle, DATABASE* dataMain);
+void freeFenfile(DATABASE* dataMain);
 BSTATE pickRandMove(DATABASE* dataMain);
 
 #endif

@@ -13,6 +13,11 @@
 #include "neuralnet.h"
 #include "openMP_backprop.h"
 #include "randGen.h"
+#include "neuralsave.h"
+
+//the file that the total number of files will be saved to
+#define NUMFILE "auto.txt"
+
 int main()
 {
     // create the structs
@@ -38,7 +43,7 @@ int main()
     am = malloc(sizeof(AUTOW));
     av = malloc(sizeof(AUTOW));
     dm = malloc(sizeof(DECODEW));
-    dv = malloc(sizeof(AUTOW));
+    dv = malloc(sizeof(DECODEW));
 
     // Intialize the weights
     randReluArray((double *)aw->weight0, 773, 600, 773);
@@ -50,7 +55,7 @@ int main()
     randReluArray((double *)dw->weight2, 400, 600, 400);
     randReluArray((double *)dw->weight3, 600, 773, 600);
 
-    
+
     //intialize the momentum and variance vectors
     matrixZero((double *) am->weight0, 773, 600);
     matrixZero((double *) av->weight0, 773, 600);
@@ -60,7 +65,7 @@ int main()
     matrixZero((double *) av->weight2, 400, 200);
     matrixZero((double *) am->weight3, 200, 100);
     matrixZero((double *) av->weight3, 200, 100);
-   
+
     matrixZero((double *) dm->weight0, 100, 200);
     matrixZero((double *) dv->weight0, 100, 200);
     matrixZero((double *) dm->weight1, 200, 400);
@@ -75,37 +80,43 @@ int main()
     DATABASE *dataB;
     dataB = createDataB();
     assert(dataB);
-    FILE *che = fopen("res1.txt", "r");
+    FILE *che = fopen("finaldata.txt", "r");
     assert(che);
     printf("Finished asserting che! \n");
 
     readFenfile((FILE *)che, dataB);
     printf("Finished reading fen file che! \n");
+    BSTATE move = pickRandMove(dataB);
+    boardToVector(&move, (double *) vect);
+
+
+    matrixCopy((double *)al->input, (double *)vect, 1, 773);
 
     int t = 1;
     int epochs, stagenum, iter;
-    int batch = 100, bint;
-
+    int batch = 200, bint;
+    printf("\n Running \n");
     //this is where the training starts
     for(stagenum = 1; stagenum <= 4; ++stagenum)
-    {   
+    {
         t = 1;
-        for (epochs = 0; epochs < 1; ++epochs)
-        {
-            for(iter=0; iter<1; ++iter)
-            {   
-                
+        for (epochs = 0; epochs < 10; ++epochs)
+        {   
+            printf("\n on epoch number:%d", epochs);
+            for(iter=0; iter<10000; ++iter)
+            {
+
                 for(bint = 0; bint < batch; ++bint)
                 {
                     BSTATE move = pickRandMove(dataB);
                     boardToVector(&move, (double *) vect);
 
-                    
+
                     matrixCopy((double *)al->input, (double *)vect, 1, 773);
-                    
+
                     fowardpropAuto(aw, al, dw, dl, stagenum);
                     backpropAutoN(aw, al, dw, dl, ag, dg, stagenum);
-                    
+
                     if(stagenum == 1)
                     {
                         matrixAddition((double *) tempag->weight0, (double *) ag->weight0, 773, 600);
@@ -119,7 +130,7 @@ int main()
                     else if(stagenum == 3)
                     {
                         matrixAddition((double *) tempag->weight2, (double *) ag->weight2, 400, 200);
-                        matrixAddition((double *) tempdg->weight1, (double *) dg->weight1, 200, 400); 
+                        matrixAddition((double *) tempdg->weight1, (double *) dg->weight1, 200, 400);
                     }
                     else if(stagenum == 4)
                     {
@@ -141,19 +152,23 @@ int main()
                 else if(stagenum == 3)
                 {
                     matrixZero((double *) tempag->weight2, 400, 200);
-                    matrixZero((double *) tempdg->weight1, 200, 400); 
+                    matrixZero((double *) tempdg->weight1, 200, 400);
                 }
                 else if(stagenum == 4)
                 {
                     matrixZero((double *) tempag->weight3, 200, 100);
                     matrixZero((double *) tempdg->weight0, 100, 200);
                 }
-                t = t+1;   
+                t = t+1;
             }
         }
+        printf("\n on stage %d \n", stagenum);
+
     }
 
-
+    //cleanup
+    SaveNN(aw,al,dw,dl,ag,dg,am,av,dm,dv, NUMFILE);
+    freeFenfile(dataB);
     //free the structs
     free(aw);
     free(al);

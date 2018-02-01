@@ -298,10 +298,11 @@ float alphabeta(NODE *node, float alpha, float beta, PLAYER minmax)
 MENTRY *minmax(BSTATE *currentBoard)
 {   
     assert(currentBoard);
+    BSTATE *cpyBoard;
     MENTRY *bestMove = NULL;
     NODE *tree = NULL;
     NODE *current = NULL;
-	  NODE *temp = NULL;
+    NODE *temp = NULL;
     NODE *start = NULL;
     int length;  
 
@@ -309,8 +310,11 @@ MENTRY *minmax(BSTATE *currentBoard)
     clock_t start_time = clock();
     clock_t time_elapsed; 
     
+    // copies current board to not change it  
+    cpyBoard = createBstate();
+    copyBstate(currentBoard, cpyBoard);
     // creates first 2 depths of the tree 
-    tree = createNode(NULL, currentBoard);
+    tree = createNode(NULL, cpyBoard);
     current = tree;
     start = generateLayer(current);
     

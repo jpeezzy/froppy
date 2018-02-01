@@ -246,7 +246,7 @@ void matrixAddition(double *h_a, double *h_b, int m, int n)
 			{
 				for (int j = 0; j < n; ++j) 
 				{
-				    h_a[i*n+j] = h_a[i*n+j] + (1.0/200.) * h_b[i*n+j];
+				    h_a[i*n+j] = h_a[i*n+j] + (1.0/200.0)*h_b[i*n+j];
 				}
 			}
 	}

@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "neuralnet.h"
 // check how many files we have had then create new data files for other files
 // to write in, return an array of file handle
 FILE** createNewset(char* fileName, int mode);
@@ -21,7 +22,7 @@ void SaveNN(AUTOW*   aw,
             AUTOW*   am,
             AUTOW*   av,
             DECODEW* dm,
-            AUTOW*   dv);
+            DECODEW*   dv, char* name);
 
 // load everything if possible
 // load on weights if too much work
@@ -34,6 +35,7 @@ void LoadNN(AUTOW*   aw,
             AUTOW*   am,
             AUTOW*   av,
             DECODEW* dm,
-            AUTOW*   dv);
+            DECODEW*   dv, char* name);
 
+void RetrWeight(AUTOW* aw, DECODEW* dw, char* name);
 #endif
