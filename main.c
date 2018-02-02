@@ -12,8 +12,8 @@ int main(int argc, char *args[])
 
     screen = SDL_SetVideoMode(WIDTH, HEIGHT, BPP, SDL_SWSURFACE); /* Inputs settings for screen */
     DisplayWindow("Intro.bmp", screen, 1000);    
-            /* @@@@@change out menu @@@@@ */
 
+    SDL_WM_SetCaption("Froppy Chess Game", NULL);   /* Giving the window a title */
 
     /* Surface initializations and assignments */
     SDL_Surface *greenBoard = NULL;      /* Making surface for green part of board */
@@ -35,7 +35,7 @@ int main(int argc, char *args[])
     }
 
     SDL_Surface *chessPieces = NULL;         /* Making surface for chess pieces */
-    chessPieces = SDL_LoadBMP("ChessPieces3Green.bmp");
+    chessPieces = SDL_LoadBMP("ChessPiecesRedraw.bmp");
     Uint32 color = SDL_MapRGB(chessPieces->format, 0xFF,0xFF,0xFF); /* Filtering out the unwanted background color */
     SDL_SetColorKey(chessPieces, SDL_SRCCOLORKEY, color);    
     
@@ -104,17 +104,22 @@ int main(int argc, char *args[])
    
  
     int quit = 0;   /* Flag for ending menu while loop */
-    
-    while (SDL_PollEvent(&introEvent))
-    {
-        if (introEvent.type == SDL_MOUSEBUTTONDOWN)  
+    while (quit !=1)
+    { 
+        while (SDL_PollEvent(&introEvent))
         {
-            Add_BoxFile("Menu1.bmp", screen, 0,0);
-            SDL_Flip(screen);   
-            break;
+            if (introEvent.type == SDL_MOUSEBUTTONUP)  
+            {
+                Add_BoxFile("Menu1.bmp", screen, 0,0);
+                SDL_Flip(screen);
+                quit = 1;   
+                break;
+            }
         }
     }         
-    
+
+    quit = 0; /* resetting quit flag for next loop */    
+
     while (quit != 1)
     {
         while(SDL_PollEvent(&event))    /* Starting poll for Menu */
@@ -158,7 +163,7 @@ int main(int argc, char *args[])
                         else if (event.motion.y >= 346 && event.motion.y <= 449)     /* Play button */    
                         {    
                             printf("You chose to play! \n");
-                            CreateBoard(whiteBoard, greenBoard, screen);    /* Making board graphics */ 
+                            CreateBoard(greenBoard, whiteBoard, screen);    /* Making board graphics */ 
         
                             baseBoard = SDL_DisplayFormat(screen);          /* Copying board for reference */ 
                             SDL_BlitSurface(screen, NULL, baseBoard, NULL); 
@@ -207,16 +212,16 @@ int main(int argc, char *args[])
                             pieceArray[5][7] = wB;	
 
                     		/* Queens */
-                   	    SDL_BlitSurface(chessPieces, &bQ, screen, &boardArray[4][0]);
-                            pieceArray[4][0] = bQ;
-                   	    SDL_BlitSurface(chessPieces, &wQ, screen, &boardArray[4][7]);
-                            pieceArray[4][7] = wQ;
+                   	    SDL_BlitSurface(chessPieces, &bQ, screen, &boardArray[3][0]);
+                            pieceArray[3][0] = bQ;
+                   	    SDL_BlitSurface(chessPieces, &wQ, screen, &boardArray[3][7]);
+                            pieceArray[3][7] = wQ;
 
 				            /* Kings */
-                   	    SDL_BlitSurface(chessPieces, &bK, screen, &boardArray[3][0]);
-                            pieceArray[3][0] = bK;
-                   	    SDL_BlitSurface(chessPieces, &wK, screen, &boardArray[3][7]);
-                            pieceArray[3][7] = wK;
+                   	    SDL_BlitSurface(chessPieces, &bK, screen, &boardArray[4][0]);
+                            pieceArray[4][0] = bK;
+                   	    SDL_BlitSurface(chessPieces, &wK, screen, &boardArray[4][7]);
+                            pieceArray[4][7] = wK;
 
                             quit = 1;
                      	} /* end elseif */
