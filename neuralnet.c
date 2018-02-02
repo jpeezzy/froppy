@@ -77,16 +77,9 @@ double tanhActivation(double x, int flag)
 void reluArray(double *array, int m, int n, int flag)
 {
     int i, j;
-    int tid, nthreads, chunk;
-    chunk = 10;
 #pragma omp parallel
     {
-        tid = omp_get_thread_num();
-        if (tid == 0)
-        {
-            nthreads = omp_get_num_threads();
-        }
-#pragma omp for schedule(static, chunk)
+#pragma omp for schedule(static, 1)
         for (i = 0; i < m; ++i)
         {
             for (j = 0; j < n; ++j)
@@ -143,16 +136,9 @@ void nadam(double *w, double *g, double *m, double *v, int t)
 void nadamArray(double *W, double *G, double *M, double *V, int m, int n, int t)
 {
     int i, j;
-    int chunk, nthreads, tid;
-    chunk = 10;
 #pragma omp parallel
     {
-        tid = omp_get_thread_num();
-        if (tid == 0)
-        {
-            nthreads = omp_get_num_threads();
-        }
-#pragma omp for schedule(static, chunk)
+#pragma omp for schedule(static, 1)
         for (i = 0; i < m; ++i)
         {
             for (j = 0; j < n; ++j)
@@ -180,16 +166,8 @@ void nadamAuto(AUTOW *  autoweights,
         int      t,
         int      stage)
 {
-    int tid, nthreads, chunk;
-    chunk = 10;
 #pragma omp parallel
     {
-        tid = omp_get_thread_num();
-        if (tid == 0)
-        {
-            nthreads = omp_get_num_threads();
-        }
-
         // stage 1 of the auto encoder
         if (stage == 1)
         {

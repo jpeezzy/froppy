@@ -80,7 +80,7 @@ int main()
     DATABASE *dataB;
     dataB = createDataB();
     assert(dataB);
-    FILE *che = fopen("finaldata.txt", "r");
+    FILE *che = fopen("res1.txt", "r");
     assert(che);
     printf("Finished asserting che! \n");
 
@@ -99,13 +99,16 @@ int main()
     //this is where the training starts
     for(stagenum = 1; stagenum <= 4; ++stagenum)
     {
+        printf("\n On stage %d",stagenum);
         t = 1;
-        for (epochs = 0; epochs < 10; ++epochs)
+        for (epochs = 0; epochs < 5; ++epochs)
         {   
             printf("\n on epoch number:%d", epochs);
-            for(iter=0; iter<10000; ++iter)
+            for(iter=0; iter<2000; ++iter)
             {
-
+            //#pragma omp parallel
+            //{
+                //#pragma omp for schedule(dynamic,1)
                 for(bint = 0; bint < batch; ++bint)
                 {
                     BSTATE move = pickRandMove(dataB);
@@ -116,7 +119,7 @@ int main()
 
                     fowardpropAuto(aw, al, dw, dl, stagenum);
                     backpropAutoN(aw, al, dw, dl, ag, dg, stagenum);
-
+                
                     if(stagenum == 1)
                     {
                         matrixAddition((double *) tempag->weight0, (double *) ag->weight0, 773, 600);
@@ -138,6 +141,7 @@ int main()
                         matrixAddition((double *) tempdg->weight0, (double *) dg->weight0, 100, 200);
                     }
                 }
+            //}
                 nadamAuto(aw, dw, tempag, tempdg, am, av, dm, dv, t, stagenum);
                 if(stagenum == 1)
                 {
@@ -162,12 +166,13 @@ int main()
                 t = t+1;
             }
         }
-        printf("\n on stage %d \n", stagenum);
+        //printf("\n on stage %d \n", stagenum);
 
+        SaveNN(aw,al,dw,dl,ag,dg,am,av,dm,dv, NUMFILE);
     }
 
     //cleanup
-    SaveNN(aw,al,dw,dl,ag,dg,am,av,dm,dv, NUMFILE);
+//    SaveNN(aw,al,dw,dl,ag,dg,am,av,dm,dv, NUMFILE);
     freeFenfile(dataB);
     //free the structs
     free(aw);
