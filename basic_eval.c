@@ -10,6 +10,7 @@
  */
 #include "basic_eval.h"
 #include <stdio.h>
+#include <assert.h>
 #include "boardstate.h"
 #include "movelist.h"
 
@@ -27,7 +28,7 @@ static int piece_weight[6] = {1, 3, 3, 5, 9, 200};
 // Pawn, Knight, Bishop, Rook Queen, King
 
 // 63- to flip
-static int piece_square_table[6][8][8] = {
+static int piece_square_table[6][64] = {
     {0,   0,  0,  0,   0,   0,   0,  0,   78,  83, 86, 73,  102, 82, 85, 90,
      7,   29, 21, 44,  40,  31,  44, 7,   -17, 16, -2, 15,  14,  0,  15, -13,
      -26, 3,  10, 9,   6,   1,   0,  -23, -22, 9,  5,  -11, -10, -2, 3,  -19,
@@ -67,44 +68,48 @@ static int piece_square_table[6][8][8] = {
      -50, -47, -42, -43, -79, -64, -32, -29, -32, -4,  3,   -14, -50,
      -57, -18, 13,  4,   17,  30,  -3,  -14, 6,   -1,  40,  18}};
 
-int basicEvaluation(BSTATE* currentboard, MLIST* all_moves)
+int basicEvaluation(BSTATE* currentboard)
 {
     double eval_score = 0.0;
+    MLIST* all_moves = NULL;
+    all_moves = createMovelist();
+    allLegal(all_moves, currentboard);
     assert(all_moves);
     MENTRY* current_move = all_moves->First;
     // int     piece_count[12] = {0};
-
     // compute mobility score
     eval_score += all_moves->movenum * MOBILITY_WEIGHT;
 
     int temp = 0;
+    int change = 0;
     while (current_move != NULL)
         {
             for (int board_index = 0; board_index < 64; ++board_index)
                 {
                     // check if the current position is changed on next move
-                    if (board_index == all_moves->CLOC)
+                    if (board_index == current_move->CLOC)
                         {
+                            change = 1;
                             temp        = board_index;
-                            board_index = all_moves->NLOC;
+                            board_index = current_move->NLOC;
                         }
 
                     // black case
                     if (!currentboard->sidetomove)
                         {
-                            if (currentboard->boardarray[board_index] > 10)
+                            if (currentboard->boardarray[board_index/8][board_index%8] > 10)
                                 {
                                     //++piece_count[boardarray[board_index] -
                                     // 5];
 
                                     eval_score += piece_square_table
-                                        [boardarray[board_index] - 11]
+                                        [currentboard->boardarray[board_index/8][board_index%8] - 11]
                                         [63 - board_index];
                                     // compute material value
                                     eval_score +=
-                                        piece_value[boardarray[board_index] -
+                                        piece_value[currentboard->boardarray[board_index/8][board_index%8] -
                                                     11] *
-                                        piece_weight[boardarray[board_index] -
+                                        piece_weight[currentboard->boardarray[board_index/8][board_index%8] -
                                                      11];
                                 }
                         }
@@ -112,27 +117,33 @@ int basicEvaluation(BSTATE* currentboard, MLIST* all_moves)
                     // white case
                     else if (currentboard->sidetomove)
                         {
-                            if (currentboard->boardarray[board_index] < 9)
+                            if (currentboard->boardarray[board_index/8][board_index%8] < 9)
                                 {
                                     //++piece_count[boardarray[board_index] -
                                     // 1];
                                     // use piece square table to evaluate based
                                     // on position
                                     eval_score += piece_square_table
-                                        [boardarray[board_index] - 1]
+                                        [currentboard->boardarray[board_index/8][board_index%8] - 1]
                                         [board_index];
 
                                     // compute material value
                                     eval_score +=
-                                        piece_value[boardarray[board_index] -
+                                        piece_value[currentboard->boardarray[board_index/8][board_index%8] -
                                                     1] *
-                                        piece_weight[boardarray[board_index] -
+                                        piece_weight[currentboard->boardarray[board_index/8][board_index%8] -
                                                      1];
                                 }
                         }
-                    board_index = temp;
+                    if(change)
+                    {
+                        change = 0;
+                        board_index = temp;
+                    }
                 }
+        current_move = current_move->Next;        
         }
+    deleteMovelist(all_moves);
     return eval_score;
 }
 

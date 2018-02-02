@@ -4,6 +4,7 @@
 #include "minmax.h"
 #include "boardstate.h"
 #include "basic_eval.h"
+#include "movelist.h"
 
 void playerMove(BSTATE *board);
 void aiMove(BSTATE *board);
@@ -11,14 +12,14 @@ void changeSide(BSTATE *board);
 
 int main()
 {   
-    int play;
+    int play = 1;
     BSTATE* board;
     board = createBstate();
     loadStart(board);
     GUI(board->boardarray);
     int score = basicEvaluation(board);
     printf("Eval score = %d\n", score);
-    printf("You are playing as white");
+    printf("You are playing as white\n");
     while(play)
     {
         playerMove(board);
