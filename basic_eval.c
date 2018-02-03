@@ -1,7 +1,7 @@
 /**
  * Simple evaluation function used for early prototyping
  * Author: Khoi Trinh
- * the score is relative to the other side
+ * the score depends only on the current board state
  * the evaluation function provides these features:
  * Material
  * Mobility
@@ -93,8 +93,10 @@ float basicEvaluation(BSTATE* currentboard)
                                  11][63 - board_index];
                         }
 
-                    if (currentboard
-                            ->boardarray[board_index / 8][board_index % 8] < 9)
+                    else if (currentboard->boardarray[board_index / 8]
+                                                     [board_index % 8] < 9 &&
+                             currentboard->boardarray[board_index / 8]
+                                                     [board_index % 8] > 0)
                         {
                             eval_score += piece_square_table
                                 [currentboard->boardarray[board_index / 8]
@@ -115,8 +117,10 @@ float basicEvaluation(BSTATE* currentboard)
                                  11][board_index];
                         }
 
-                    if (currentboard
-                            ->boardarray[board_index / 8][board_index % 8] < 9)
+                    else if (currentboard->boardarray[board_index / 8]
+                                                     [board_index % 8] < 9 &&
+                             currentboard->boardarray[board_index / 8]
+                                                     [board_index % 8] > 0)
                         {
                             eval_score += piece_square_table
                                 [currentboard->boardarray[board_index / 8]
