@@ -103,16 +103,17 @@ int main(int argc, char *args[])
     SDL_Event event; 
    
  
-    int quit = 0;   /* Flag for ending menu while loop */
-    while (quit !=1)
+    int quit = 0;       /* Flag for ending menu while loop */
+    while (quit != 1)    /* Intro screen loop */
     { 
         while (SDL_PollEvent(&introEvent))
         {
-            if (introEvent.type == SDL_MOUSEBUTTONUP)  
+            if (introEvent.type == SDL_MOUSEBUTTONDOWN)  
             {
-                Add_BoxFile("Menu1.bmp", screen, 0,0);
+                Add_BoxFile("Menu.bmp", screen, 0,0);   /* change to menu screen */
                 SDL_Flip(screen);
-                quit = 1;   
+printf("intro click in \n");
+                quit = 1;  
                 break;
             }
         }
@@ -145,7 +146,7 @@ int main(int argc, char *args[])
                     }
                     else 
                     {
-                        Add_BoxFile("Menu1.bmp", screen, 0,0);
+                        Add_BoxFile("Menu.bmp", screen, 0,0);
                         SDL_Flip(screen);
                     } 
     
@@ -241,8 +242,11 @@ int main(int argc, char *args[])
 
     quit = 0;       /* Starting game loop. Resetting quit flag */
     int select = 0; /* flag for initial selection of a piece */
-    int x = 0;      /* storing previous array coordinate (x) */
-    int y = 0;      /* storing previous array coordinate (y) */
+
+    int selectX = 0;/* storing selection coordinate   (x) */
+    int selectY = 0;/* storing selection coordinate   (y) */
+    int destX = 0;  /* storing destination coordinate (x) */
+    int destY = 0;  /* storing destination coordinate (y) */
 
 
     while (quit !=1)
@@ -252,59 +256,47 @@ int main(int argc, char *args[])
             switch (event.type)
             {
                 case SDL_MOUSEBUTTONDOWN: /* clicking on a piece */
-                    for (int i = 0; i < 8; i++)
-                    {   for (int j = 0; j < 8; j++)
-                        {       /* checking location of click */
-                            if (  event.motion.x >= boardArray[i][j].x && event.motion.x <= boardArray[i][j].x + 80 
-                               && event.motion.y >= boardArray[i][j].y && event.motion.y <= boardArray[i][j].y + 80)
-                            {   if (select == 0)        /******* initial click to select piece ********/
-                                {
-                                    if (pieceArray[i][j].h == 1)    /* checking if the selection is empty */
-                                    {
-                                        break;
-                                    }
-                                    x = i; y = j;   
-                                    SDL_BlitSurface(highlights, &yellow, screen, &boardArray[i][j]);    /* highlight selected piece */
-                                    SDL_Flip(screen);   /* update display */
-                                    select = 1;         /* set select flag up */
-                                    break;
-                                }
-                                else if (select == 1)   /***** second click to decide destination *****/
-                                {
-                                    if (&pieceArray[i][j] ==  &pieceArray[x][y])    /* if user clicks on the same square as desination */
-                                    {
-                                        SDL_BlitSurface(baseBoard, &boardArray[i][j], screen, &boardArray[i][j]);   /* removes the yellow highlight */
-                                        SDL_BlitSurface(chessPieces, &pieceArray[x][y], screen, &boardArray[x][y]); /*                              */
-                                        SDL_Flip(screen);   /* update screen*/
-                                        select = 0;         /* select down */
-                                        break;
-                                    }
-                                    if (pieceArray[i][j].h != 1)    /* in the case of eating a piece */ 
-                                    {
-                                        SDL_BlitSurface(baseBoard, &boardArray[i][j], screen, &boardArray[i][j]);   /* paste base square */  
-                                        SDL_BlitSurface(chessPieces, &pieceArray[x][y], screen, &boardArray[i][j]); /* place piece */
-                                        SDL_BlitSurface(baseBoard, &boardArray[x][y], screen, &boardArray[x][y]);   /* replace old square with base */
-                                        pieceArray[i][j] = pieceArray[x][y];                                        /* set new square on piece array */
-                                        pieceArray[x][y] = empty;                                                   /* set old square to empty */
-                                        SDL_Flip(screen);   /* update screen */
-                                        select = 0;         /* select down */
-                                        break;
-                                    }
-                                    else                            /* in the case of moving to empty square */
-                                    {
-                                        SDL_BlitSurface(chessPieces, &pieceArray[x][y], screen, &boardArray[i][j]); /* place piece */
-                                        SDL_BlitSurface(baseBoard, &boardArray[x][y], screen, &boardArray[x][y]);   /* replace old square with base */
-                                        pieceArray[i][j] = pieceArray[x][y];                                        /* set new square on piece array */
-                                        pieceArray[x][y] = empty;                                                   /* set old square to empty */
-                                        SDL_Flip(screen);   /* update screen */
-                                        select = 0;
-                                        break;
-                                    }
-                                }
-                            } /* end first if */  
-                             
-                        }   
-                    }   /* end first for */
+                    if (select == 0)        /******* initial click to select piece ********/
+                    {
+                        selectX = event.motion.x/80;    /* assigning the square coordinate of the click to SELECTION */
+                        selectY = event.motion.y/80; 
+
+                        if (pieceArray[selectX][selectY].h == 1)    /* if the selection is empty, do not highlight */
+                        {
+                            break;
+                        }
+                        else    /* otherwise, highlight the selection */
+                        {
+                            SDL_BlitSurface(highlights, &yellow, screen, &boardArray[selectX][selectY]);    /* highlight selected piece */
+                            SDL_Flip(screen);   /* update display */
+                            select = 1;         /* set select flag up */
+                            break;
+                        }
+                    }
+                    else if (select == 1)   /***** second click to decide destination *****/
+                    {
+                        destX = event.motion.x/80;  /* assigning the square coordinates of the click to DESTINATION */
+                        destY = event.motion.y/80;
+                        if (&pieceArray[selectX][selectY] ==  &pieceArray[destX][destY])    /* if user clicks on the same square as desination */
+                        {
+                            SDL_BlitSurface(baseBoard, &boardArray[selectX][selectY], screen, &boardArray[selectX][selectY]);   /* removes the yellow highlight */
+                            SDL_BlitSurface(chessPieces, &pieceArray[selectX][selectY], screen, &boardArray[selectX][selectY]); /*                              */
+                            SDL_Flip(screen);   /* update screen*/
+                            select = 0;         /* select down */
+                            break;
+                        }
+                        else if (pieceArray[selectX][selectY].h != 1)    /* in the case of eating a piece */ 
+                        {
+                            SDL_BlitSurface(baseBoard, &boardArray[destX][destY], screen, &boardArray[destX][destY]);           /* paste base square */  
+                            SDL_BlitSurface(chessPieces, &pieceArray[selectX][selectY], screen, &boardArray[destX][destY]);     /* place piece */
+                            SDL_BlitSurface(baseBoard, &boardArray[selectX][selectY], screen, &boardArray[selectX][selectY]);   /* replace old square with base */
+                            pieceArray[destX][destY] = pieceArray[selectX][selectY];                            /* set new square on piece array */
+                            pieceArray[selectX][selectY] = empty;                                       /* set old square to empty */
+                            SDL_Flip(screen);   /* update screen */
+                            select = 0;         /* select down */
+                            break;
+                        }
+                    }/* end of first if */
                     break;
                 
                 case SDL_QUIT:  /* Handles if user presses "x" button on window */
