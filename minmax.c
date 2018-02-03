@@ -122,7 +122,6 @@ void removeNode(NODE *node)
     {
         removeNode(node->next);
     }
-    node->move = NULL;
     if(node->board)
     {
         deleteBstate(node->board);
@@ -133,6 +132,7 @@ void removeNode(NODE *node)
         deleteMovelist(node->legal);
         node->legal = NULL;
     }
+    node->move = NULL;
     node->parent = NULL;
     node->child = NULL;
     node->next = NULL;
@@ -312,7 +312,7 @@ MENTRY *minmax(BSTATE *currentBoard)
     NODE *start = NULL;
     int length;  
 
-    int time = 10000; 
+    int time = 60000; 
     clock_t start_time = clock();
     clock_t time_elapsed; 
     
@@ -383,7 +383,7 @@ float max(NODE* node, float alpha, float beta)
 {
     assert(node);
     NODE *current;
-    NODE *last;
+    NODE *temp;
     float value;
     if (node->child == NULL)
     {	
@@ -410,9 +410,9 @@ float max(NODE* node, float alpha, float beta)
                 }
 		return beta;   // fail hard beta-cutoff
 	    }
-	    alpha = value; // alpha acts like max in MiniMax
-	}
-        last = current;
+	    temp = current;
+            alpha = value; // alpha acts like max in MiniMax
+        }
         current = current->next;
     }
     if(node->parent == NULL)
@@ -422,8 +422,8 @@ float max(NODE* node, float alpha, float beta)
             free(node->move);
             node->move = NULL;
          }
-         assert(last->move);
-         node->move = createMentry(last->move->CLOC, last->move->NLOC);   
+         assert(temp->move);
+         node->move = createMentry(temp->move->CLOC, temp->move->NLOC);   
     }
     current = NULL;
     return alpha;
