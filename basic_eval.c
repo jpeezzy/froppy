@@ -67,95 +67,65 @@ static int piece_square_table[6][64] = {
      -20, -10, -20, -20, -20, -20, -20, -20, -10, 20,  20,  0,   0,
      0,   0,   20,  20,  20,  30,  10,  0,   0,   10,  30,  20}};
 
-int basicEvaluation(BSTATE* currentboard)
+float basicEvaluation(BSTATE* currentboard)
 {
-    double eval_score = 0.0;
+    assert(currentboard);
+
+    float  eval_score = 0.0;
     MLIST* all_moves  = NULL;
     all_moves         = createMovelist();
+
     allLegal(all_moves, currentboard);
     assert(all_moves);
-    MENTRY* current_move = all_moves->First;
-    // int     piece_count[12] = {0};
-    // compute mobility score
-    eval_score += all_moves->movenum * MOBILITY_WEIGHT;
 
-    int temp   = 0;
-    int change = 0;
-    while (current_move != NULL)
+    for (int board_index = 0; board_index < 64; ++board_index)
         {
-            for (int board_index = 0; board_index < 64; ++board_index)
+            // black case
+            // 63-board_index will flip the board
+            if (!currentboard->sidetomove)
                 {
-                    // check if the current position is changed on next move
-                    if (board_index == current_move->CLOC)
+                    if (currentboard
+                            ->boardarray[board_index / 8][board_index % 8] > 10)
                         {
-                            change      = 1;
-                            temp        = board_index;
-                            board_index = current_move->NLOC;
+                            eval_score += piece_square_table
+                                [currentboard->boardarray[board_index / 8]
+                                                         [board_index % 8] -
+                                 11][63 - board_index];
                         }
 
-                    // black case
-                    if (!currentboard->sidetomove)
+                    if (currentboard
+                            ->boardarray[board_index / 8][board_index % 8] < 9)
                         {
-                            if (currentboard->boardarray[board_index / 8]
-                                                        [board_index % 8] > 10)
-                                {
-                                    //++piece_count[boardarray[board_index] -
-                                    // 5];
-
-                                    eval_score += piece_square_table
-                                        [currentboard
-                                             ->boardarray[board_index / 8]
+                            eval_score += piece_square_table
+                                [currentboard->boardarray[board_index / 8]
                                                          [board_index % 8] -
-                                         11][63 - board_index];
-                                    // compute material value
-                                    eval_score +=
-                                        piece_value[currentboard->boardarray
-                                                        [board_index / 8]
-                                                        [board_index % 8] -
-                                                    11] *
-                                        piece_weight[currentboard->boardarray
-                                                         [board_index / 8]
-                                                         [board_index % 8] -
-                                                     11];
-                                }
-                        }
-
-                    // white case
-                    else if (currentboard->sidetomove)
-                        {
-                            if (currentboard->boardarray[board_index / 8]
-                                                        [board_index % 8] < 9)
-                                {
-                                    //++piece_count[boardarray[board_index] -
-                                    // 1];
-                                    // use piece square table to evaluate based
-                                    // on position
-                                    eval_score += piece_square_table
-                                        [currentboard
-                                             ->boardarray[board_index / 8]
-                                                         [board_index % 8] -
-                                         1][board_index];
-
-                                    // compute material value
-                                    eval_score +=
-                                        piece_value[currentboard->boardarray
-                                                        [board_index / 8]
-                                                        [board_index % 8] -
-                                                    1] *
-                                        piece_weight[currentboard->boardarray
-                                                         [board_index / 8]
-                                                         [board_index % 8] -
-                                                     1];
-                                }
-                        }
-                    if (change)
-                        {
-                            change      = 0;
-                            board_index = temp;
+                                 1][63 - board_index];
                         }
                 }
-            current_move = current_move->Next;
+
+            // white case
+            else if (currentboard->sidetomove)
+                {
+                    if (currentboard
+                            ->boardarray[board_index / 8][board_index % 8] > 10)
+                        {
+                            eval_score += piece_square_table
+                                [currentboard->boardarray[board_index / 8]
+                                                         [board_index % 8] -
+                                 11][board_index];
+                        }
+
+                    if (currentboard
+                            ->boardarray[board_index / 8][board_index % 8] < 9)
+                        {
+                            eval_score += piece_square_table
+                                [currentboard->boardarray[board_index / 8]
+                                                         [board_index % 8] -
+                                 1][board_index];
+                        }
+                }
         }
+
     deleteMovelist(all_moves);
     return eval_score;
 }
