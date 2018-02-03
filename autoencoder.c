@@ -104,39 +104,42 @@ int main()
         {   
             printf("\n on epoch number:%d", epochs);
             for(iter=0; iter<10000; ++iter)
-            {
-
-                for(bint = 0; bint < batch; ++bint)
+            {   
+                #pragma omp parallel shared(tempag,tempdg) private(bint)
                 {
-                    BSTATE move = pickRandMove(dataB);
-                    boardToVector(&move, (double *) vect);
+                    #pragma omp for schedule(dynamic,1)
+                        for(bint = 0; bint < batch; ++bint)
+                        {
+                            BSTATE move = pickRandMove(dataB);
+                            boardToVector(&move, (double *) vect);
 
 
-                    matrixCopy((double *)al->input, (double *)vect, 1, 773);
+                            matrixCopy((double *)al->input, (double *)vect, 1, 773);
 
-                    fowardpropAuto(aw, al, dw, dl, stagenum);
-                    backpropAutoN(aw, al, dw, dl, ag, dg, stagenum);
+                            fowardpropAuto(aw, al, dw, dl, stagenum);
+                            backpropAutoN(aw, al, dw, dl, ag, dg, stagenum);
 
-                    if(stagenum == 1)
-                    {
-                        matrixAddition((double *) tempag->weight0, (double *) ag->weight0, 773, 600);
-                        matrixAddition((double *) tempdg->weight3, (double *) dg->weight3, 600, 773);
-                    }
-                    else if(stagenum == 2)
-                    {
-                        matrixAddition((double *) tempag->weight1, (double *) ag->weight1, 600, 400);
-                        matrixAddition((double *) tempdg->weight2, (double *) dg->weight2, 400, 600);
-                    }
-                    else if(stagenum == 3)
-                    {
-                        matrixAddition((double *) tempag->weight2, (double *) ag->weight2, 400, 200);
-                        matrixAddition((double *) tempdg->weight1, (double *) dg->weight1, 200, 400);
-                    }
-                    else if(stagenum == 4)
-                    {
-                        matrixAddition((double *) tempag->weight3, (double *) ag->weight3, 200, 100);
-                        matrixAddition((double *) tempdg->weight0, (double *) dg->weight0, 100, 200);
-                    }
+                            if(stagenum == 1)
+                            {
+                                matrixAddition((double *) tempag->weight0, (double *) ag->weight0, 773, 600);
+                                matrixAddition((double *) tempdg->weight3, (double *) dg->weight3, 600, 773);
+                            }
+                            else if(stagenum == 2)
+                            {
+                                matrixAddition((double *) tempag->weight1, (double *) ag->weight1, 600, 400);
+                                matrixAddition((double *) tempdg->weight2, (double *) dg->weight2, 400, 600);
+                            }
+                            else if(stagenum == 3)
+                            {
+                                matrixAddition((double *) tempag->weight2, (double *) ag->weight2, 400, 200);
+                                matrixAddition((double *) tempdg->weight1, (double *) dg->weight1, 200, 400);
+                            }
+                            else if(stagenum == 4)
+                            {
+                                matrixAddition((double *) tempag->weight3, (double *) ag->weight3, 200, 100);
+                                matrixAddition((double *) tempdg->weight0, (double *) dg->weight0, 100, 200);
+                            }
+                }
                 }
                 nadamAuto(aw, dw, tempag, tempdg, am, av, dm, dv, t, stagenum);
                 if(stagenum == 1)
@@ -159,7 +162,9 @@ int main()
                     matrixZero((double *) tempag->weight3, 200, 100);
                     matrixZero((double *) tempdg->weight0, 100, 200);
                 }
+            
                 t = t+1;
+                
             }
         }
         printf("\n on stage %d \n", stagenum);
