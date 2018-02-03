@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <assert.h>
 #include "testgui.h"
 #include "minmax.h"
@@ -29,9 +30,23 @@ int main()
         GUI(board->boardarray);
         legal = createMovelist();
         allLegal(legal, board);
-        printf("legal movenum = %d\n", legal->movenum);
+        if(legal->movenum == 0)
+        {
+            printf("Checkmate!\n");
+            deleteMovelist(legal);
+            break;
+        }
+        deleteMovelist(legal);
         aiMove(board);
         GUI(board->boardarray);
+        legal = createMovelist();
+        allLegal(legal, board);
+        if(legal->movenum == 0)
+        {
+            printf("Checkmate!\n");
+            deleteMovelist(legal);
+            break;
+        }
         printf("Enter 1 to continue, 0 to exit: ");
         scanf("%d", &play);
         deleteMovelist(legal);
@@ -69,10 +84,11 @@ void aiMove(BSTATE *board)
     assert(board);
     MENTRY *move;
     move = minmax(board);
+    assert(move);
     int legal = checkLegal(board, move->CLOC, move->NLOC);
     if(!legal)
     {
-        printf("AI made invalid move\n");
+        perror("AI made invalid move\n");
     }
     mov(board->boardarray, move->CLOC, move->NLOC);
     changeSide(board);  
