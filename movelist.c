@@ -190,7 +190,7 @@ void pawnmove(MLIST *list, BSTATE *board, int pawnlocation)
             {
                 if(board->boardarray[pawnx-1][pawny+1] != 0)
                 {
-                    newlocation = 8*(pawnx+1)+(pawny+1);
+                    newlocation = 8*(pawnx-1)+(pawny+1);
                     if(checkmove(board, pawnlocation, newlocation))
                     {
                         appendMove(list, createMentry(pawnlocation,newlocation));
@@ -1128,8 +1128,12 @@ int checkchecker(BSTATE *board, int flag)
         for(i=1; i<=j; ++i)
         {
             if( (board->boardarray[kingx-i][kingy-i]/10 != flag) && (board->boardarray[kingx-i][kingy-i] != 0))
-            {
-                return 1;
+            {  
+                if(board->boardarray[kingx-i][kingy-i]%10 == 3 || board->boardarray[kingx-i][kingy-i]%10 == 5)
+                {
+                    return 1;
+                }
+                break;
             }
             else if( (board->boardarray[kingx-i][kingy-i]/10 != flag) && (board->boardarray[kingx-i][kingy-i] != 0))
             {
@@ -1154,7 +1158,11 @@ int checkchecker(BSTATE *board, int flag)
         {
             if( (board->boardarray[kingx-i][kingy+i]/10 != flag) && (board->boardarray[kingx-i][kingy+i] != 0))
             {
-                return 1;
+                if(board->boardarray[kingx-i][kingy+i]%10 == 3 || board->boardarray[kingx-i][kingy+i]%10 == 5)
+                {
+                    return 1;
+                }
+                break;
             }
             else if( (board->boardarray[kingx-i][kingy+i]/10 == flag) && (board->boardarray[kingx-i][kingy+i] != 0))
             {
@@ -1178,8 +1186,11 @@ int checkchecker(BSTATE *board, int flag)
         {
             if( (board->boardarray[kingx+i][kingy+i]/10 != flag) && (board->boardarray[kingx+i][kingy+i] != 0))
             {
-                return 1;
-                
+                if(board->boardarray[kingx+i][kingy+i]%10 == 3 || board->boardarray[kingx+i][kingy+i]%10 == 5)
+                {
+                    return 1;
+                }
+                break;
             }
             else if( (board->boardarray[kingx+i][kingy+i]/10 == flag) && (board->boardarray[kingx+i][kingy+i] != 0))
             {
@@ -1203,7 +1214,11 @@ int checkchecker(BSTATE *board, int flag)
         {
             if( (board->boardarray[kingx+i][kingy-i]/10 != flag) && (board->boardarray[kingx+i][kingy-i] != 0))
             {
-                return 1;
+                if(board->boardarray[kingx+i][kingy-i]%10 == 3 || board->boardarray[kingx+i][kingy-i]%10 == 5)
+                {
+                    return 1;
+                }
+                break;
             }
             else if( (board->boardarray[kingx+i][kingy-i]/10 == flag) && (board->boardarray[kingx+i][kingy-i] != 0))
             {
