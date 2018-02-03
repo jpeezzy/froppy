@@ -35,6 +35,10 @@ void Move(SDL_Surface *piece, SDL_Rect sprite, SDL_Surface *screen, SDL_Rect rec
 /* Adds the pieces in the intial position onto the board */
 //void InitializeBoard(SDL_Surface *pieces, SDL_Surface *screen, SDL_Rect boardArray[8][8]);
 
+/* Function to move a piece both on the board array and the GUI */
+void MovePiece(int selectX, int selectY, int destX, int destY, SDL_Surface *baseBoard, 
+SDL_Surface *chessPieces, SDL_Rect pieceArray[8][8], SDL_Rect boardArray[8][8], SDL_Surface *screen, SDL_Rect empty);
+
 /* Exit protocol */
 void Exit(SDL_Surface *screen);
 

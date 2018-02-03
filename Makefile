@@ -3,6 +3,10 @@ CC = gcc
 CFLAGS = -std=c99 -fopenmp -Wall -g -o2
 MATH= -lm
 
+ChessGUI: main.c ChessGUI.o
+	$(CC) $(CFLAGS) -lSDL main.c ChessGUI.o -o ChessGUI 
+	./ChessGUI	
+
 randGen.o: randGen.h randGen.c
 	$(CC) $(CFLAGS) -c randGen.c -o randGen.o $(MATH)
 
@@ -39,7 +43,8 @@ matrixTest.o: matrixTest.c matrix.h neuralnet.h
 MT: matrixTest.o matrix.o neuralnet.o randGen.o
 	$(CC) $(CFLAGS) matrixTest.o matrix.o neuralnet.o randGen.o -o MT -lm
 
-
+ChessGUI.o: ChessGUI.h ChessGUI.c
+	$(CC) $(CFLAGS) -c -lSDL ChessGUI.c -o ChessGUI.o
 
 clean:
 	rm -f *o

@@ -97,23 +97,30 @@ int main(int argc, char *args[])
                  wK.h = 80;   wQ.h = 80;   wR.h = 80;   wB.h = 80;   wH.h = 80;   wP.h = 80;
     /****************************************************************************************/
 
+    printf("--------FROPPY CHESS GAME---------- \n"); 
 
 /** Start of user interaction loop  **********************************************************/
     SDL_Event introEvent;
     SDL_Event event; 
    
  
-    int quit = 0;       /* Flag for ending menu while loop */
-    while (quit != 1)    /* Intro screen loop */
+    int quit = 0;        /* Flag for ending menu while loop */
+    while (quit != 1)    /******** INTRO SCREEN LOOP ********* */
     { 
         while (SDL_PollEvent(&introEvent))
         {
-            if (introEvent.type == SDL_MOUSEBUTTONDOWN)  
+            if (introEvent.type == SDL_MOUSEBUTTONUP)  
             {
                 Add_BoxFile("Menu.bmp", screen, 0,0);   /* change to menu screen */
                 SDL_Flip(screen);
-printf("intro click in \n");
                 quit = 1;  
+                break;
+            }
+            if (introEvent.type == SDL_QUIT)
+            {
+                printf("You exited out of the window. \n");
+                Exit(screen);
+                quit = 1;
                 break;
             }
         }
@@ -123,12 +130,11 @@ printf("intro click in \n");
 
     while (quit != 1)
     {
-        while(SDL_PollEvent(&event))    /* Starting poll for Menu */
+        while(SDL_PollEvent(&event))    /******* MENU SCREEN LOOP ********/
         {
             switch(event.type)
             {
                 case SDL_MOUSEBUTTONDOWN: 
-                    printf("Coordinates of your click: %d %d \n", event.motion.x, event.motion.y);
                     if (event.motion.x >= 176 && event.motion.x <= 468)
                     { 
                         if ( event.motion.y >= 475 && event.motion.y <= 578)    /* Quit button */
@@ -154,35 +160,75 @@ printf("intro click in \n");
                 case SDL_MOUSEBUTTONUP:
                     if (event.motion.x >= 176 && event.motion.x <= 468)
                     { 
-                        if ( event.motion.y >= 475 && event.motion.y <= 578)    /* Quit button */
+                        if ( event.motion.y >= 475 && event.motion.y <= 578)        /* Quit button */
                         {
                             printf("You chose to quit! \n");
                             Exit(screen);
                             return 0;
                         }
                     
-                        else if (event.motion.y >= 346 && event.motion.y <= 449)     /* Play button */    
+                        else if (event.motion.y >= 346 && event.motion.y <= 449)    /* Play button */    
                         {    
                             printf("You chose to play! \n");
-                            CreateBoard(greenBoard, whiteBoard, screen);    /* Making board graphics */ 
-        
-                            baseBoard = SDL_DisplayFormat(screen);          /* Copying board for reference */ 
-                            SDL_BlitSurface(screen, NULL, baseBoard, NULL); 
-                        
-                    
+                            Add_BoxFile("ChooseColor.bmp", screen, 0,0);    /* moves to colorchoice screen  */
+                            SDL_Flip(screen);
+                            quit = 1;
+                            break;
+                        }
+                    }
+                    break;
 
-                    
-                        /* Putting initial pieces on the board */
-                 	          /* Pawns */
-                 	    for (int i = 0; i < 8; i++) 
-                	    { 
-                 	        SDL_BlitSurface(chessPieces, &bP, screen, &boardArray[i][1]); 
-                                pieceArray[i][1] = bP; 
-                	        SDL_BlitSurface(chessPieces, &wP, screen, &boardArray[i][6]);
-                                pieceArray[i][6] = wP;
-                 	    }
-        
-	                         /* Rooks */
+                 case SDL_QUIT:     /* Handles if user presses "x" button on window */
+                    printf("You exited out of the window. \n");
+                    Exit(screen);
+                    quit = 1;
+                    break;
+
+            }/* end switch */
+        }/* end PollEvent loop */
+    }/* end main loop */
+       
+    quit = 0; /* resetting quit flag */
+
+    while (quit != 1)
+    {
+        while (SDL_PollEvent(&event))   /******* COLORCHOICE & BOARD INSTANTIATION  LOOP *********/
+        {
+            switch (event.type)
+            {
+                case SDL_MOUSEBUTTONUP:
+                    if (event.motion.x >= 182 && event.motion.x <= 458      /* if "BLACK" button is pressed */
+                     && event.motion.y >= 58  && event.motion.y <= 161)
+                    {
+                        color = 1;  /* setting side color to black */
+                        printf("You chose to play as BLACK side \n\n");
+                    }
+                    else if (event.motion.x >= 179 && event.motion.x <= 515 /* if "WHITE" button is pressed */
+                          && event.motion.y >= 478 && event.motion.y <= 581)
+                    {
+                        color = 0;  /* seting side color to white */
+                        printf("You chose to play as WHITE side. \n\n");
+                    }    
+
+                    CreateBoard(greenBoard, whiteBoard, screen);    /* Making board graphics */ 
+                    baseBoard = SDL_DisplayFormat(screen);          /* Copying board for reference */ 
+                    SDL_BlitSurface(screen, NULL, baseBoard, NULL); 
+
+
+                    /* Putting initial pieces on the board */
+                    printf("[ Creating & Initializing the Board ] \n");
+            
+                          /* Pawns */
+                 	for (int i = 0; i < 8; i++) 
+                	{ 
+                 	    SDL_BlitSurface(chessPieces, &bP, screen, &boardArray[i][1]); 
+                            pieceArray[i][1] = bP; 
+                	    SDL_BlitSurface(chessPieces, &wP, screen, &boardArray[i][6]);
+                            pieceArray[i][6] = wP;
+                 	}
+                    printf("    Initializing: Pawns   ... \n");
+
+	                    /* Rooks */
         	            SDL_BlitSurface(chessPieces, &bR, screen, &boardArray[0][0]);
                             pieceArray[0][0] = bR;   
         	            SDL_BlitSurface(chessPieces, &bR, screen, &boardArray[7][0]);
@@ -191,8 +237,9 @@ printf("intro click in \n");
                             pieceArray[0][7] = wR;
                		    SDL_BlitSurface(chessPieces, &wR, screen, &boardArray[7][7]);
                             pieceArray[7][7] = wR;
+                    printf("    Initializing: Rooks   ... \n");
 
-			            	/* Knights */
+			            /* Knights */
                	 	    SDL_BlitSurface(chessPieces, &bH, screen, &boardArray[1][0]);
                             pieceArray[1][0] = bH;
                	        SDL_BlitSurface(chessPieces, &bH, screen, &boardArray[6][0]);
@@ -201,8 +248,9 @@ printf("intro click in \n");
                 	        pieceArray[1][7] = wH;
                         SDL_BlitSurface(chessPieces, &wH, screen, &boardArray[6][7]);
                             pieceArray[6][7] = wH;                       
-         
-		      	    	    /* Bishops */
+                    printf("    Initializing: Knights ... \n");         
+
+		      	    	/* Bishops */
              		    SDL_BlitSurface(chessPieces, &bB, screen, &boardArray[2][0]);
               	            pieceArray[2][0] = bB;
                         SDL_BlitSurface(chessPieces, &bB, screen, &boardArray[5][0]);
@@ -211,32 +259,34 @@ printf("intro click in \n");
                	            pieceArray[2][7] = wB;
                         SDL_BlitSurface(chessPieces, &wB, screen, &boardArray[5][7]);
                             pieceArray[5][7] = wB;	
+                    printf("    Initializing: Bishops ... \n");
 
-                    		/* Queens */
+                    	/* Queens */
                    	    SDL_BlitSurface(chessPieces, &bQ, screen, &boardArray[3][0]);
                             pieceArray[3][0] = bQ;
                    	    SDL_BlitSurface(chessPieces, &wQ, screen, &boardArray[3][7]);
                             pieceArray[3][7] = wQ;
+                    printf("    Initializing: Queens  ... \n");
 
-				            /* Kings */
+				        /* Kings */
                    	    SDL_BlitSurface(chessPieces, &bK, screen, &boardArray[4][0]);
                             pieceArray[4][0] = bK;
                    	    SDL_BlitSurface(chessPieces, &wK, screen, &boardArray[4][7]);
                             pieceArray[4][7] = wK;
-
-                            quit = 1;
-                     	} /* end elseif */
-                    }
+                    printf("    Initializing: Kings   ... \n");
+                    printf("[               Done!               ]\n");
+                        quit = 1;
                     break;
+
            
                  case SDL_QUIT:     /* Handles if user presses "x" button on window */
                     printf("You exited out of the window. \n");
                     Exit(screen);
                     quit = 1;
                     break;
-            }
-        }    
-    }   
+            }/* end switch */
+        }/* end PollEvent while loop */
+    }/* end main while loop */
 
     SDL_Flip(screen);
 
@@ -251,12 +301,12 @@ printf("intro click in \n");
 
     while (quit !=1)
     {
-        while (SDL_PollEvent(&event))
+        while (SDL_PollEvent(&event))   /****** MAIN GAME LOOP ******/
         {
             switch (event.type)
             {
                 case SDL_MOUSEBUTTONDOWN: /* clicking on a piece */
-                    if (select == 0)        /******* initial click to select piece ********/
+                    if (select == 0)        /* initial click to select piece */
                     {
                         selectX = event.motion.x/80;    /* assigning the square coordinate of the click to SELECTION */
                         selectY = event.motion.y/80; 
@@ -265,7 +315,7 @@ printf("intro click in \n");
                         {
                             break;
                         }
-                        else    /* otherwise, highlight the selection */
+                        else                                        /* otherwise, highlight the selection */
                         {
                             SDL_BlitSurface(highlights, &yellow, screen, &boardArray[selectX][selectY]);    /* highlight selected piece */
                             SDL_Flip(screen);   /* update display */
@@ -282,31 +332,26 @@ printf("intro click in \n");
                             SDL_BlitSurface(baseBoard, &boardArray[selectX][selectY], screen, &boardArray[selectX][selectY]);   /* removes the yellow highlight */
                             SDL_BlitSurface(chessPieces, &pieceArray[selectX][selectY], screen, &boardArray[selectX][selectY]); /*                              */
                             SDL_Flip(screen);   /* update screen*/
-                            select = 0;         /* select down */
+                            select = 0;         /* select flag down */
                             break;
                         }
                         else if (pieceArray[selectX][selectY].h != 1)    /* in the case of eating a piece */ 
                         {
-                            SDL_BlitSurface(baseBoard, &boardArray[destX][destY], screen, &boardArray[destX][destY]);           /* paste base square */  
-                            SDL_BlitSurface(chessPieces, &pieceArray[selectX][selectY], screen, &boardArray[destX][destY]);     /* place piece */
-                            SDL_BlitSurface(baseBoard, &boardArray[selectX][selectY], screen, &boardArray[selectX][selectY]);   /* replace old square with base */
-                            pieceArray[destX][destY] = pieceArray[selectX][selectY];                            /* set new square on piece array */
-                            pieceArray[selectX][selectY] = empty;                                       /* set old square to empty */
-                            SDL_Flip(screen);   /* update screen */
-                            select = 0;         /* select down */
+                            MovePiece(selectX, selectY, destX, destY, baseBoard, chessPieces, pieceArray, boardArray, screen, empty);
+                            select = 0;         /* select flag down */
                             break;
                         }
                     }/* end of first if */
                     break;
                 
                 case SDL_QUIT:  /* Handles if user presses "x" button on window */
-                    printf("You exited out of the window. \n");
+                    printf("You exited out of the game. \n");
                     Exit(screen);
                     quit = 1;
                     break;
-            }
-        }    
-    }       
+            }/* end switch */
+        }/* end PollEvent loop */
+    }/* end main while loop */       
 
 
     /* Freeing used surfaces */
