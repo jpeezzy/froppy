@@ -32,7 +32,7 @@ int main()
         printf("legal movenum = %d\n", legal->movenum);
         aiMove(board);
         GUI(board->boardarray);
-        printf("Enter 1 to continue, 0 to exit");
+        printf("Enter 1 to continue, 0 to exit: ");
         scanf("%d", &play);
         deleteMovelist(legal);
     }    
@@ -55,7 +55,6 @@ void playerMove(BSTATE *board)
      iCloc = strToInt(cloc);
      iNloc = strToInt(nloc);
      legal = checkLegal(board, iCloc, iNloc);
-     printf("legal = %d\n",legal);
      if(!legal)
      {
         printf("The move entered is not legal, try again.\n");
@@ -70,8 +69,15 @@ void aiMove(BSTATE *board)
     assert(board);
     MENTRY *move;
     move = minmax(board);
+    int legal = checkLegal(board, move->CLOC, move->NLOC);
+    if(!legal)
+    {
+        printf("AI made invalid move\n");
+    }
     mov(board->boardarray, move->CLOC, move->NLOC);
-    changeSide(board);   
+    changeSide(board);  
+    free(move);
+    move = NULL; 
 }
 
 void changeSide(BSTATE *board)
