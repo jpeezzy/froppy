@@ -109,11 +109,29 @@ void Move(SDL_Surface *piece, SDL_Rect sprite, SDL_Surface *screen, SDL_Rect rec
     SDL_BlitSurface(piece, &sprite, screen, &rect);
 } 
 
-void  MovePiece(int selectX, int selectY, int destX, int destY, SDL_Surface *baseBoard, SDL_Surface *chessPieces, SDL_Rect pieceArray[8][8], SDL_Rect boardArray[8][8], SDL_Surface *screen, SDL_Rect empty)
-{   
+void  MovePiece(int selectX, int selectY, int destX, int destY, SDL_Surface *baseBoard, SDL_Surface *chessPieces, SDL_Rect pieceArray[8][8], SDL_Rect boardArray[8][8], SDL_Surface *screen, SDL_Rect empty, SDL_Surface *explosion, SDL_Rect animation[10])
+{ 
+    SDL_BlitSurface(baseBoard, &boardArray[selectX][selectY], screen, &boardArray[selectX][selectY]);   /* replace old square with base */  
+
+    for (int i = 0; i < 4; i ++)
+    {
+        SDL_BlitSurface(explosion, &animation[i], screen, &boardArray[destX][destY]);     /* Play first 4 frames of the explosion animation */
+        SDL_Flip(screen);
+        SDL_Delay(25);         /* Assert 10 frames per second */
+    }  
+
+    for (int i = 4; i < 9; i ++)
+    {
+        SDL_BlitSurface(baseBoard, &boardArray[destX][destY], screen, &boardArray[destX][destY]);           /* paste base square */  
+        SDL_BlitSurface(chessPieces, &pieceArray[selectX][selectY], screen, &boardArray[destX][destY]);     /* place piece */
+        SDL_BlitSurface(explosion, &animation[i], screen, &boardArray[destX][destY]);
+        SDL_Flip(screen);
+        SDL_Delay(25);
+    }
+
     SDL_BlitSurface(baseBoard, &boardArray[destX][destY], screen, &boardArray[destX][destY]);           /* paste base square */  
     SDL_BlitSurface(chessPieces, &pieceArray[selectX][selectY], screen, &boardArray[destX][destY]);     /* place piece */
-    SDL_BlitSurface(baseBoard, &boardArray[selectX][selectY], screen, &boardArray[selectX][selectY]);   /* replace old square with base */
+                
     pieceArray[destX][destY] = pieceArray[selectX][selectY];                                            /* move piece on piece array */
     pieceArray[selectX][selectY] = empty;                                                               /* set old square to empty */
     SDL_Flip(screen);   /* update screen */

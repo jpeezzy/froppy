@@ -55,6 +55,17 @@ int main(int argc, char *args[])
     red.w = 80;
     red.h = 80;
 
+    SDL_Surface *explosion = NULL;          /* Making explosion animation */
+    explosion = SDL_LoadBMP("Explosion.bmp");
+    color = SDL_MapRGB(explosion->format, 0xFF,0xFF,0xFF);/* Filtering out white color */
+    SDL_SetColorKey(explosion, SDL_SRCCOLORKEY, color);
+    /* setting rectangles for explosion animation */
+    SDL_Rect animation[10];
+    for (int i = 0; i < 10; i ++)
+    {
+        animation[i].h = 80; animation[i].w = 80;    
+        animation[i].x = 80*i; animation[i].y = 0;
+    }
     
     /* Creating array of SDL_Rects to keep track of chess board. 
               Each SDL_Rect correlates to one square on the board      */
@@ -337,7 +348,7 @@ int main(int argc, char *args[])
                         }
                         else if (pieceArray[selectX][selectY].h != 1)    /* in the case of eating a piece */ 
                         {
-                            MovePiece(selectX, selectY, destX, destY, baseBoard, chessPieces, pieceArray, boardArray, screen, empty);
+                            MovePiece(selectX, selectY, destX, destY, baseBoard, chessPieces, pieceArray, boardArray, screen, empty, explosion, animation);
                             select = 0;         /* select flag down */
                             break;
                         }
@@ -360,6 +371,7 @@ int main(int argc, char *args[])
     SDL_FreeSurface(greenBoard); /* green board surface */
     SDL_FreeSurface(chessPieces);/* chess pieces surface */ 
     SDL_FreeSurface(highlights); /* square outlines */
+    SDL_FreeSurface(explosion); /* explosion animation */    
         
     return 0;
 }
