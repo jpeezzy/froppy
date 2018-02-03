@@ -58,4 +58,30 @@ float max(NODE *node, float alpha, float beta);
 /* minimizer function for minimax with alpha-beta pruning */ 
 float min(NODE *node, float alpha, float beta); 
 
+
+
+
+/* alternative way of implementing minmax using depth and mov, undo mov */
+typedef struct mini MINI;
+/* structure to store board and best move for new implementation of minimax */
+
+struct mini
+{
+   BSTATE *board;
+   MENTRY *move; 
+   int depth; /* depth used to call minimax function */   
+};
+
+/* create mini structure */
+MINI *createMini(BSTATE *board, int depth);
+
+/* remove mini struct */
+void removeMini(MINI *mini);
+
+/* maximizer function for minimax with alpha-beta pruning that uses depth */
+float altMax(MINI *mini, float alpha, float beta, int depth);
+
+/* minimizer function for minimax with alpha-beta pruning that uses depth */ 
+float altMin(MINI* mini, float alpha, float beta, int depth);
+ 
 #endif

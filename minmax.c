@@ -209,7 +209,7 @@ MENTRY *minmax(BSTATE *currentBoard)
     NODE *current = NULL;
     NODE *temp = NULL;
     NODE *start = NULL;
-    int length;  
+    //int length; 
 
     // initialize timer
     int time = 60000; 
@@ -371,3 +371,115 @@ float min(NODE *node, float alpha, float beta)
 }
 
 
+
+
+/* alternative way of implementing minmax using depth, mov and undo mov */
+/* create mini structure */
+MINI *createMini(BSTATE *board, int depth)
+{
+    assert(board);
+    MINI *mini = NULL;
+    mini = malloc(sizeof(MINI));
+    if(mini == NULL)
+    {
+        perror("Out of memory aborting...");
+        exit(10);
+    }
+    mini->board = board;
+    mini->move = createMentry(0, 0);
+    mini->depth = depth;
+    return mini;
+}
+
+/* remove mini struct */
+void removeMini(MINI *mini)
+{
+    assert(mini);
+    mini->board = NULL;
+    if(mini->move)
+    {
+        free(mini->move);
+    }
+    mini->move = NULL;
+    free(mini);
+}
+
+/* maximizer function for minimax with alpha-beta pruning that uses depth */
+float altMax(MINI *mini, float alpha, float beta, int depth) 
+{
+    MLIST *legal;
+    MENTRY *current;
+    MENTRY *temp;
+    float value;
+    if (depth == 0)
+    {	
+	return basicEvaluation(mini->board);
+    }
+    legal = createMovelist();
+    allLegal(legal, mini->board);
+    current = legal->First;
+    while (current != NULL)
+    {
+    	mov(mini->board->boardarray, current->CLOC, current->NLOC);
+    	value = altMin(mini, alpha, beta, depth - 1);
+    	mov(mini->board->boardarray, current->NLOC, current->CLOC);
+    	if (value > alpha)
+    	{	
+   	    if(value >= beta)
+	    {
+                if(mini->depth == depth)
+                {
+                    mini->move->CLOC = current->CLOC;
+                    mini->move->NLOC = current->NLOC;
+                }
+		return beta;   // fail hard beta-cutoff
+	    }
+            temp = current;
+	    alpha = value; // alpha acts like max in MiniMax
+	}
+        current = current->Next;
+    }
+    if(mini->depth == depth)
+    {
+        mini->move->CLOC = temp->CLOC;
+        mini->move->NLOC = temp->NLOC;                
+    }
+    deleteMovelist(legal);
+    legal = NULL;
+    current = NULL;
+    return alpha;
+}
+ 
+/* minimizer function for minimax with alpha-beta pruning that uses depth */ 
+float altMin(MINI* mini, float alpha, float beta, int depth) 
+{
+    MLIST *legal;
+    MENTRY *current;
+    float value;
+    if (depth == 0)
+    {	
+        return basicEvaluation(mini->board);
+    }
+    legal = createMovelist();
+    allLegal(legal, mini->board);
+    current = legal->First;
+    while (current != NULL)
+    {
+        mov(mini->board->boardarray, current->CLOC, current->NLOC);
+    	value = altMax(mini, alpha, beta, depth - 1);
+    	mov(mini->board->boardarray, current->NLOC, current->CLOC);
+	if (value < beta)
+	{
+	    if (value <= alpha)
+	    {
+	        return alpha; // fail hard alpha-cutoff
+	    }
+	    beta = value; // beta acts like min in MiniMax
+	}
+	current = current->Next;
+    }
+    deleteMovelist(legal);
+    legal = NULL;
+    current = NULL;
+    return beta;
+}
