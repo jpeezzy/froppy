@@ -117,7 +117,7 @@ void  MovePiece(int selectX, int selectY, int destX, int destY, SDL_Surface *bas
     {
         SDL_BlitSurface(explosion, &animation[i], screen, &boardArray[destX][destY]);     /* Play first 4 frames of the explosion animation */
         SDL_Flip(screen);
-        SDL_Delay(25);         /* Assert 10 frames per second */
+        SDL_Delay(1);         /* Assert 10 frames per second */
     }  
 
     for (int i = 4; i < 9; i ++)
@@ -126,7 +126,7 @@ void  MovePiece(int selectX, int selectY, int destX, int destY, SDL_Surface *bas
         SDL_BlitSurface(chessPieces, &pieceArray[selectX][selectY], screen, &boardArray[destX][destY]);     /* place piece */
         SDL_BlitSurface(explosion, &animation[i], screen, &boardArray[destX][destY]);
         SDL_Flip(screen);
-        SDL_Delay(25);
+        SDL_Delay(1);
     }
 
     SDL_BlitSurface(baseBoard, &boardArray[destX][destY], screen, &boardArray[destX][destY]);           /* paste base square */  
