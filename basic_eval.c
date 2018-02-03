@@ -80,56 +80,39 @@ float basicEvaluation(BSTATE* currentboard)
         {
             // black case
             // 63-board_index will flip the board
-            if (!currentboard->sidetomove)
-                {
-                    if (currentboard
-                            ->boardarray[board_index / 8][board_index % 8] > 10)
-                        {
-                            eval_score += piece_square_table
-                                [currentboard->boardarray[board_index / 8]
-                                                         [board_index % 8] -
-                                 11][63 - board_index];
-                        }
 
-                    else if (currentboard->boardarray[board_index / 8]
-                                                     [board_index % 8] < 9 &&
-                             currentboard->boardarray[board_index / 8]
-                                                     [board_index % 8] > 0)
-                        {
-                            eval_score += piece_square_table
-                                [currentboard->boardarray[board_index / 8]
-                                                         [board_index % 8] -
-                                 1][63 - board_index];
-                        }
+            if (currentboard->boardarray[board_index / 8][board_index % 8] > 10)
+                {
+                    eval_score +=
+                        piece_square_table[currentboard
+                                               ->boardarray[board_index / 8]
+                                                           [board_index % 8] -
+                                           11][63 - board_index];
                 }
 
-            // white case
-            else if (currentboard->sidetomove)
+            else if (currentboard->boardarray[board_index / 8]
+                                             [board_index % 8] < 9 &&
+                     currentboard
+                             ->boardarray[board_index / 8][board_index % 8] > 0)
                 {
-                    if (currentboard
-                            ->boardarray[board_index / 8][board_index % 8] > 10)
-                        {
-                            eval_score += piece_square_table
-                                [currentboard->boardarray[board_index / 8]
-                                                         [board_index % 8] -
-                                 11][board_index];
-                        }
+                    eval_score +=
 
-                    else if (currentboard->boardarray[board_index / 8]
-                                                     [board_index % 8] < 9 &&
-                             currentboard->boardarray[board_index / 8]
-                                                     [board_index % 8] > 0)
-                        {
-                            eval_score += piece_square_table
-                                [currentboard->boardarray[board_index / 8]
-                                                         [board_index % 8] -
-                                 1][board_index];
-                        }
+                        (-1) *
+                        piece_square_table[currentboard
+                                               ->boardarray[board_index / 8]
+                                                           [board_index % 8] -
+                                           1][board_index];
                 }
         }
-
     deleteMovelist(all_moves);
-    return eval_score;
+    if (currentboard->sidetomove)
+        {
+            return (-1) * eval_score;
+        }
+    else
+        {
+            return eval_score;
+        }
 }
 
 // int main(void)
