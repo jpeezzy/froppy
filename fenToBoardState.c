@@ -120,26 +120,58 @@ int charToPiece(char input)
 	}
 	return 0;
 }
+//Converts intnumber to char
+char pieceToChar(int input)
+{
+	switch (input)
+	{
+		case 1:
+			return 'P';
+		case 2:
+			return 'N';
+		case 3:
+			return 'B';
+		case 4:
+			return 'R';
+		case 5:
+			return 'Q';
+		case 6:
+			return 'K';
+		case 11:
+			return 'p';
+		case 12:
+			return 'n';
+		case 13:
+			return 'b';
+		case 14:
+			return 'r';
+		case 15:
+			return 'q';
+		case 16:
+			return 'k';
+			// case '1': return 0;
+	}
+	return '0';
+
+}
+
+void boardToFen(char *fen, BSTATE *b);
+
 /*
-   int main()
-   {
-   BSTATE test;
-   fenToBoardState("K2Q4/pppppppp/3b4/3b1r2/1n1P1k2/R6N/PPP1PPPP/RNB2B1B w KQkq
-   -", &test);
-//fenToBoardState("K2Q4/pppppppp/3b4/3b2r1/1n1P1k2/7N/PPP1PPPP/RNB2B1R w
-KQkq -", &test);
-//	fenToBoardState("K2Q4/pppppppp/3b4/3br3/1n1P1k2/7N/PPP1PPPP/RNB2B1R w KQkq
--", &test); for(int i = 0; i < 8; i++)
+int main()
 {
-for(int j = 0; j < 8; j++)
-{
-printf("%d ", test.boardarray[i][j]);
-}
-printf("\n");
-}
-return 0;
-}
-*/
+	BSTATE test;
+	//fenToBoardState("K2Q4/pppppppp/3b4/3b2r1/1n1P1k2/7N/PPP1PPPP/RNB2B1R wKQkq -", &test);
+	//fenToBoardState("K2Q4/pppppppp/3b4/3br3/1n1P1k2/7N/PPP1PPPP/RNB2B1R w KQkq	-", &test); 
+	//fenToBoardState("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq -", &test);
+	fenToBoardState("r1bqkbnr/pppp1p1p/8/NP2pn1p/2P5/3B4/P2PPPPP/R1BQK1NR b KQkq -", &test);
+	char *fen;
+	fen = malloc(sizeof(char)*80);
+	boardToFen(fen, &test);
+	free(fen);
+	return 0;
+}*/
+
 char* textConverterToEight(char* stringT, BSTATE* b, int index)
 {
 	// printf("string is %s\n", stringT);
@@ -194,4 +226,81 @@ char* textConverterToEight(char* stringT, BSTATE* b, int index)
 		b->boardarray[index][i] = temp[i];
 	}
 	return "";
+}
+
+void boardToFen(char *fen, BSTATE *b)
+{
+	assert(fen);
+	assert(b);
+	// now parse it to fen from this format
+	// making a counter for every time we encounter 0;
+	// rowCount is the count for each "row" in fen
+	int count  = 0;
+	int prevCount = 0;
+	for(int i = 0; i < 8; i++)
+	{
+		for(int j =0; j< 8; j++)
+		{
+			printf("%d", b->boardarray[i][j]);
+		}
+		printf("\n");
+	}
+	for(int i = 0; i < 8; i++)
+	{
+		count = 0;
+		for(int j =0; j < 8; j++)
+		{
+			if(b->boardarray[i][j] == 0)
+			{
+				count++;
+
+				if (j == 7 && b->boardarray[i][j] == 0)
+				{
+					//printf("count is %d \n", count);
+					fen[count + prevCount] = count + '0';
+					//count = 0;
+				}
+			}
+			else
+			{
+				if(count > 0)
+				{
+					if(i == 3)
+					{
+						printf("count is %c \n", count + '0');
+						printf("char is %d \n", b->boardarray[i][j]);
+					}
+					prevCount +=count;
+					fen[prevCount] = count+'0';
+					prevCount++;
+					fen[prevCount] = pieceToChar(b->boardarray[i][j]);
+					count = 0;
+				}
+				else
+				{
+					prevCount++;
+					fen[prevCount] = pieceToChar(b->boardarray[i][j]);
+				}
+			}
+			//printf("%d",b->boardarray[i][j]);
+		}
+		fen[count + prevCount + 1] = '/';
+		prevCount += count + 1;
+	}
+
+
+	for(int i = 0; i < 80; i++)
+	{
+		//fen[i*8+j] = (char)b->boardarray[i][j];
+		printf("%c", fen[i]);
+		//printf("%d ",b->boardarray[i][j]);
+	}
+	printf("\n");
+	return;
+
+}
+
+void saveGame(char *fen)
+{
+	//append text file based on save state
 }
