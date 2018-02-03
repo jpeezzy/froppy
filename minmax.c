@@ -161,6 +161,8 @@ void removeMini(MINI *mini)
 /* generate a layer and a pointer to the first node in next depth */
 NODE* generateLayer(NODE *parent)
 {
+    assert(parent);
+    assert(parent->board);
     int length;
     MLIST* legalMLIST = NULL;
     MENTRY* currentMove = NULL; 
@@ -195,26 +197,23 @@ NODE* generateLayer(NODE *parent)
     }
     currentNode = addChild(parent, currentMove, board);
 
-#pragma omp parallel num_threads(56)
+    while(currentMove != NULL)
     {
-    #pragma omp for schedule(static)
-        for(int i = 0; i < length; i++)
+        board = createBstate();
+        copyBstate(parent->board, board);
+        mov(board->boardarray, currentMove->CLOC, currentMove->NLOC);
+        if (board->sidetomove)
         {
-            board = createBstate();
-            copyBstate(parent->board, board);
-            mov(board->boardarray, currentMove->CLOC, currentMove->NLOC);
-            if (board->sidetomove)
-            {
-                board->sidetomove = 0;
-            }
-            else
-            {
-                board->sidetomove = 1;
-            }
-            currentNode = addSibling(currentNode, currentMove, board);  
-            currentMove = currentMove->Next;       
+            board->sidetomove = 0;
         }
-    }   
+        else
+        {
+            board->sidetomove = 1;
+        }
+        currentNode = addSibling(currentNode, currentMove, board);  
+        currentMove = currentMove->Next;       
+    }
+       
     return parent->head->next->first;
 }
 
@@ -232,6 +231,7 @@ float alphabeta(NODE *node, float alpha, float beta, PLAYER minmax)
         // if current node is the leaf  node, returns its value;
         if(node->child == NULL)
         {
+            printf("leafMax\n");
             node->value = basicEvaluation(node->board);
             return node->value;
         }
@@ -248,7 +248,12 @@ float alphabeta(NODE *node, float alpha, float beta, PLAYER minmax)
                 /* if node is the root(top) node, store the pointer to the moveEntry Struct of current in it */ 
                 if(node->parent == NULL)
                 {
-                    node->move = current->move;       
+                    if(node->move)
+                    {
+                        free(node->move);
+                        node->move = NULL;
+                    }
+                    node->move = createMentry(current->move->CLOC, current->move->NLOC);       
                 }
             }
             alpha = (alpha > node->value) ? alpha : node->value;
@@ -270,6 +275,7 @@ float alphabeta(NODE *node, float alpha, float beta, PLAYER minmax)
         // if current node is the a node, returns its value;
         if(node->child == NULL)
         {
+            printf("leafmin\n");
             node->value = basicEvaluation(node->board);
             return node->value;
         }
@@ -306,7 +312,7 @@ MENTRY *minmax(BSTATE *currentBoard)
     NODE *start = NULL;
     int length;  
 
-    int time = 40000; 
+    int time = 10000; 
     clock_t start_time = clock();
     clock_t time_elapsed; 
     
@@ -317,7 +323,6 @@ MENTRY *minmax(BSTATE *currentBoard)
     tree = createNode(NULL, cpyBoard);
     createHead(tree);
     start = generateLayer(tree);
-    assert(start);
     if(start == NULL)
     {
         return NULL;
@@ -327,35 +332,42 @@ MENTRY *minmax(BSTATE *currentBoard)
     {
         current = start;
         length = current->head->length;
-    #pragma omp parallel num_threads(56)
-        { 
-        #pragma omp for schedule(static)
-            for(int i = 0; i < length; i++)
-            {
-                start = generateLayer(current);
-                if (current->next)
-	        {
-		    current = current->next;
+        while(current)
+        {
+            start = generateLayer(current);
+            if (current->next)
+	    {
+		current = current->next;
+	    }
+	    else
+	    {	        	
+		temp = current->parent->next;
+		while (temp != NULL && temp->child == NULL)
+                {
+		    temp = temp->next;
 		}
-		else
-		{	        	
-		    temp = current->parent->next;
-		    while (temp != NULL && temp->child == NULL)					    {
-		        temp = temp->next;
-		    }
-			current = temp->child;
-		}
+                if (temp != NULL)
+                {
+                    assert(temp->child);
+		    current = temp->child;
+	        }
+                else
+                {
+                    current = temp;
+                }
             }
         }
+        
         /* not able to generate next depth */
         if(start == NULL)
         {
             break;
 	}
         time_elapsed = clock() - start_time;
-    } while(time_elapsed < time);
-    
-    max(tree, -3.4E38, 3.4E38);
+        printf("time elapsed = %Lf\n", (long double)time_elapsed);
+    } while(time_elapsed < time); 
+    float score = max(tree, -3.4E38, 3.4E38);
+    printf("score = %f\n", score);
     bestMove = tree->move;
     removeNode(tree);
     tree = NULL;
@@ -371,10 +383,12 @@ float max(NODE* node, float alpha, float beta)
 {
     assert(node);
     NODE *current;
+    NODE *last;
     float value;
     if (node->child == NULL)
     {	
-        return basicEvaluation(node->board);
+        value = basicEvaluation(node->board);
+        return value;
     }
     current = node->child;
     while (current != NULL)
@@ -386,17 +400,30 @@ float max(NODE* node, float alpha, float beta)
 	    {
                 if(node->parent == NULL)
                 {
-                    node->move = current->move;
+                    if(node->move)
+                    {
+                        free(node->move);
+                        node->move = NULL;
+                    }
+                    assert(current->move);
+                    node->move = createMentry(current->move->CLOC, current->move->NLOC);       
                 }
 		return beta;   // fail hard beta-cutoff
 	    }
 	    alpha = value; // alpha acts like max in MiniMax
 	}
+        last = current;
         current = current->next;
     }
     if(node->parent == NULL)
     {
-        node->move = current->move;
+         if(node->move)
+         {
+            free(node->move);
+            node->move = NULL;
+         }
+         assert(last->move);
+         node->move = createMentry(last->move->CLOC, last->move->NLOC);   
     }
     current = NULL;
     return alpha;
@@ -408,13 +435,14 @@ float min(NODE *node, float alpha, float beta)
     NODE *current;
     float value;
     if (node->child == NULL)
-    {	
-        return basicEvaluation(node->board);
+    {
+        value = basicEvaluation(node->board);	
+        return value;
     }
     current = node->child;
     while (current != NULL)
     {
-    	value = max(node, alpha, beta);
+    	value = max(current, alpha, beta);
 	if (value < beta)
 	{
 	    if (value <= alpha)
@@ -428,4 +456,5 @@ float min(NODE *node, float alpha, float beta)
     current = NULL;
     return beta;
 }
+
 
