@@ -954,11 +954,11 @@ int searchforking(BSTATE *board, int flag)
             {
                 if(flag == 0 && (board->boardarray[i][j]/10 == 0 && board->boardarray[i][j] != 0))
                 {
-                    return (8*j+i);
+                    return (8*i+j);
                 }
                 if(flag == 1 && (board->boardarray[i][j]/10 == 1 && board->boardarray[i][j] != 0))
                 {
-                    return (8*j+i);
+                    return (8*i+j);
                 }
             }
         }
@@ -1111,7 +1111,7 @@ int checkchecker(BSTATE *board, int flag)
         return 1;
     }
         
-/*
+
     // diagonal
     
     // got up to the left
@@ -1127,7 +1127,7 @@ int checkchecker(BSTATE *board, int flag)
 
         for(i=1; i<=j; ++i)
         {
-            if( (board->boardarray[kingx-i][kingy-i]/10 == flag) && (board->boardarray[kingx-i][kingy-i] != 0))
+            if( (board->boardarray[kingx-i][kingy-i]/10 != flag) && (board->boardarray[kingx-i][kingy-i] != 0))
             {
                 return 1;
             }
@@ -1152,7 +1152,7 @@ int checkchecker(BSTATE *board, int flag)
 
         for(i=1; i<=j; ++i)
         {
-            if( (board->boardarray[kingx-i][kingy+i]/10 == flag) && (board->boardarray[kingx-i][kingy+i] != 0))
+            if( (board->boardarray[kingx-i][kingy+i]/10 != flag) && (board->boardarray[kingx-i][kingy+i] != 0))
             {
                 return 1;
             }
@@ -1176,7 +1176,7 @@ int checkchecker(BSTATE *board, int flag)
 
         for(i=1; i<=j; ++i)
         {
-            if( (board->boardarray[kingx+i][kingy+i]/10 == flag) && (board->boardarray[kingx+i][kingy+i] != 0))
+            if( (board->boardarray[kingx+i][kingy+i]/10 != flag) && (board->boardarray[kingx+i][kingy+i] != 0))
             {
                 return 1;
                 
@@ -1201,7 +1201,7 @@ int checkchecker(BSTATE *board, int flag)
 
         for(i=1; i<=j; ++i)
         {
-            if( (board->boardarray[kingx+i][kingy-i]/10 == flag) && (board->boardarray[kingx+i][kingy-i] != 0))
+            if( (board->boardarray[kingx+i][kingy-i]/10 != flag) && (board->boardarray[kingx+i][kingy-i] != 0))
             {
                 return 1;
             }
@@ -1211,7 +1211,7 @@ int checkchecker(BSTATE *board, int flag)
             }
         }
   
-*/
+
   
         //pawn check
         
