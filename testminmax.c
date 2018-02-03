@@ -10,6 +10,7 @@ void playerMove(BSTATE *board);
 void aiMove(BSTATE *board);
 void changeSide(BSTATE *board);
 int strToInt(char loc[]);
+int checkLegal(BSTATE *board, int cloc, int nloc);
 
 int main()
 {   
@@ -33,6 +34,7 @@ int main()
         GUI(board->boardarray);
         printf("Enter 1 to continue, 0 to exit");
         scanf("%d", &play);
+        deleteMovelist(legal);
     }    
     deleteBstate(board);
     return 0;
@@ -41,12 +43,25 @@ int main()
 void playerMove(BSTATE *board)
 {
      assert(board);
+     int iCloc, iNloc;
      char cloc[2], nloc[2];
+     int legal = 0;
+     do
+     {
      printf("Enter location of piece to move: ");
      scanf("%s", cloc);
      printf("Enter destionation location: ");
      scanf("%s", nloc);
-     mov(board->boardarray, strToInt(cloc), strToInt(nloc));
+     iCloc = strToInt(cloc);
+     iNloc = strToInt(nloc);
+     legal = checkLegal(board, iCloc, iNloc);
+     printf("legal = %d\n",legal);
+     if(!legal)
+     {
+        printf("The move entered is not legal, try again.\n");
+     }
+     }while(!legal);
+     mov(board->boardarray, iCloc, iNloc);
      changeSide(board);
 }
 
@@ -130,4 +145,26 @@ int strToInt(char loc[])
             break;
     }
     return y*8+x;               
+}
+
+/* return 1 if a move is legal, 0 if not */
+int checkLegal(BSTATE *board, int cloc, int nloc)
+{
+    MLIST *legal;
+    MENTRY *current;
+    legal = createMovelist();
+    allLegal(legal, board);
+    assert(legal->First);
+    current = legal->First;
+    while(current)
+    {
+        if(current->CLOC == cloc && current->NLOC == nloc)
+        {
+            deleteMovelist(legal);
+            return 1;
+        }
+        current = current->Next;
+    }
+    deleteMovelist(legal);
+    return 0;
 }
