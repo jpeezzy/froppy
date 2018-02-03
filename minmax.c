@@ -229,7 +229,7 @@ float alphabeta(NODE *node, float alpha, float beta, PLAYER minmax)
     // if current node is a maximizer
     if(minmax == Max)
     {
-        // if current node is the a node, returns its value;
+        // if current node is the leaf  node, returns its value;
         if(node->child == NULL)
         {
             node->value = basicEvaluation(node->board);
@@ -315,9 +315,13 @@ MENTRY *minmax(BSTATE *currentBoard)
     copyBstate(currentBoard, cpyBoard);
     // creates first 2 depths of the tree 
     tree = createNode(NULL, cpyBoard);
-    current = tree;
-    start = generateLayer(current);
-    
+    createHead(tree);
+    start = generateLayer(tree);
+    assert(start);
+    if(start == NULL)
+    {
+        return NULL;
+    } 
     /* increases depth of tree by 1 per loop, checks for time at the end of each loop */
     do
     {

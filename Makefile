@@ -62,3 +62,4 @@ clean:
 	rm -f *o
 	rm -f auto
 	rm -f MT
+	rm -f testminmax
