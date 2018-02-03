@@ -17,10 +17,10 @@ int main()
     MLIST *list;
     list = createMovelist();
     mov(cboard->boardarray, 52, 36);
-    mov(cboard->boardarray, 12, 28);
-    //cboard->sidetomove = 1;
+    //mov(cboard->boardarray, 12, 28);
+    cboard->sidetomove = 1;
     allLegal(list,cboard);
-    //seemoves(list,cboard);
+    seemoves(list,cboard);
     
 
     deleteMovelist(list);

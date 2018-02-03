@@ -1111,7 +1111,7 @@ int checkchecker(BSTATE *board, int flag)
         return 1;
     }
         
-
+/*
     // diagonal
     
     // got up to the left
@@ -1152,7 +1152,7 @@ int checkchecker(BSTATE *board, int flag)
 
         for(i=1; i<=j; ++i)
         {
-            if( (board->boardarray[kingx-i][kingy+i]/10 != flag) && (board->boardarray[kingx-i][kingy+i] != 0))
+            if( (board->boardarray[kingx-i][kingy+i]/10 == flag) && (board->boardarray[kingx-i][kingy+i] != 0))
             {
                 return 1;
             }
@@ -1176,7 +1176,7 @@ int checkchecker(BSTATE *board, int flag)
 
         for(i=1; i<=j; ++i)
         {
-            if( (board->boardarray[kingx+i][kingy+i]/10 != flag) && (board->boardarray[kingx+i][kingy+i] != 0))
+            if( (board->boardarray[kingx+i][kingy+i]/10 == flag) && (board->boardarray[kingx+i][kingy+i] != 0))
             {
                 return 1;
                 
@@ -1201,7 +1201,7 @@ int checkchecker(BSTATE *board, int flag)
 
         for(i=1; i<=j; ++i)
         {
-            if( (board->boardarray[kingx+i][kingy-i]/10 != flag) && (board->boardarray[kingx+i][kingy-i] != 0))
+            if( (board->boardarray[kingx+i][kingy-i]/10 == flag) && (board->boardarray[kingx+i][kingy-i] != 0))
             {
                 return 1;
             }
@@ -1210,9 +1210,9 @@ int checkchecker(BSTATE *board, int flag)
                 break;
             }
         }
-     
-
-     
+  
+*/
+  
         //pawn check
         
         //for white king
