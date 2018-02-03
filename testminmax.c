@@ -65,7 +65,7 @@ void playerMove(BSTATE *board)
      {
      printf("Enter location of piece to move: ");
      scanf("%s", cloc);
-     printf("Enter destionation location: ");
+     printf("Enter destination location: ");
      scanf("%s", nloc);
      iCloc = strToInt(cloc);
      iNloc = strToInt(nloc);
