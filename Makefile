@@ -58,8 +58,18 @@ MT: matrixTest.o matrix.o neuralnet.o randGen.o
 testminmax: testminmax.o minmax.o basic_eval.o boardstate.o movelist.o testgui.o
 	$(CC) $(CFLAGS) testminmax.o minmax.o movelist.o testgui.o basic_eval.o boardstate.o -o testminmax
 
+test.o: test.c boardstate.h movelist.h
+	$(CC) $(CFLAGS) -c test.c -o test.o
+
+test: test.o boardstate.o movelist.o testgui.o
+	$(CC) $(CFLAGS) test.o boardstate.o movelist.o testgui.o -o test
+
+
+
+
 clean:
 	rm -f *o
 	rm -f auto
 	rm -f MT
 	rm -f testminmax
+	rm -f test

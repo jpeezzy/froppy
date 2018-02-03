@@ -73,10 +73,10 @@ float alphabeta(NODE* node, float alpha, float beta, PLAYER minmax);
 /* finds the best worst move for the AI to make */
 MENTRY *minmax (BSTATE *currentBoard);
 
-/* maximizer function for minimax with alpha-beta pruning that uses depth */
-float max(MINI *mini, float alpha, float beta, int depth);
+/* maximizer function for minimax with alpha-beta pruning */
+float max(NODE *node, float alpha, float beta);
  
-/* minimizer function for minimax with alpha-beta pruning that uses depth */ 
-float min(MINI *mini, float alpha, float beta, int depth); 
+/* minimizer function for minimax with alpha-beta pruning */ 
+float min(NODE *node, float alpha, float beta); 
 
 #endif
