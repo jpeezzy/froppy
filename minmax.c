@@ -355,7 +355,7 @@ MENTRY *minmax(BSTATE *currentBoard)
         time_elapsed = clock() - start_time;
     } while(time_elapsed < time);
     
-    alphabeta(tree, -3.4E38, 3.4E38, Max);
+    max(tree, -3.4E38, 3.4E38);
     bestMove = tree->move;
     removeNode(tree);
     tree = NULL;
@@ -365,68 +365,56 @@ MENTRY *minmax(BSTATE *currentBoard)
     return bestMove;
 }   
 
-/* maximizer function for minimax with alpha-beta pruning that uses depth */
-float max(MINI *mini, float alpha, float beta, int depth) 
+
+/* maximizer function for minimax with alpha-beta pruning */
+float max(NODE* node, float alpha, float beta) 
 {
-    MLIST *legal;
-    MENTRY *current;
+    assert(node);
+    NODE *current;
     float value;
-    if (depth == 0)
+    if (node->child == NULL)
     {	
-	return basicEvaluation(mini->board);
+        return basicEvaluation(node->board);
     }
-    legal = createMovelist();
-    allLegal(legal, mini->board);
-    current = legal->First;
+    current = node->child;
     while (current != NULL)
     {
-    	mov(mini->board->boardarray, current->CLOC, current->NLOC);
-    	value = min(mini, alpha, beta, depth - 1);
-    	mov(mini->board->boardarray, current->NLOC, current->CLOC);
+    	value = min(current, alpha, beta);
     	if (value > alpha)
     	{	
    	    if(value >= beta)
 	    {
-                if(mini->depth == depth)
+                if(node->parent == NULL)
                 {
-                    mini->move->CLOC = current->CLOC;
-                    mini->move->NLOC = current->NLOC;
+                    node->move = current->move;
                 }
 		return beta;   // fail hard beta-cutoff
 	    }
 	    alpha = value; // alpha acts like max in MiniMax
 	}
-        current = current->Next;
+        current = current->next;
     }
-    if(mini->depth == depth)
+    if(node->parent == NULL)
     {
-        mini->move->CLOC = current->CLOC;
-        mini->move->NLOC = current->NLOC;                
+        node->move = current->move;
     }
-    deleteMovelist(legal);
-    legal = NULL;
     current = NULL;
     return alpha;
 }
  
-/* minimizer function for minimax with alpha-beta pruning that uses depth */ 
-float min(MINI* mini, float alpha, float beta, int depth) 
+/* minimizer function for minimax with alpha-beta pruning that uses depth */
+float min(NODE *node, float alpha, float beta) 
 {
-    MLIST *legal;
-    MENTRY *current;
+    NODE *current;
     float value;
-    if (depth == 0)
+    if (node->child == NULL)
     {	
-        return basicEvaluation(mini->board);
+        return basicEvaluation(node->board);
     }
-    legal = createMovelist();
-    allLegal(legal, mini->board);
-    current = legal->First;
+    current = node->child;
     while (current != NULL)
     {
-        mov(mini->board->boardarray, current->CLOC, current->NLOC);
-    	value = max(mini, alpha, beta, depth - 1);
-    	mov(mini->board->boardarray, current->NLOC, current->CLOC);
+    	value = max(node, alpha, beta);
 	if (value < beta)
 	{
 	    if (value <= alpha)
@@ -435,10 +423,9 @@ float min(MINI* mini, float alpha, float beta, int depth)
 	    }
 	    beta = value; // beta acts like min in MiniMax
 	}
-	current = current->Next;
+	current = current->next;
     }
-    deleteMovelist(legal);
-    legal = NULL;
     current = NULL;
     return beta;
 }
+
