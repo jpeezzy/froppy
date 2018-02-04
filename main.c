@@ -1,12 +1,21 @@
 #include "ChessGUI.h" 
+#include <assert.h>
+#include "testgui.h"
+#include "minmax.h"
+#include "boardstate.h"
+#include "basic_eval.h"
+#include "movelist.h"
 #include <stdio.h>
+#include <stdlib.h>
 
 
 int main(int argc, char *args[])
 {
     SDL_Surface *screen = NULL;     /* Main surface to be displayed */
     SDL_Surface *baseBoard = NULL;  /* Surface that will be the reference chess board */
- 
+
+    int lastMove[4];            /* Array to save the last move's coordinates in serial */ 
+    SDL_Rect lastPieces[2];     /* Array to save the last 2 pieces that moved */
 
     SDL_Init(SDL_INIT_VIDEO);   /* Initializes SDL Environment */
 
@@ -59,7 +68,13 @@ int main(int argc, char *args[])
     explosion = SDL_LoadBMP("Explosion.bmp");
     color = SDL_MapRGB(explosion->format, 0xFF,0xFF,0xFF);/* Filtering out white color */
     SDL_SetColorKey(explosion, SDL_SRCCOLORKEY, color);
-    /* setting rectangles for explosion animation */
+
+    SDL_Surface *lightning = NULL;          /* Making lightning animation */
+    lightning = SDL_LoadBMP("Lightning.bmp");
+    color = SDL_MapRGB(lightning->format, 0xFF, 0xFF,0xFF);/* Filtering out white color */
+    SDL_SetColorKey(lightning, SDL_SRCCOLORKEY, color);
+
+    /* setting rectangles for  animation */
     SDL_Rect animation[10];
     for (int i = 0; i < 10; i ++)
     {
@@ -110,7 +125,7 @@ int main(int argc, char *args[])
 
     printf("--------FROPPY CHESS GAME---------- \n"); 
 
-/** Start of user interaction loop  **********************************************************/
+/****************************************** START OF USER INTERACTION  **********************************************************/
     SDL_Event introEvent;
     SDL_Event event; 
    
@@ -309,6 +324,19 @@ int main(int argc, char *args[])
     int destX = 0;  /* storing destination coordinate (x) */
     int destY = 0;  /* storing destination coordinate (y) */
 
+    int effectNumber = 0;  /* random number for picking kill animation */
+
+	/* Copied and paste the testminmax.c code over */
+	MLIST *legal;
+//  int play = 1;	/* commented out variables/functions not used */
+    BSTATE* board;
+    board = createBstate();
+    loadStart(board);
+//  GUI(board->boardarray);
+    int score = basicEvaluation(board);
+    printf("Eval score = %d\n", score);
+    printf("You are playing as white\n");
+	
 
     while (quit !=1)
     {
@@ -346,9 +374,58 @@ int main(int argc, char *args[])
                             select = 0;         /* select flag down */
                             break;
                         }
-                        else if (pieceArray[selectX][selectY].h != 1)    /* in the case of eating a piece */ 
+                        else if (pieceArray[selectX][selectY].h != 1)    /* in the case of clicking on a new square  */ 
                         {
-                            MovePiece(selectX, selectY, destX, destY, baseBoard, chessPieces, pieceArray, boardArray, screen, empty, explosion, animation);
+                            effectNumber = rand()%2 + 1;    /* picking random number to pick the animation */
+
+                            lastPieces[0] = pieceArray[selectX][selectY];   /* Saves the selected piece    */
+                            lastPieces[1] = pieceArray[destX][destY];       /* Saves the destination piece */
+
+			/******************** Beginning of MinMax Integration ****************************************************/
+		                    if (playerMove(board, selectX, selectY, destX, destY) != 1)
+                            {
+                                select = 0; /* restart loop to make user select another piece to move */
+                                SDL_BlitSurface(baseBoard, &boardArray[selectX][selectY], screen, &boardArray[selectX][selectY]);   /* removes the yellow highlight */
+                                SDL_BlitSurface(chessPieces, &pieceArray[selectX][selectY], screen, &boardArray[selectX][selectY]); /*                              */
+                                SDL_Flip(screen);   /* update screen*/
+                                break;   
+                            }
+                            
+                            MovePiece(selectX, selectY, destX, destY, baseBoard, chessPieces, pieceArray,   /* function to move the piece on the GUI */
+                                   boardArray, screen, empty, explosion, animation, effectNumber, lastMove);
+                            legal = createMovelist();
+                            allLegal(legal, board);
+                            if(legal->movenum == 0)
+                            {   
+                                printf("Checkmate!\n");
+                                deleteMovelist(legal);
+                                break;
+                            }
+              /*              deleteMovelist(legal);
+                            aiMove(board);
+                            //GUI(board->boardarray);
+                            legal = createMovelist();
+                            allLegal(legal, board);
+                            if(legal->movenum == 0)
+                            {
+                                printf("Checkmate!\n");
+                                deleteMovelist(legal);
+                                break;
+                            }
+                            deleteMovelist(legal);	
+			*/				
+            /******************** End of MinMax Integration ***********************************************************/
+                        /*  if (effectNumber == 1)       Moving piece + exposion */
+                        //    {   
+                        //        MovePiece(selectX, selectY, destX, destY, baseBoard, chessPieces, pieceArray,
+                        //                  boardArray, screen, empty, explosion, animation, effectNumber, lastMove);
+                        //    }
+                        //    else if (effectNumber == 2) /* Moving Piece + lightning */
+                        /*    {
+                                MovePiece(selectX, selectY, destX, destY, baseBoard, chessPieces, pieceArray,
+                                          boardArray, screen, empty, lightning, animation, effectNumber, lastMove); 
+                            } 
+						*/
                             select = 0;         /* select flag down */
                             break;
                         }
@@ -366,13 +443,13 @@ int main(int argc, char *args[])
 
 
     /* Freeing used surfaces */
-    SDL_FreeSurface(baseBoard);  /* board copy */
+    SDL_FreeSurface(baseBoard);  /* board copy          */
     SDL_FreeSurface(whiteBoard); /* white board surface */ 
     SDL_FreeSurface(greenBoard); /* green board surface */
-    SDL_FreeSurface(chessPieces);/* chess pieces surface */ 
-    SDL_FreeSurface(highlights); /* square outlines */
-    SDL_FreeSurface(explosion); /* explosion animation */    
-        
+    SDL_FreeSurface(chessPieces);/* chess pieces surface*/ 
+    SDL_FreeSurface(highlights); /* square outlines     */
+    SDL_FreeSurface(explosion);  /* explosion animation */    
+    SDL_FreeSurface(lightning);  /* lightning animation */        
     return 0;
 }
 
