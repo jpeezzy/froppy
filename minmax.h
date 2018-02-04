@@ -16,6 +16,7 @@ struct node
     NODE *parent; /* pointer to parent node */
     NODE *child; /* pointer to first child node */
     NODE *next; /* pointer to next sibling node */
+    NODE *cousin; /* pointer to next cousin node */
     int children; /* number of children nodes of current node */
     HEAD *head; /* pointer to head struct of current depth*/
 };
@@ -25,6 +26,7 @@ struct head
 {
     int length;
     NODE *first; /* pointer to first node in current depth */
+    NODE *last; /*pointer to last node in current depth */
     HEAD *next; /* pointer to the head struct of next depth */
 };
 
