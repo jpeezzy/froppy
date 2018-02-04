@@ -13,7 +13,7 @@ void changeSide(BSTATE *board);
 int strToInt(char loc[]);
 int checkLegal(BSTATE *board, int cloc, int nloc);
 
-#define DEPTH 5
+#define DEPTH 7
 
 int main()
 {   
@@ -84,22 +84,22 @@ void playerMove(BSTATE *board)
 void aiMove(BSTATE *board)
 {
     assert(board);
-    /*MENTRY *move;
+   
+    MENTRY *move;
     move = minmax(board);
     assert(move);
     int legal = checkLegal(board, move->CLOC, move->NLOC);
     if(!legal)
     {
-        perror("AI made invalid move\n");
-        exit 17;
+        printf("AI made invalid move\n");
     }
     mov(board->boardarray, move->CLOC, move->NLOC);
     changeSide(board);  
     free(move);
     move = NULL; 
-    */ 
     
     // new minmax using depth
+/*  
     MINI *mini;
     BSTATE *temp;
     float score;
@@ -116,7 +116,8 @@ void aiMove(BSTATE *board)
     mov(board->boardarray, mini->move->CLOC, mini->move->NLOC);
     changeSide(board);
     removeMini(mini);
-    deleteBstate(temp);
+    deleteBstate(temp); 
+*/
 }
 
 void changeSide(BSTATE *board)
