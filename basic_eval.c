@@ -17,7 +17,6 @@
 
 // material value of a piece
 static int piece_value[6]  = {100, 280, 320, 479, 929, 60000};
-static int piece_weight[6] = {1, 3, 3, 5, 9, 200};
 
 // Pawn, Knight, Bishop, Rook Queen, King is the order in the 
 // piece square table
@@ -65,11 +64,10 @@ float basicEvaluation(BSTATE* currentboard)
     assert(currentboard);
 
     float  eval_score = 0.0;
-    int whitePiecenum[6]={0,0,0,0,0,0};
-    int blackPiecenum[6]={0,0,0,0,0,0};
     MLIST* all_moves  = NULL;
     all_moves         = createMovelist();
 
+    const float mobilWeight=10;
     allLegal(all_moves, currentboard);
     assert(all_moves);
 
@@ -201,7 +199,7 @@ float basicEvaluation(BSTATE* currentboard)
         }
 
         //mobility feature 
-        eval_score+= all_moves->movenum;
+        eval_score+= all_moves->movenum*mobilWeight;
         deleteMovelist(all_moves);
 
         return eval_score;
