@@ -1,14 +1,18 @@
 #ifndef CHESSGUI_H
 #define CHESSGUI_H
 
-
+#include "boardstate.h"
 #include "SDL/SDL.h"
 
 /* Global Variables for Screen settings */
 #define  WIDTH   640 /* width of screen */
 #define  HEIGHT  640 /* height of screen*/
-#define  BPP     24   /* bits per pixel  */
+#define  BPP     24  /* bits per pixel  */
 
+/* Variables for MiniMax */
+#define DEPTH 5
+
+#define animations 0 /* animation control: 0 = off, 1 = on */
     
 
 /* Displays one screen */
@@ -32,13 +36,23 @@ SDL_Surface *BaseBoardCopy(SDL_Surface *screen, SDL_Rect boardArray[8][8]);
 /* Renaming SDL_BlitSurface(), so that it'll be easier for me to re-type it in chunks */
 void Move(SDL_Surface *piece, SDL_Rect sprite, SDL_Surface *screen, SDL_Rect rect); 
 
-/* Adds the pieces in the intial position onto the board */
-//void InitializeBoard(SDL_Surface *pieces, SDL_Surface *screen, SDL_Rect boardArray[8][8]);
-
 /* Function to move a piece both on the board array and the GUI */
 void MovePiece(int selectX, int selectY, int destX, int destY, SDL_Surface *baseBoard, 
 SDL_Surface *chessPieces, SDL_Rect pieceArray[8][8], SDL_Rect boardArray[8][8], SDL_Surface *screen, 
-SDL_Rect empty, SDL_Surface *explosion, SDL_Rect animation[10]);
+SDL_Rect empty, SDL_Surface *effect, SDL_Rect animation[10], int effectNumber, int lastMove[4]);
+
+/*************** MiniMax Functions ************************/
+/* Moves the pieces on the minimax board */
+int playerMove(BSTATE *board, int selectX, int selectY, int destX, int destY);
+
+/* Changes turns */	
+void changeSide(BSTATE *board);
+
+/* Checks if a move is legal. Returns 1 if a move is legal, 0 if not */
+int checkLegal(BSTATE *board, int cloc, int nloc);
+
+/* Prompts the AI to move */
+void aiMove(BSTATE *board);
 
 /* Exit protocol */
 void Exit(SDL_Surface *screen);
