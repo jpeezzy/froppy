@@ -165,14 +165,16 @@ int main()
 	//fenToBoardState("K2Q4/pppppppp/3b4/3b2r1/1n1P1k2/7N/PPP1PPPP/RNB2B1R wKQkq -", &test);
 	//fenToBoardState("K2Q4/pppppppp/3b4/3br3/1n1P1k2/7N/PPP1PPPP/RNB2B1R w KQkq	-", &test); 
 	//fenToBoardState("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq -", &test);
+	char* string1 = "r1bqkbnr/pppp1p1p/8/NP2pn1p/2P5/3B4/P2PPPPP/R1BQK1NR b KQkq -";
 	fenToBoardState("r1bqkbnr/pppp1p1p/8/NP2pn1p/2P5/3B4/P2PPPPP/R1BQK1NR b KQkq -", &test);
+	printf("%s \n", string1);
 	char *fen;
 	fen = malloc(sizeof(char)*80);
 	boardToFen(fen, &test);
 	free(fen);
 	return 0;
-}*/
-
+}
+*/
 char* textConverterToEight(char* stringT, BSTATE* b, int index)
 {
 	// printf("string is %s\n", stringT);
@@ -288,8 +290,15 @@ void boardToFen(char *fen, BSTATE *b)
 		fen[count + prevCount + 1] = '/';
 		prevCount += count + 1;
 	}
-
-
+	fen[prevCount] = 0;	
+	//fen[++prevCount] = ' ';
+	fen[++prevCount] = ' ';
+	fen[++prevCount] = !(b->sidetomove) ? 'w': 'b';
+	fen[++prevCount] = ' ';
+	if(b->WKCFlag) fen[++prevCount] = 'K';
+	if(b->WQCFlag) fen[++prevCount] = 'Q';
+	if(b->BKCFlag) fen[++prevCount] = 'k';
+	if(b->BQCFlag) fen[++prevCount] = 'q';
 	for(int i = 0; i < 80; i++)
 	{
 		//fen[i*8+j] = (char)b->boardarray[i][j];
