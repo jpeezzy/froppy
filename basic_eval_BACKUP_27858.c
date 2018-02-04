@@ -193,6 +193,7 @@ float basicEvaluation(BSTATE* currentboard)
                     eval_score+=(-1)*piece_value[currentboard->boardarray[board_index / 8][board_index % 8]-1];
                 }
         }
+<<<<<<< HEAD
     
     //flip if on whiteside
     if (!currentboard->sidetomove)
@@ -205,6 +206,10 @@ float basicEvaluation(BSTATE* currentboard)
         deleteMovelist(all_moves);
 
         return eval_score;
+=======
+    deleteMovelist(all_moves);
+    return eval_score;
+>>>>>>> 292faa3f91791478b21d248b2477d9501968253a
 }
 
 // int main(void)

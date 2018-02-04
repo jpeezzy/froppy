@@ -14,13 +14,18 @@
 #include "boardstate.h"
 #include "movelist.h"
 
+// weight coeeficient for each type of chess piece
+
+#define MOBILITY_WEIGHT 0.2
 
 // material value of a piece
 static int piece_value[6]  = {100, 280, 320, 479, 929, 60000};
 static int piece_weight[6] = {1, 3, 3, 5, 9, 200};
 
-// Pawn, Knight, Bishop, Rook Queen, King is the order in the 
-// piece square table
+// position score is used for evaluation piece based on their coordinates
+// piece square tables
+// source: https://github.com/thomasahle/sunfish
+// Pawn, Knight, Bishop, Rook Queen, King
 
 // 63- to flip
 static int piece_square_table[6][64] = {
@@ -65,100 +70,12 @@ float basicEvaluation(BSTATE* currentboard)
     assert(currentboard);
 
     float  eval_score = 0.0;
-    int whitePiecenum[6]={0,0,0,0,0,0};
-    int blackPiecenum[6]={0,0,0,0,0,0};
     MLIST* all_moves  = NULL;
     all_moves         = createMovelist();
 
     allLegal(all_moves, currentboard);
     assert(all_moves);
 
-    //find total number of pieces
-    int Bpawn, Bknight, Bbishop, Brook, Bqueen, Bking;
-    int Wpawn, Wknight, Wbishop, Wrook, Wqueen, Wking;
-    Bpawn = Bknight = Bbishop = Brook = Bqueen = Bking = 0;
-    Wpawn = Wknight = Wbishop = Wrook = Wqueen = Wking = 0;;
-
-    int a,c,d;
-    //two sides
-    for(a=0; a<2; ++a)
-    {
-        //8 by 8 matrix
-        for(c=0; c<8; ++c)
-        {
-            for(d=0; d<8; ++d)
-            {
-                //white then black
-                if(a == 0)
-                {
-                    if(currentboard->boardarray[c][d] == 1)
-                    {
-                        Wpawn++;           
-                    }
-                    else if(currentboard->boardarray[c][d] == 2)
-                    {
-                        Wknight++;
-                    }
-                    else if(currentboard->boardarray[c][d] == 3)
-                    {
-                        Wbishop++;
-                    }
-                    else if(currentboard->boardarray[c][d] == 4)
-                    {
-                        Wrook++;
-                    }
-                    else if(currentboard->boardarray[c][d] == 5)
-                    {
-                        Wqueen++;
-                    }
-                    else if(currentboard->boardarray[c][d] == 6)
-                    {
-                        Wking++;
-                    }
-                }
-                else if(a==1)
-                {
-                    if(currentboard->boardarray[c][d] == 11)
-                    {
-                        Bpawn++;           
-                    }
-                    else if(currentboard->boardarray[c][d] == 12)
-                    {
-                        Bknight++;
-                    }
-                    else if(currentboard->boardarray[c][d] == 13)
-                    {
-                        Bbishop++;
-                    }
-                    else if(currentboard->boardarray[c][d] == 14)
-                    {
-                        Brook++;
-                    }
-                    else if(currentboard->boardarray[c][d] == 15)
-                    {
-                        Bqueen++;
-                    }
-                    else if(currentboard->boardarray[c][d] == 16)
-                    {
-                        Bking++;
-                    }
-
-                }
-            }
-        }
-        
-    }
-    
-    eval_score += piece_value[0]*(Wpawn - Bpawn);
-    eval_score += piece_value[1]*(Wknight - Bknight);
-    eval_score += piece_value[2]*(Wbishop - Bbishop);
-    eval_score += piece_value[3]*(Wrook - Brook);
-    eval_score += piece_value[4]*(Wqueen - Bqueen);
-    eval_score += piece_value[5]*(Wking - Bking);
-    //printf("\n %f \n",eval_score);
-    //now adding the score for each piece
-
-    
     for (int board_index = 0; board_index < 64; ++board_index)
         {
             // black case
@@ -171,9 +88,6 @@ float basicEvaluation(BSTATE* currentboard)
                                                ->boardarray[board_index / 8]
                                                            [board_index % 8] -
                                            11][63 - board_index];
-                
-                //piece value feature
-                eval_score+=piece_value[currentboard->boardarray[board_index / 8][board_index % 8]-11];
                 }
 
             else if (currentboard->boardarray[board_index / 8]
@@ -188,23 +102,17 @@ float basicEvaluation(BSTATE* currentboard)
                                                ->boardarray[board_index / 8]
                                                            [board_index % 8] -
                                            1][board_index];
-                    
-                    //piece value feature
-                    eval_score+=(-1)*piece_value[currentboard->boardarray[board_index / 8][board_index % 8]-1];
                 }
         }
-    
-    //flip if on whiteside
-    if (!currentboard->sidetomove)
+    deleteMovelist(all_moves);
+    if (currentboard->sidetomove)
         {
-            eval_score*=(-1);
+            return (-1) * eval_score;
         }
-
-        //mobility feature 
-        eval_score+= all_moves->movenum;
-        deleteMovelist(all_moves);
-
-        return eval_score;
+    else
+        {
+            return eval_score;
+        }
 }
 
 // int main(void)
