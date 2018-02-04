@@ -9,7 +9,7 @@
 
 #include "boardstate.h"
 
-void boardSave(BSTATE board,int saveNum);
+void boardSave(BSTATE* board,int saveNum);
 
 void boardLoad(BSTATE* board,int saveNum);
 
