@@ -5,6 +5,7 @@
 #include <string.h>
 
 #include "boardstate.h"
+#include "fenToBoardState.h"
 char* textConverterToEight(char* stringT, BSTATE* b, int index);
 void  fenToBoardState(char* fen, BSTATE* b)
 {
