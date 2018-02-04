@@ -158,7 +158,7 @@ float basicEvaluation(BSTATE* currentboard)
     eval_score += piece_value[3]*(Wrook - Brook);
     eval_score += piece_value[4]*(Wqueen - Bqueen);
     eval_score += piece_value[5]*(Wking - Bking);
-    printf("\n %f \n",eval_score);
+    //printf("\n %f \n",eval_score);
     //now adding the score for each piece
 
     
