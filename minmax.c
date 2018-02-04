@@ -23,6 +23,7 @@ NODE *createNode(MENTRY *move, BSTATE *board)
     node->parent = NULL;
     node->child = NULL;
     node->next = NULL;
+    node->cousin = NULL;
     node->children = 0;
     node->head = NULL;
     return node;
@@ -41,25 +42,9 @@ void createHead(NODE *first)
     }
     head->length = 1;
     head->first = first;
+    head->last = first;
     head->next = NULL;
     first->head = head;
-}
-
-/* create mini structure */
-MINI *createMini(BSTATE *board, int depth)
-{
-    assert(board);
-    MINI *mini = NULL;
-    mini = malloc(sizeof(MINI));
-    if(mini == NULL)
-    {
-        perror("Out of memory aborting...");
-        exit(10);
-    }
-    mini->board = board;
-    mini->move = createMentry(0, 0);
-    mini->depth = depth;
-    return mini;
 }
 
 /* create node with float value and add it to the parent node */
@@ -74,9 +59,10 @@ NODE *addChild(NODE* parent, MENTRY *move, BSTATE *board)
     parent->child = child;
     parent->children = 1;
     child->parent = parent;
-    /* check if the child is the first node */
+    /* check if the child is the first node in current depth */
     if (parent->head->next == NULL)
     {
+        // creates head struct if the child is first node
         createHead(child);
 	parent->head->next = child->head;
     }
@@ -84,6 +70,9 @@ NODE *addChild(NODE* parent, MENTRY *move, BSTATE *board)
     {
         child->head = parent->head->next;
         child->head->length++;
+        // cousin pointer of last node in current depth points to child
+        assert(parent->head->next->last->next == NULL);
+        parent->head->next->last->cousin = child;
     }
     return child;     
 }
@@ -101,18 +90,23 @@ NODE *addSibling(NODE *child, MENTRY *move, BSTATE *board)
     sibling->parent = child->parent;
     sibling->parent->children++;
     sibling->head = child->head;
+    // last pointer of head points to sibling node
+    child->head->last = sibling;
     sibling->head->length++;
     return sibling;
 }
 
-/* remove node along with its child and siblings */
+/* remove node along with its child and siblings recursively */
 void removeNode(NODE *node)
 {
     assert(node);
-    if(node->head->first == node)
+    if(node->head)
     {
-        removeHead(node->head);
-        node->head = NULL;
+        if(node->head->first == node)
+        {
+            removeHead(node->head);
+            node->head = NULL;
+        }
     }
     if(node->child)
     {
@@ -145,17 +139,9 @@ void removeHead(HEAD *head)
 {
     assert(head);
     head->first = NULL;
+    head->last = NULL;
     head->next = NULL;
     free(head);   
-}
-
-/* remove mini struct */
-void removeMini(MINI *mini)
-{
-    assert(mini);
-    mini->board = NULL;
-    mini->move = NULL;
-    free(mini);
 }
 
 /* generate a layer and a pointer to the first node in next depth */
@@ -172,12 +158,15 @@ NODE* generateLayer(NODE *parent)
     allLegal(legalMLIST, parent->board);
     parent->legal = legalMLIST;
     length = legalMLIST->movenum;
+    // condition for which the input parent node has no legal moves 
     if (length == 0)
     {
+        // return the pointer to the first node in next depth if it exits
         if(parent->head->next != NULL)
         {	
             return parent->head->next->first;
 	}
+        // else return NULL
 	else
 	{
 	    return NULL;
@@ -187,6 +176,7 @@ NODE* generateLayer(NODE *parent)
     board = createBstate();
     copyBstate(parent->board, board);
     mov(board->boardarray, currentMove->CLOC, currentMove->NLOC);
+    // switch sides
     if (board->sidetomove)
     {
         board->sidetomove = 0;
@@ -195,13 +185,16 @@ NODE* generateLayer(NODE *parent)
     {
         board->sidetomove = 1;
     }
+    // creates the first child node
     currentNode = addChild(parent, currentMove, board);
-
+    currentMove = currentMove->Next;
+    // loop that creates the remaining children nodes 
     while(currentMove != NULL)
     {
         board = createBstate();
         copyBstate(parent->board, board);
         mov(board->boardarray, currentMove->CLOC, currentMove->NLOC);
+        //switch sides
         if (board->sidetomove)
         {
             board->sidetomove = 0;
@@ -213,167 +206,141 @@ NODE* generateLayer(NODE *parent)
         currentNode = addSibling(currentNode, currentMove, board);  
         currentMove = currentMove->Next;       
     }
-       
+    // return pointer to first node in the depth containing children   
     return parent->head->next->first;
-}
-
-/* finds the best worst value in the tree using minmax with alphabeta pruning */
-float alphabeta(NODE *node, float alpha, float beta, PLAYER minmax)
-{
-    assert(node);
-    NODE *current = NULL;
-    int children;
-    float temp;
-    
-    // if current node is a maximizer
-    if(minmax == Max)
-    {
-        // if current node is the leaf  node, returns its value;
-        if(node->child == NULL)
-        {
-            printf("leafMax\n");
-            node->value = basicEvaluation(node->board);
-            return node->value;
-        }
-        node->value = -3.4E38;
-        current = node->child;
-        children = node->children;
-         
-        for(int i = 0; i < children; i++)
-        {
-            temp = alphabeta(current, alpha, beta, Min);
-            if(temp > node->value)
-            {
-                node->value = temp;
-                /* if node is the root(top) node, store the pointer to the moveEntry Struct of current in it */ 
-                if(node->parent == NULL)
-                {
-                    if(node->move)
-                    {
-                        free(node->move);
-                        node->move = NULL;
-                    }
-                    node->move = createMentry(current->move->CLOC, current->move->NLOC);       
-                }
-            }
-            alpha = (alpha > node->value) ? alpha : node->value;
-            if(beta <= alpha)
-            {
-                // pruning the tree
-                break;
-            }
-            current = current->next;
-        }/* rof */
-        
-        current = NULL;
-        return node->value;
-    }       
-    
-    // if current node is a minimizer 
-    else
-    {
-        // if current node is the a node, returns its value;
-        if(node->child == NULL)
-        {
-            printf("leafmin\n");
-            node->value = basicEvaluation(node->board);
-            return node->value;
-        }
-        node->value = 3.4E38;
-        current = node->child;
-        children = node->children;
-    
-        for(int i = 0; i < children; i++)
-        {
-            temp = alphabeta(current, alpha, beta, Max);
-            node->value = (node->value < temp) ? node->value : temp;
-            beta = (beta < node->value) ? beta : node->value;
-            if(beta <= alpha)
-            {
-                // pruning the tree
-                break;
-            }
-            current = current->next;
-        }/* rof */
-        current = NULL;
-        return node->value;   
-    }
 }
  
 /* finds the best worst move for the AI to make, returns pointer to MENTRY */
 MENTRY *minmax(BSTATE *currentBoard)
 {   
     assert(currentBoard);
-    BSTATE *cpyBoard;
+    BSTATE *cpyBoard = NULL;
     MENTRY *bestMove = NULL;
-    NODE *tree = NULL;
-    NODE *current = NULL;
-    NODE *temp = NULL;
-    NODE *start = NULL;
-    int length;  
-
+    NODE *tree = NULL; 
+    float score;
+    // initialize timer
     int time = 60000; 
     clock_t start_time = clock();
-    clock_t time_elapsed; 
     
-    // copies current board to not change it  
+    // copies current board to avoid changing it  
     cpyBoard = createBstate();
     copyBstate(currentBoard, cpyBoard);
-    // creates first 2 depths of the tree 
+    // creates the root of tree
     tree = createNode(NULL, cpyBoard);
     createHead(tree);
-    start = generateLayer(tree);
-    if(start == NULL)
+    /* creates the first depth of tree */
+    MLIST *legal = NULL;
+    MENTRY *currentMove = NULL;
+    NODE *currentNode = NULL;
+    // find legal moves
+    legal = createMovelist();
+    allLegal(legal, cpyBoard);        
+    assert(legal->movenum);
+    tree->legal = legal;
+    currentMove = legal->First;
+    // create new board, copy and move
+    cpyBoard = createBstate();
+    copyBstate(currentBoard, cpyBoard);
+    mov(cpyBoard->boardarray, currentMove->CLOC, currentMove->NLOC);
+    // switch sides
+    if (cpyBoard->sidetomove)
     {
-        return NULL;
-    } 
-    /* increases depth of tree by 1 per loop, checks for time at the end of each loop */
-    do
+        cpyBoard->sidetomove = 0;
+    }
+    else
     {
-        current = start;
-        length = current->head->length;
-        while(current)
+        cpyBoard->sidetomove = 1;
+    }
+    currentNode = addChild(tree, currentMove, cpyBoard); 
+    currentMove = currentMove->Next;
+    while(currentMove != NULL)
+    {
+        // create new board, copy and move
+        cpyBoard = createBstate();
+        copyBstate(currentBoard, cpyBoard);
+        mov(cpyBoard->boardarray, currentMove->CLOC, currentMove->NLOC);
+        // switch sides
+        if (cpyBoard->sidetomove)
         {
-            start = generateLayer(current);
-            if (current->next)
-	    {
-		current = current->next;
-	    }
-	    else
-	    {	        	
-		temp = current->parent->next;
-		while (temp != NULL && temp->child == NULL)
-                {
-		    temp = temp->next;
-		}
-                if (temp != NULL)
-                {
-                    assert(temp->child);
-		    current = temp->child;
-	        }
-                else
-                {
-                    current = temp;
-                }
-            }
+            cpyBoard->sidetomove = 0;
         }
-        
-        /* not able to generate next depth */
-        if(start == NULL)
+        else
         {
-            break;
-	}
-        time_elapsed = clock() - start_time;
-        printf("time elapsed = %Lf\n", (long double)time_elapsed);
-    } while(time_elapsed < time); 
-    float score = max(tree, -3.4E38, 3.4E38);
+            cpyBoard->sidetomove = 1;
+        }
+        currentNode = addSibling(currentNode, currentMove, cpyBoard);
+        // this is done to make each node in 1st depth act like root of their own tree for parallelization
+        createHead(currentNode);
+        currentMove = currentMove->Next;
+    }
+    /* finished creating first depth */
+    
+/* start parallelization */
+currentNode = tree->child;
+
+#pragma omp parallel 
+    {
+    #pragma omp for schedule(dynamic, 1)
+        for(int i = 0; i < tree->legal->movenum; i++)
+        {
+            NODE *current;
+            NODE *start;
+            clock_t time_elapsed;
+            current = currentNode;
+            for(int j = 0; j < i; j++)
+            {
+                current = current->next;
+            }
+            assert(current);
+            start = generateLayer(current);
+            // current has no legal moves
+            if (start != NULL)
+            {
+                do
+                {
+                    current = start;
+                    assert(current->child == NULL);
+                    while(current)
+                    {
+                        start = generateLayer(current);
+                        if (current->next)
+                        {
+                            // moves onto next sibling node
+                            current = current->next;
+                        }
+                        else
+                        {
+                            assert(current->next == NULL);
+                            current = current->cousin;
+                        }
+                    }
+                    /* not able to generate next depth */
+                    if (start == NULL)
+                    {
+                        break;
+                    }
+                    time_elapsed = clock() - start_time;
+                }while (time_elapsed < time);
+            }       
+        }
+    }
+    // if AI is black
+    if (currentBoard->sidetomove)
+    {
+        score = min(tree, -3.4E38, 3.4E38);
+    }
+    else // if AI is white
+    {
+        score = max(tree, -3.4E38, 3.4E38);
+    }
     printf("score = %f\n", score);
     bestMove = tree->move;
     removeNode(tree);
+    cpyBoard = NULL;
     tree = NULL;
-    current = NULL;
-    temp = NULL;
-    start = NULL;
+    currentMove = NULL;
+    currentNode = NULL;
+    legal = NULL;
     return bestMove;
 }   
 
@@ -385,12 +352,14 @@ float max(NODE* node, float alpha, float beta)
     NODE *current;
     NODE *temp;
     float value;
+    // if node is leaf node, evaluate the board
     if (node->child == NULL)
     {	
         value = basicEvaluation(node->board);
         return value;
     }
     current = node->child;
+    // loop through the children nodes
     while (current != NULL)
     {
     	value = min(current, alpha, beta);
@@ -398,32 +367,41 @@ float max(NODE* node, float alpha, float beta)
     	{	
    	    if(value >= beta)
 	    {
+                // check if node is root node, then stores the best move
                 if(node->parent == NULL)
                 {
+                    assert(current->move);
                     if(node->move)
                     {
-                        free(node->move);
-                        node->move = NULL;
+                        node->move->CLOC = current->move->CLOC;
+                        node->move->NLOC = current->move->NLOC;
                     }
-                    assert(current->move);
-                    node->move = createMentry(current->move->CLOC, current->move->NLOC);       
+                    else
+                    {
+                        node->move = createMentry(current->move->CLOC, current->move->NLOC);       
+                    }
                 }
 		return beta;   // fail hard beta-cutoff
 	    }
+            // temp stores the pointer to potential best move
 	    temp = current;
             alpha = value; // alpha acts like max in MiniMax
         }
         current = current->next;
     }
+    // check if node is root node, then stores the best move
     if(node->parent == NULL)
     {
+         assert(temp->move);
          if(node->move)
          {
-            free(node->move);
-            node->move = NULL;
+            node->move->CLOC = temp->move->CLOC;
+            node->move->NLOC = temp->move->NLOC;
          }
-         assert(temp->move);
-         node->move = createMentry(temp->move->CLOC, temp->move->NLOC);   
+         else
+         {            
+            node->move = createMentry(temp->move->CLOC, temp->move->NLOC);    
+         }
     }
     current = NULL;
     return alpha;
@@ -432,7 +410,9 @@ float max(NODE* node, float alpha, float beta)
 /* minimizer function for minimax with alpha-beta pruning that uses depth */
 float min(NODE *node, float alpha, float beta) 
 {
+    assert(node);
     NODE *current;
+    NODE *temp;
     float value;
     if (node->child == NULL)
     {
@@ -440,21 +420,181 @@ float min(NODE *node, float alpha, float beta)
         return value;
     }
     current = node->child;
+    // loop through the children nodes
     while (current != NULL)
     {
     	value = max(current, alpha, beta);
 	if (value < beta)
 	{
 	    if (value <= alpha)
-	    {
-	        return alpha; // fail hard alpha-cutoff
+	    {   
+                // check if node is root node, then stores best move
+                if (node->parent == NULL)
+                {    
+                    assert(current->move);
+                    // if MENTRY is already created for node
+                    if (node->move)
+                    {
+                        node->move->CLOC = current->move->CLOC;   
+                        node->move->NLOC = current->move->NLOC;
+                    }
+                    else
+                    {
+                        node->move = createMentry(current->move->CLOC, current->move->NLOC);
+                    }
+                }
+                return alpha; // fail hard alpha-cutoff
 	    }
+            // temp stores the pointer to potential best move
+            temp = current;
 	    beta = value; // beta acts like min in MiniMax
 	}
 	current = current->next;
+    }
+    // check if node is root node, then stores best move
+    if (node->parent == NULL)
+    {    
+        assert(temp->move);
+        // if MENTRY is already created for node
+        if (node->move)
+        {
+            node->move->CLOC = temp->move->CLOC;   
+            node->move->NLOC = temp->move->NLOC;
+        }
+        else
+        {
+            node->move = createMentry(temp->move->CLOC, temp->move->NLOC);
+        }
     }
     current = NULL;
     return beta;
 }
 
+/* alternative way of implementing minmax using depth, mov and undo mov */
+/* create mini structure */
+MINI *createMini(BSTATE *board, int depth)
+{
+    assert(board);
+    MINI *mini = NULL;
+    mini = malloc(sizeof(MINI));
+    if(mini == NULL)
+    {
+        perror("Out of memory aborting...");
+        exit(10);
+    }
+    mini->board = board;
+    mini->move = createMentry(0, 0);
+    mini->depth = depth;
+    return mini;
+}
 
+/* remove mini struct */
+void removeMini(MINI *mini)
+{
+    assert(mini);
+    mini->board = NULL;
+    if(mini->move)
+    {
+        free(mini->move);
+    }
+    mini->move = NULL;
+    free(mini);
+}
+
+/* maximizer function for minimax with alpha-beta pruning that uses depth */
+float altMax(MINI *mini, float alpha, float beta, int depth) 
+{
+    assert(mini);
+    MLIST *legal;
+    MENTRY *current;
+    MENTRY *temp;
+    float value;
+    if (depth == 0)
+    {	
+	return basicEvaluation(mini->board);
+    }
+    legal = createMovelist();
+    allLegal(legal, mini->board);
+    current = legal->First;
+    while (current != NULL)
+    {
+    	mov(mini->board->boardarray, current->CLOC, current->NLOC);
+    	value = altMin(mini, alpha, beta, depth - 1);
+    	mov(mini->board->boardarray, current->NLOC, current->CLOC);
+    	if (value > alpha)
+    	{	
+   	    if(value >= beta)
+	    {
+                if(mini->depth == depth)
+                {
+                    mini->move->CLOC = current->CLOC;
+                    mini->move->NLOC = current->NLOC;
+                }
+                deleteMovelist(legal);
+		return beta;   // fail hard beta-cutoff
+	    }
+            temp = current;
+	    alpha = value; // alpha acts like max in MiniMax
+	}
+        current = current->Next;
+    }
+    if(mini->depth == depth)
+    {
+        mini->move->CLOC = temp->CLOC;
+        mini->move->NLOC = temp->NLOC;                
+    }
+    assert(legal);
+    deleteMovelist(legal);
+    legal = NULL;
+    current = NULL;
+    return alpha;
+}
+ 
+/* minimizer function for minimax with alpha-beta pruning that uses depth */ 
+float altMin(MINI* mini, float alpha, float beta, int depth) 
+{
+    assert(mini);
+    MLIST *legal;
+    MENTRY *current;
+    MENTRY *temp;
+    float value;
+    if (depth == 0)
+    {	
+        return basicEvaluation(mini->board);
+    }
+    legal = createMovelist();
+    allLegal(legal, mini->board);
+    current = legal->First;
+    while (current != NULL)
+    {
+        mov(mini->board->boardarray, current->CLOC, current->NLOC);
+    	value = altMax(mini, alpha, beta, depth - 1);
+    	mov(mini->board->boardarray, current->NLOC, current->CLOC);
+	if (value < beta)
+	{
+	    if (value <= alpha)
+	    {
+	        if(mini->depth == depth)
+                {
+                    mini->move->CLOC = current->CLOC;
+                    mini->move->NLOC = current->NLOC;
+                }   
+                deleteMovelist(legal);
+                return alpha; // fail hard alpha-cutoff
+	    }
+	    temp = current;
+            beta = value; // beta acts like min in MiniMax
+	}
+	current = current->Next;
+    }
+    if(mini->depth == depth)
+    {
+        mini->move->CLOC = temp->CLOC;
+        mini->move->NLOC = temp->NLOC;
+    }
+    assert(legal);
+    deleteMovelist(legal);
+    legal = NULL;
+    current = NULL;
+    return beta;
+}

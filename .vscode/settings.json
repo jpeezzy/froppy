@@ -4,6 +4,7 @@
         "randgen.h": "c",
         "dataentry.h": "c",
         "stdio.h": "c",
-        "neuralnet.h": "c"
+        "neuralnet.h": "c",
+        "difficulty_level.h": "c"
     }
 }

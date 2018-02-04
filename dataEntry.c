@@ -6,6 +6,7 @@
 #include "dataEntry.h"
 #include "fenToBoardState.h"
 #include "randGen.h"
+#include "movelist.h"
 
 DATABASE* createDataB(void)
 {
@@ -104,3 +105,43 @@ BSTATE pickRandMove(DATABASE* dataMain)
         }
     return *(curEntry->state);
 }
+
+
+// pick a random move and add it into the movelist database
+void addRandom(MLIST* dataMain, BSTATE* board)
+{
+    assert(dataMain);
+    assert(board);
+    MLIST* listMoves=createMovelist();
+    assert(listMoves);
+    MENTRY* curEntry=NULL;
+    int num;
+    int count=0;
+
+    //create a list of all legal moves to pick from
+    allLegal(listMoves, board);
+    if(listMoves->movenum==0)
+    {
+        #ifdef DEBUG
+        printf("There is no move to pick from\n");
+        #endif
+        deleteMovelist(listMoves);
+        return;
+    }
+
+    //pick a random number 
+    num = (int)randGenerate() % (listMoves->movenum);
+    curEntry = listMoves->First;
+    assert(curEntry);
+
+    //traversing the linked list until reaching the picked move
+    while (count < num)
+        {
+            curEntry = curEntry->Next;
+            assert(curEntry);
+            ++count;
+        }
+
+    appendMove(dataMain, createMentry(curEntry->CLOC, curEntry->NLOC));
+    deleteMovelist(listMoves);
+}   

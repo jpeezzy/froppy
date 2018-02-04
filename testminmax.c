@@ -13,6 +13,8 @@ void changeSide(BSTATE *board);
 int strToInt(char loc[]);
 int checkLegal(BSTATE *board, int cloc, int nloc);
 
+#define DEPTH 7
+
 int main()
 {   
     MLIST *legal;
@@ -65,7 +67,7 @@ void playerMove(BSTATE *board)
      {
      printf("Enter location of piece to move: ");
      scanf("%s", cloc);
-     printf("Enter destionation location: ");
+     printf("Enter destination location: ");
      scanf("%s", nloc);
      iCloc = strToInt(cloc);
      iNloc = strToInt(nloc);
@@ -82,18 +84,40 @@ void playerMove(BSTATE *board)
 void aiMove(BSTATE *board)
 {
     assert(board);
+   
     MENTRY *move;
     move = minmax(board);
     assert(move);
     int legal = checkLegal(board, move->CLOC, move->NLOC);
     if(!legal)
     {
-        perror("AI made invalid move\n");
+        printf("AI made invalid move\n");
     }
     mov(board->boardarray, move->CLOC, move->NLOC);
     changeSide(board);  
     free(move);
     move = NULL; 
+    
+    // new minmax using depth
+/*  
+    MINI *mini;
+    BSTATE *temp;
+    float score;
+    temp = createBstate();
+    copyBstate(board, temp);
+    mini = createMini(temp, DEPTH);
+    score = altMax(mini, -3.4E38, 3.4E38, DEPTH);
+    assert(mini->move);
+    int legal = checkLegal(board, mini->move->CLOC, mini->move->NLOC);
+    if(!legal)
+    {
+        printf("AI made invalid move\n");
+    }
+    mov(board->boardarray, mini->move->CLOC, mini->move->NLOC);
+    changeSide(board);
+    removeMini(mini);
+    deleteBstate(temp); 
+*/
 }
 
 void changeSide(BSTATE *board)

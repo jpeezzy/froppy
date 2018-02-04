@@ -7,21 +7,21 @@
 //Move a piece doesnt check anything
 void mov(int barr[8][8], int ploc, int pmov)
 {
-    if(ploc == 0 && pmov == 0)
+    if(ploc == 1 && pmov == 1)
     {
         barr[7][6] = 6;
         barr[7][5] = 4;
         barr[7][4] = 0;
         barr[7][7] = 0;
     }
-    else if(ploc == 1 && pmov == 1)
+    else if(ploc == 2 && pmov == 2)
     {
         barr[7][2] = 6;
         barr[7][3] = 4;
         barr[7][4] = 0;
         barr[7][0] = 0;
     }
-    else if(ploc == 2 && pmov == 2)
+    else if(ploc == 4 && pmov == 4)
     {
         barr[0][2] = 16;
         barr[0][3] = 14;
@@ -145,7 +145,7 @@ void pawnmove(MLIST *list, BSTATE *board, int pawnlocation)
         if(pawnx == 6)
         {   
             newlocation = 8*(4)+pawny;
-            if(board->boardarray[4][pawny] == 0)
+            if(board->boardarray[4][pawny] == 0 && board->boardarray[5][pawny] == 0)
             {
                 if(checkmove(board, pawnlocation, newlocation))
                 {
@@ -210,7 +210,7 @@ void pawnmove(MLIST *list, BSTATE *board, int pawnlocation)
         if(pawnx == 1)
         {   
             newlocation = 8*(3)+pawny;
-            if(board->boardarray[3][pawny] == 0)
+            if(board->boardarray[3][pawny] == 0 && board->boardarray[2][pawny] == 0)
             {
                 if(checkmove(board, pawnlocation, newlocation))
                 {
@@ -919,6 +919,10 @@ void kingmove(MLIST *list, BSTATE *board, int currentlocation)
     {
         for(j=-1; j<=1; ++j)
         {
+            if(i==0 && j==0)
+            {
+                continue;
+            }
             newlocation = 8*(kingx+i)+(kingy+j);
             
             if((kingx+i >= 0) && (kingx+i <= 7) && (kingy+j >= 0) && (kingy+j<=7))
@@ -933,11 +937,67 @@ void kingmove(MLIST *list, BSTATE *board, int currentlocation)
             }
         }
     }
-    
-    //castling
-    if(board->WKCFlag == 1)
+    if(type == 0)
     {
-
+        //castling
+        if(board->WKCFlag == 1)
+        {
+            if(board->boardarray[7][5] == 0 && board->boardarray[7][6] == 0)
+            {
+                if(checkmove(board,currentlocation,(7*8+5)))
+                {
+                    if(checkmove(board,1,1))
+                    {
+                        appendMove(list, createMentry(1,1));
+                    }
+                }
+            }
+        }
+        
+        if(board->WQCFlag == 1)
+        {
+            if(board->boardarray[7][1] == 0 && board->boardarray[7][2] == 0 && board->boardarray[7][3] == 0)
+            {
+                if(checkmove(board,currentlocation,(7*8+2)))
+                {
+                    if(checkmove(board,2,2))
+                    {
+                        appendMove(list, createMentry(2,2));
+                    }
+                }
+            }
+        }
+    }
+    else if(type == 1)
+    {
+        //castling
+        if(board->BKCFlag == 1)
+        {
+            if(board->boardarray[0][5] == 0 && board->boardarray[0][6] == 0)
+            {
+                if(checkmove(board,currentlocation,(5)))
+                {
+                    if(checkmove(board,3,3))
+                    {
+                        appendMove(list, createMentry(3,3));
+                    }
+                }
+            }
+        }
+        
+        if(board->BQCFlag == 1)
+        {
+            if(board->boardarray[0][1] == 0 && board->boardarray[0][2] == 0 && board->boardarray[0][3] == 0)
+            {
+                if(checkmove(board,currentlocation,(2)))
+                {
+                    if(checkmove(board,4,4))
+                    {
+                        appendMove(list, createMentry(4,4));
+                    }
+                }
+            }
+        }
     }
 }
 
