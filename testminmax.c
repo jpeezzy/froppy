@@ -30,6 +30,8 @@ int main()
     {
         playerMove(board);
         GUI(board->boardarray);
+        score = basicEvaluation(board);
+        printf("Current Board Value = %d\n", score);
         legal = createMovelist();
         allLegal(legal, board);
         if(legal->movenum == 0)
@@ -41,6 +43,8 @@ int main()
         deleteMovelist(legal);
         aiMove(board);
         GUI(board->boardarray);
+        score = basicEvaluation(board);
+        printf("Current Board Value = %d\n", score);
         legal = createMovelist();
         allLegal(legal, board);
         if(legal->movenum == 0)
