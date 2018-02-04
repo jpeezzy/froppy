@@ -20,14 +20,21 @@ void giveHint(BSTATE *board)
         printf("\nYou are about to lose\n");
         return;
     }
-    int row;
-    char col;
 
-    //offset by 1 when printing out
-    //offset by 65 to go from 0 to 'A'
-    row=bestMove->NLOC/8 +1;
-    col=bestMove->NLOC%8;
-    col+=65;
 
-    printf("The position that you should move is %c%d\n",col,row);
+    // offset by 1 when printing out
+    // offset by 65 to go from 0 to 'A'
+    // take 9 and subtract map from 
+    // one range to another
+    int desrow=9-(bestMove->NLOC/8 +1);
+    char descol=bestMove->NLOC%8;
+    descol+=65;
+
+    int sourrow=9-(bestMove->CLOC/8 +1);
+    char sourcol=bestMove->CLOC%8;
+    sourcol+=65;
+
+    printf("The position that you should move is from %c%d to %c%d\n",sourcol,sourrow, descol, desrow);
 }
+
+//used only for testing
