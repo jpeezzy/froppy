@@ -145,7 +145,7 @@ void pawnmove(MLIST *list, BSTATE *board, int pawnlocation)
         if(pawnx == 6)
         {   
             newlocation = 8*(4)+pawny;
-            if(board->boardarray[4][pawny] == 0)
+            if(board->boardarray[4][pawny] == 0 && board->boardarray[5][pawny] == 0)
             {
                 if(checkmove(board, pawnlocation, newlocation))
                 {
@@ -210,7 +210,7 @@ void pawnmove(MLIST *list, BSTATE *board, int pawnlocation)
         if(pawnx == 1)
         {   
             newlocation = 8*(3)+pawny;
-            if(board->boardarray[3][pawny] == 0)
+            if(board->boardarray[3][pawny] == 0 && board->boardarray[2][pawny] == 0)
             {
                 if(checkmove(board, pawnlocation, newlocation))
                 {
