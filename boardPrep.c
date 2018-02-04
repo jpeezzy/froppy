@@ -1,3 +1,9 @@
+/**
+ * Written to load/save board state to fen files 
+ * 
+ */
+ 
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
@@ -17,7 +23,7 @@
 // saveNum is which save file to load/save from 
 
 // basically read the content of the old file and then write 
-// it back except for the line that needs to be changed
+// it back the same except for the line that needs to be saved
 void boardSave(BSTATE* board, int saveNum)
 {
     assert(board);
@@ -75,7 +81,7 @@ void boardLoad(BSTATE* board,int saveNum)
     {
         ++i;
     }
-    if(!i || i<saveNum)
+    if(i<saveNum)
     {
         perror("\nThere is nothing to load\n");
         return ;
