@@ -14,18 +14,13 @@
 #include "boardstate.h"
 #include "movelist.h"
 
-// weight coeeficient for each type of chess piece
-
-#define MOBILITY_WEIGHT 0.2
 
 // material value of a piece
 static int piece_value[6]  = {100, 280, 320, 479, 929, 60000};
 static int piece_weight[6] = {1, 3, 3, 5, 9, 200};
 
-// position score is used for evaluation piece based on their coordinates
-// piece square tables
-// source: https://github.com/thomasahle/sunfish
-// Pawn, Knight, Bishop, Rook Queen, King
+// Pawn, Knight, Bishop, Rook Queen, King is the order in the 
+// piece square table
 
 // 63- to flip
 static int piece_square_table[6][64] = {
@@ -70,6 +65,8 @@ float basicEvaluation(BSTATE* currentboard)
     assert(currentboard);
 
     float  eval_score = 0.0;
+    int whitePiecenum[6]={0,0,0,0,0,0};
+    int blackPiecenum[6]={0,0,0,0,0,0};
     MLIST* all_moves  = NULL;
     all_moves         = createMovelist();
 
@@ -88,6 +85,9 @@ float basicEvaluation(BSTATE* currentboard)
                                                ->boardarray[board_index / 8]
                                                            [board_index % 8] -
                                            11][63 - board_index];
+                
+                //piece value feature
+                eval_score+=piece_value[currentboard->boardarray[board_index / 8][board_index % 8]-11];
                 }
 
             else if (currentboard->boardarray[board_index / 8]
@@ -102,17 +102,23 @@ float basicEvaluation(BSTATE* currentboard)
                                                ->boardarray[board_index / 8]
                                                            [board_index % 8] -
                                            1][board_index];
+                    
+                    //piece value feature
+                    eval_score+=(-1)*piece_value[currentboard->boardarray[board_index / 8][board_index % 8]-1];
                 }
         }
-    deleteMovelist(all_moves);
-    if (currentboard->sidetomove)
+    
+    //flip if on whiteside
+    if (!currentboard->sidetomove)
         {
-            return (-1) * eval_score;
+            eval_score*=(-1);
         }
-    else
-        {
-            return eval_score;
-        }
+
+        //mobility feature 
+        eval_score+= all_moves->movenum;
+        deleteMovelist(all_moves);
+
+        return eval_score;
 }
 
 // int main(void)
