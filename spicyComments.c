@@ -20,7 +20,8 @@ void spicyAdd(BSTATE* board)
         "You can do better than this",
         "You shouldn't have picked this difficulty",
         "It definitely doesn't take 5 weeks to make an AI that can wreck you",
-        "I hope you code better than you play chess"};
+        "I hope you code better than you play chess"
+		"Are you watson? cause you look hard coded"};
 
     char* spicyListGood[] = {
         "What a spicy move",
@@ -30,7 +31,7 @@ void spicyAdd(BSTATE* board)
         "I'm gonna need more features to make it through this game"};
 
     // don't forget to adjust the total number of comments here
-    const int spicyListBadLen  = 4;
+    const int spicyListBadLen  = 5;
     const int spicyListGoodLen = 5;
 
     if (basicEvaluation(board) <= THRESHOLD)
