@@ -431,10 +431,13 @@ int main(int argc, char *args[])
 
 	/* Copied and paste the testminmax.c code over */
 	MLIST *legal;
-    BSTATE* board;
+    BSTATE *board;
+    BSTATE *undoBoard;
     board = createBstate();
     
     loadStart(board);
+    copyBstate(board,undoBoard);
+
     int score = basicEvaluation(board);
     printf("Eval score = %d\n", score);
     if (turn == 0)
@@ -495,6 +498,7 @@ int main(int argc, char *args[])
                             boardLoad(board, menuSelect);   /* Loading board with selection number */
                             PrintBoard(board, baseBoard, pieces, chessPieces, screen, boardArray);  /* Printing new board */
                             menu = 0;   /* menu flag down */
+                            copyBstate(board,undoBoard);
                         }
                         break;
                     }
@@ -572,6 +576,7 @@ int main(int argc, char *args[])
                                 }
                                 spicyAdd(board);
                                 PrintBoard(board, baseBoard, pieces, chessPieces, screen, boardArray);
+                                
                                 legal = createMovelist();
                                 allLegal(legal, board);
                                 if(legal->movenum == 0)     /* Checkmate checker */
@@ -616,8 +621,10 @@ int main(int argc, char *args[])
                         }
                         else if (event.motion.x <= 159)                             /* Undo button */
                         {
+                            copyBstate(undoBoard,board);
                             break;
                         }
+                    copyBstate(board,undoBoard);
                     }
                     break;
                 
