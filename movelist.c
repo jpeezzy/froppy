@@ -1361,11 +1361,10 @@ int checkchecker(BSTATE *board, int flag)
             {
                 continue;
             }
-            newlocation = 8*(kingx+i)+(kingy+j);
             
             if((kingx+i >= 0) && (kingx+i <= 7) && (kingy+j >= 0) && (kingy+j<=7))
             {
-                if( ((board->boardarray[kingx+i][kingy+j]/10  != type) && (board->boardarray[kingx+i][kingy+j] != 0) && board->boardarray[kingx+i][kingy+i]%10 == 6 ))
+                if( ((board->boardarray[kingx+i][kingy+j]/10  != flag) && (board->boardarray[kingx+i][kingy+j] != 0) && board->boardarray[kingx+i][kingy+i]%10 == 6 ))
                 {
                     return 1;
                 }
