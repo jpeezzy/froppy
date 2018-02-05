@@ -47,11 +47,11 @@ void  fenToBoardState(char* fen, BSTATE* b)
 		fen++;
 	}
 
-	if(board[8] == 'w')
+	if(board[8] == (char*)'w')
 	{
 		b->sidetomove = 0;
 	}
-	else if(board[8] == 'b')
+	else if(board[8] == (char*)'b')
 	{
 		b->sidetomove = 1;
 	}
