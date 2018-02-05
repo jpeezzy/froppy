@@ -1137,36 +1137,36 @@ int checkchecker(BSTATE *board, int flag)
         }
      
     //horse moves 
-    if(kingx>2 && kingy != 0 && ((board->boardarray[kingx-2][kingy-1])/10 != flag ) && board->boardarray[kingx-2][kingy-1] %10 == 2 )
+    if(kingx>=2 && kingy != 0 && ((board->boardarray[kingx-2][kingy-1])/10 != flag ) && board->boardarray[kingx-2][kingy-1] %10 == 2 )
     {
         return 1;
     }
-    if(kingx<6 && kingy != 0 && ((board->boardarray[kingx+2][kingy-1])/10 != flag ) && board->boardarray[kingx+2][kingy-1] %10 == 2)
+    if(kingx <= 5 && kingy != 0 && ((board->boardarray[kingx+2][kingy-1])/10 != flag ) && board->boardarray[kingx+2][kingy-1] %10 == 2)
     {
         return 1;
     }
-    if(kingx<6 && kingy != 7 && ((board->boardarray[kingx+2][kingy+1])/10 != flag ) && board->boardarray[kingx+2][kingy+1] %10 == 2)
+    if(kingx <= 5 && kingy != 7 && ((board->boardarray[kingx+2][kingy+1])/10 != flag ) && board->boardarray[kingx+2][kingy+1] %10 == 2)
     {
         return 1;
     }
-    if(kingx>2 && kingy != 7 && ((board->boardarray[kingx-2][kingy+1])/10 != flag ) && board->boardarray[kingx-2][kingy+1] %10 == 2)
+    if(kingx >=2 && kingy != 7 && ((board->boardarray[kingx-2][kingy+1])/10 != flag ) && board->boardarray[kingx-2][kingy+1] %10 == 2)
     {
         return 1;
     }
 
-    if(kingx != 0 && kingy > 2 && ((board->boardarray[kingx-1][kingy-2])/10 != flag ) && board->boardarray[kingx-1][kingy-2] %10 == 2)
+    if(kingx != 0 && kingy >= 2 && ((board->boardarray[kingx-1][kingy-2])/10 != flag ) && board->boardarray[kingx-1][kingy-2] %10 == 2)
     {
         return 1;
     }
-    if(kingx != 0 && kingy < 6 && ((board->boardarray[kingx+1][kingy-2])/10 != flag ) && board->boardarray[kingx+1][kingy-2] %10 == 2)
+    if(kingx != 7 && kingy >= 2 && ((board->boardarray[kingx+1][kingy-2])/10 != flag ) && board->boardarray[kingx+1][kingy-2] %10 == 2)
     {
         return 1;
     }
-    if(kingx != 7 && kingy < 6 && ((board->boardarray[kingx+1][kingy+2])/10 != flag ) && board->boardarray[kingx+1][kingy+2] %10 == 2)
+    if(kingx != 7 && kingy <= 5 && ((board->boardarray[kingx+1][kingy+2])/10 != flag ) && board->boardarray[kingx+1][kingy+2] %10 == 2)
     {
         return 1;
     }
-    if(kingx != 7 && kingy < 6 && ((board->boardarray[kingx-1][kingy+2])/10 != flag ) && board->boardarray[kingx-1][kingy+2] %10 == 2)
+    if(kingx != 0 && kingy <= 5 && ((board->boardarray[kingx-1][kingy+2])/10 != flag ) && board->boardarray[kingx-1][kingy+2] %10 == 2)
     {
         return 1;
     }
