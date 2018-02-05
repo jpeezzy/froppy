@@ -63,7 +63,6 @@ int main()
             deleteMovelist(legal); 
             printf("Enter 1 to continue, 0 to exit: ");
             scanf("%d", &play);
-  
         }
     }
     else
@@ -166,6 +165,7 @@ void playerMove(BSTATE *board)
      }
      }while(!legal);
      mov(board->boardarray, iCloc, iNloc);
+     updateBstate(board);
      changeSide(board);
 }
 
@@ -181,6 +181,7 @@ void aiMove(BSTATE *board)
         printf("AI made invalid move\n");
     }
     mov(board->boardarray, move->CLOC, move->NLOC);
+    updateBstate(board);
     changeSide(board);  
     free(move);
     move = NULL; 

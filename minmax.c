@@ -177,6 +177,7 @@ NODE* generateLayer(NODE *parent)
     board = createBstate();
     copyBstate(parent->board, board);
     mov(board->boardarray, currentMove->CLOC, currentMove->NLOC);
+    updateBstate(board);
     // switch sides
     if (board->sidetomove)
     {
@@ -195,6 +196,7 @@ NODE* generateLayer(NODE *parent)
         board = createBstate();
         copyBstate(parent->board, board);
         mov(board->boardarray, currentMove->CLOC, currentMove->NLOC);
+        updateBstate(board);
         //switch sides
         if (board->sidetomove)
         {
@@ -240,6 +242,7 @@ MENTRY *minmax(BSTATE *currentBoard)
     cpyBoard = createBstate();
     copyBstate(currentBoard, cpyBoard);
     mov(cpyBoard->boardarray, currentMove->CLOC, currentMove->NLOC);
+    updateBstate(cpyBoard);
     // switch sides
     if (cpyBoard->sidetomove)
     {
@@ -257,6 +260,7 @@ MENTRY *minmax(BSTATE *currentBoard)
         cpyBoard = createBstate();
         copyBstate(currentBoard, cpyBoard);
         mov(cpyBoard->boardarray, currentMove->CLOC, currentMove->NLOC);
+        updateBstate(cpyBoard);
         // switch sides
         if (cpyBoard->sidetomove)
         {
@@ -273,7 +277,6 @@ MENTRY *minmax(BSTATE *currentBoard)
     }
     /* finished creating first depth */
     
-    
     // initialize timer
     time_t endwait;
     time_t start_time = time(NULL);
@@ -288,8 +291,6 @@ MENTRY *minmax(BSTATE *currentBoard)
     {
         endwait = endwait / 3.0;
     }
-
-
 
 /* start parallelization */
 currentNode = tree->child;
@@ -545,9 +546,11 @@ float altMax(MINI *mini, float alpha, float beta, int depth)
     while (current != NULL)
     {
     	mov(mini->board->boardarray, current->CLOC, current->NLOC);
-    	value = altMin(mini, alpha, beta, depth - 1);
+    	updateBstate(mini->board);
+        value = altMin(mini, alpha, beta, depth - 1);
     	mov(mini->board->boardarray, current->NLOC, current->CLOC);
-    	if (value > alpha)
+    	updateBstate(mini->board);
+        if (value > alpha)
     	{	
    	    if(value >= beta)
 	    {
@@ -594,9 +597,11 @@ float altMin(MINI* mini, float alpha, float beta, int depth)
     while (current != NULL)
     {
         mov(mini->board->boardarray, current->CLOC, current->NLOC);
-    	value = altMax(mini, alpha, beta, depth - 1);
+    	updateBstate(mini->board);
+        value = altMax(mini, alpha, beta, depth - 1);
     	mov(mini->board->boardarray, current->NLOC, current->CLOC);
-	if (value < beta)
+	updateBstate(mini->board);
+        if (value < beta)
 	{
 	    if (value <= alpha)
 	    {
