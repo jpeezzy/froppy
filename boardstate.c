@@ -126,7 +126,7 @@ void updateBstate(BSTATE *board)
     }
     if(board->BQCFlag == 1)
     {
-        if(board->boardarray[0][4] != 6 || board->boardarray[0][0] != 4)
+        if(board->boardarray[0][4] != 16 || board->boardarray[0][0] != 14)
         {
             board->BQCFlag = 0;
         }

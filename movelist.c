@@ -984,12 +984,12 @@ void kingmove(MLIST *list, BSTATE *board, int currentlocation)
                 }
             }
         }
-        
+ 
         if(board->BQCFlag == 1)
         {
             if(board->boardarray[0][1] == 0 && board->boardarray[0][2] == 0 && board->boardarray[0][3] == 0)
             {
-                if(checkmove(board,currentlocation,(2)))
+                if(checkmove(board,currentlocation,(3)))
                 {
                     if(checkmove(board,4,4))
                     {
