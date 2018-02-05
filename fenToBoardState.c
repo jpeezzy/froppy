@@ -240,6 +240,7 @@ void boardToFen(char *fen, BSTATE *b)
 	// rowCount is the count for each "row" in fen
 	int count  = 0;
 	int prevCount = 0;
+	/*
 	for(int i = 0; i < 8; i++)
 	{
 		for(int j =0; j< 8; j++)
@@ -247,7 +248,7 @@ void boardToFen(char *fen, BSTATE *b)
 			printf("%d", b->boardarray[i][j]);
 		}
 		printf("\n");
-	}
+	}*/
 	for(int i = 0; i < 8; i++)
 	{
 		count = 0;
@@ -307,6 +308,5 @@ void boardToFen(char *fen, BSTATE *b)
 	}
 	printf("\n");
 	return;
-
 }
 
