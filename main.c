@@ -431,10 +431,13 @@ int main(int argc, char *args[])
 
 	/* Copied and paste the testminmax.c code over */
 	MLIST *legal;
-    BSTATE* board;
+    BSTATE *board;
+    BSTATE *undoBoard;
     board = createBstate();
     
     loadStart(board);
+    
+
     int score = basicEvaluation(board);
     printf("Eval score = %d\n", score);
     if (turn == 0)
@@ -616,6 +619,7 @@ int main(int argc, char *args[])
                         }
                         else if (event.motion.x <= 159)                             /* Undo button */
                         {
+                            
                             break;
                         }
                     }
