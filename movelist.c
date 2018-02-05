@@ -320,7 +320,7 @@ void knightmove(MLIST *list, BSTATE *board, int currentlocation)
             appendMove(list, createMentry(currentlocation, newlocation));
         }
     }
-    if(knightx != 0 && knighty < 6 && ((board->boardarray[knightx+1][knighty-2])/10 != type || board->boardarray[knightx+1][knighty-2] == 0))
+    if(knightx != 7 && knighty > 2 && ((board->boardarray[knightx+1][knighty-2])/10 != type || board->boardarray[knightx+1][knighty-2] == 0))
     {
         newlocation = 8*(knightx+1)+(knighty-2);
         if(checkmove(board, currentlocation, newlocation))
@@ -336,7 +336,7 @@ void knightmove(MLIST *list, BSTATE *board, int currentlocation)
             appendMove(list, createMentry(currentlocation, newlocation));
         }
     }
-    if(knightx != 7 && knighty > 2 && ((board->boardarray[knightx-1][knighty+2])/10 != type || board->boardarray[knightx-1][knighty+2] == 0))
+    if(knightx != 0 && knighty < 6 && ((board->boardarray[knightx-1][knighty+2])/10 != type || board->boardarray[knightx-1][knighty+2] == 0))
     {
         newlocation = 8*(knightx-1)+(knighty+2);
         if(checkmove(board, currentlocation, newlocation))
@@ -1046,7 +1046,6 @@ int checkmove(BSTATE *board, int currentlocation, int newlocation)
     {
         return 0;
     }
-
 }
  
 //return 0 if not in check
