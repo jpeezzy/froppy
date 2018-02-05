@@ -152,14 +152,13 @@ int main()
             if(legal->movenum == 0)
             {
                 printf("Checkmate!\n");
-                deleteMovelist(legal);
                 printf("Enter 1 to simulate another game, 0 to exit: ");
                 scanf("%d", &play);
             }
             deleteMovelist(legal);
         }
-    }    
-    deleteBstate(board);
+    }   
+    deleteBstate(board); 
     return 0;
 }
 
