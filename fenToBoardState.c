@@ -6,7 +6,7 @@
 
 #include "boardstate.h"
 #include "fenToBoardState.h"
-char* textConverterToEight(char* stringT, BSTATE* b, int index);
+
 void  fenToBoardState(char* fen, BSTATE* b)
 {
 	/* cheess board pieces based off the positions 1-8, where black king is at
@@ -156,7 +156,7 @@ char pieceToChar(int input)
 
 }
 
-void boardToFen(char *fen, BSTATE *b);
+//void boardToFen(char *fen, BSTATE *b);
 
 /*
 int main()
@@ -310,7 +310,3 @@ void boardToFen(char *fen, BSTATE *b)
 
 }
 
-void saveGame(char *fen)
-{
-	//append text file based on save state
-}

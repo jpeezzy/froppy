@@ -8,19 +8,21 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "spicyComments.h"
-
+#include "fenToBoardState.c"
 int main(int argc, char *args[])
 {
     SDL_Surface *screen = NULL;     /* Main surface to be displayed */
     SDL_Surface *baseBoard = NULL;  /* Surface that will be the reference chess board */
+
+    
 
     int AI = 0;         /* Flag to turn on/off AI. 0 = off, 1 = on */
 //    int lastMove[4];    /* Array to save the last move's coordinates in serial */ 
 //    int lastPieces[2];  /* Array to save the last 2 pieces that moved */
     
     SDL_Init(SDL_INIT_VIDEO);   /* Initializes SDL Environment */
-
-    screen = SDL_SetVideoMode(WIDTH, HEIGHT, BPP, SDL_SWSURFACE); /* Inputs settings for screen */
+    
+    screen = SDL_SetVideoMode(WIDTH, HEIGHT + 80, BPP, SDL_SWSURFACE); /* Inputs settings for screen */
     DisplayWindow("Intro.bmp", screen, 1000);    
 
     SDL_WM_SetCaption("Froppy Chess Game", NULL);   /* Giving the window a title */
@@ -269,11 +271,13 @@ int main(int argc, char *args[])
     Add_BoxFile("ChooseColor.bmp", screen, 0,0); 
     SDL_Flip(screen);
 
+
     int AIMove[2];  /* Array to save the AI */
     int turn = 0;   /* variable to decide who goes goes first */
     quit = 0; /* resetting quit flag */
     int go = 0; /* dirty workaround to fix a loop issue */
-
+    
+    
     while (quit != 1)
     {
         while (SDL_PollEvent(&event))   /******* COLORCHOICE & BOARD INSTANTIATION  LOOP *********/
@@ -303,7 +307,7 @@ int main(int argc, char *args[])
                     }    
 
                     if (go == 1)               
-                    {
+                    {   
                         CreateBoard(greenBoard, whiteBoard, screen);    /* Making board graphics */ 
                         baseBoard = SDL_DisplayFormat(screen);          /* Copying board for reference */ 
                         SDL_BlitSurface(screen, NULL, baseBoard, NULL); 
@@ -370,6 +374,7 @@ int main(int argc, char *args[])
                         printf("    Initializing: Kings   ... \n");
                         printf("[               Done!               ]\n");
                         quit = 1;
+                        SDL_Flip(screen);
                     }
                     break;
 
@@ -542,6 +547,7 @@ int main(int argc, char *args[])
     SDL_FreeSurface(explosion);         /* explosion animation   */    
     SDL_FreeSurface(lightning);         /* lightning animation   */        
     SDL_FreeSurface(chooseOpponent);    /* choose opponent screen*/
+//    SDL_FreeSurface(screen1);           /* intro screens         */
     return 0;
 }
 
