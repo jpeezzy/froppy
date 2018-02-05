@@ -172,7 +172,7 @@ void pawnmove(MLIST *list, BSTATE *board, int pawnlocation)
         {
             if(pawnx != 0)
             {
-                if(board->boardarray[pawnx-1][pawny-1] != 0)
+                if(board->boardarray[pawnx-1][pawny-1] != 0 && board->boardarray[pawnx-1][pawy-1]/10 != 0)
                 {
                     newlocation = 8*(pawnx-1)+(pawny-1);
                     if(checkmove(board, pawnlocation, newlocation))
@@ -188,7 +188,7 @@ void pawnmove(MLIST *list, BSTATE *board, int pawnlocation)
         {
             if(pawnx != 0)
             {
-                if(board->boardarray[pawnx-1][pawny+1] != 0)
+                if(board->boardarray[pawnx-1][pawny+1] != 0 && board->boardarray[pawnx-1][pawny+1]/10 != 0)
                 {
                     newlocation = 8*(pawnx-1)+(pawny+1);
                     if(checkmove(board, pawnlocation, newlocation))
@@ -237,7 +237,7 @@ void pawnmove(MLIST *list, BSTATE *board, int pawnlocation)
         {
             if(pawnx != 8)
             {
-                if(board->boardarray[pawnx+1][pawny-1] != 0)
+                if(board->boardarray[pawnx+1][pawny-1] != 0 && board->boardarray[pawnx+1][pawny-1]/10 != 1)
                 {
                     newlocation = 8*(pawnx+1)+(pawny-1);
                     if(checkmove(board, pawnlocation, newlocation))
@@ -253,7 +253,7 @@ void pawnmove(MLIST *list, BSTATE *board, int pawnlocation)
         {
             if(pawnx != 0)
             {
-                if(board->boardarray[pawnx+1][pawny+1] != 0)
+                if(board->boardarray[pawnx+1][pawny+1] != 0 && board->boardarray[pawnx+1][pawny+1]/10 != 1)
                 {
                     newlocation = 8*(pawnx+1)+(pawny+1);
                     if(checkmove(board, pawnlocation, newlocation))
