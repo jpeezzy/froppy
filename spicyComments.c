@@ -25,7 +25,7 @@ void spicyAdd(BSTATE* board)
         "You're the type of player to get 3rd place in a 1v1 match.",
         "I would give you a free piece, but you would still miss.",
         "You're impossible to underestimate.",
-        "Is your AI missing a chromosome?",
+        "Is your AI missing a circuit?",
         "You would be better off making random moves.",
         "My 'Easy' difficulty chess program can do a better move than that.",
         "You are just a budget version of a bronze 5 chess engine.",
