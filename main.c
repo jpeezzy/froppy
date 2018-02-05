@@ -270,6 +270,7 @@ int main(int argc, char *args[])
        
     quit = 0; /* resetting quit flag */
 
+
     while (quit != 1)   /************* Opponent Choice Loop ******************/
     {
         while (SDL_PollEvent(&event))
@@ -676,4 +677,3 @@ int main(int argc, char *args[])
 //    SDL_FreeSurface(screen1);           /* intro screens         */
     return 0;
 }
-
