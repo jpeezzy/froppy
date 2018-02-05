@@ -4,6 +4,7 @@ MATH= -lm
 
 ChessGUI: ./src/main.c ./bin/ChessGUI.o ./bin/movelist.o ./bin/minmax.o ./bin/boardstate.o ./bin/basic_eval.o ./bin/userHint.o ./bin/spicyComments.o ./bin/boardPrep.o
 	$(CC) $(CFLAGS) -g -lSDL ./src/main.c ./bin/movelist.o ./bin/minmax.o ./bin/boardstate.o ./bin/ChessGUI.o ./bin/basic_eval.o ./bin/userHint.o ./bin/spicyComments.o ./bin/boardPrep.o -o ./bin/ChessGUI
+	mv ./bin/ChessGUI ./bin/Chess
 
 all: ChessGUI
 
@@ -47,4 +48,5 @@ clean:
 	rm -f ./bin/*.o
 	rm -f ./bin/test
 	rm -f ./bin/ChessGUI
+	rm -f ./bin/Chess
 	rm -f Chess_V1.0_src.tar.gz
