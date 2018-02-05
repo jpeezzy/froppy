@@ -1166,7 +1166,7 @@ int checkchecker(BSTATE *board, int flag)
     {
         return 1;
     }
-    if(kingx != 7 && kingy > 2 && ((board->boardarray[kingx-1][kingy+2])/10 != flag ) && board->boardarray[kingx-1][kingy+2] %10 == 2)
+    if(kingx != 7 && kingy < 6 && ((board->boardarray[kingx-1][kingy+2])/10 != flag ) && board->boardarray[kingx-1][kingy+2] %10 == 2)
     {
         return 1;
     }
