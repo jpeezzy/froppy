@@ -280,7 +280,7 @@ MENTRY *minmax(BSTATE *currentBoard)
     // initialize timer
     time_t endwait;
     time_t start_time = time(NULL);
-    time_t seconds = 3;
+    time_t seconds = 10;
     endwait = start_time + seconds;
     int threads = omp_get_max_threads();
     if(tree->legal->movenum > threads)
