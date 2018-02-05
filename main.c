@@ -9,6 +9,10 @@
 #include <stdlib.h>
 #include "spicyComments.h"
 #include "fenToBoardState.c"
+
+#include "userHint.h"
+#include "boardPrep.h"
+#include "spicyComments.h"
 int main(int argc, char *args[])
 {
     SDL_Surface *screen = NULL;     /* Main surface to be displayed */
@@ -286,6 +290,7 @@ int main(int argc, char *args[])
         {
             switch (event.type)
             {
+                
                 case SDL_MOUSEBUTTONUP:
                     if (event.motion.x >= 182 && event.motion.x <= 458      /* if "BLACK" button is pressed */
                      && event.motion.y >= 58  && event.motion.y <= 161)
@@ -407,6 +412,7 @@ int main(int argc, char *args[])
 	MLIST *legal;
     BSTATE* board;
     board = createBstate();
+    
     loadStart(board);
     int score = basicEvaluation(board);
     printf("Eval score = %d\n", score);
@@ -415,6 +421,8 @@ int main(int argc, char *args[])
 
     while (quit !=1)
     {
+        /* Provide Hint to users */
+        userHint(board);
         if (AI == 1 && turn == 1)
         {    
             aiMove(board, AIMove);     
@@ -482,6 +490,7 @@ int main(int argc, char *args[])
                       //      lastPieces[1] = board->boardarray[destX][destY];        /* Saves the destination square */
 
 			/******************** Beginning of MinMax Integration ****************************************************/
+                                
                                 if (playerMove(board, selectY, selectX, destY, destX) != 1)     /* If invalid move */
                                 {
                                     select = 0; /* restart loop to make user select another piece to move */
@@ -492,6 +501,7 @@ int main(int argc, char *args[])
                                     SDL_Flip(screen);   /* update screen*/
                                     break;   
                                 }
+                                spicyAdd(board);
                                 PrintBoard(board, baseBoard, pieces, chessPieces, screen, boardArray);
                                 legal = createMovelist();
                                 allLegal(legal, board);
@@ -542,11 +552,11 @@ int main(int argc, char *args[])
                         }
                         else if (event.motion.x <= 478 && event.motion.x >= 320)    /* Save button */
                         {
-                        
+                            boardSave(board,int );
                         }
                         else if (event.motion.x <= 318 && event.motion.x >= 160)    /* Load button */
                         {
-                        
+                            boardLoad(board,int )
                         }
                         else if (event.motion.x <= 159)                             /* Undo button */
                         {
