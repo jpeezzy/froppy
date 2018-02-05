@@ -7,7 +7,7 @@
 #include "movelist.h"
 #include <stdio.h>
 #include <stdlib.h>
-
+#include "spicyComments.h"
 
 int main(int argc, char *args[])
 {
@@ -104,7 +104,7 @@ int main(int argc, char *args[])
     SDL_Rect empty; /* placeholder variable to denote an empty square */
         empty.x = 0; empty.y = 0; empty.w = 1; empty.h = 1; 
   
-    for (int i = 0; i < 8; i++)
+    for (int i = 0; i < 8; i++)     /* initializing the pieceArray */
     {   for (int j = 0; j < 8; j++)
         {
             pieceArray[i][j] = empty;

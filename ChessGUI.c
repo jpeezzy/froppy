@@ -361,7 +361,7 @@ void aiMove(BSTATE *board, int AIMove[2])
     changeSide(board);  
 
     assert(move);
-    assert(move->CLOC);
+//    assert(move->CLOC);
 
     AIMove[0] = move->CLOC;
     AIMove[1] = move->NLOC;
