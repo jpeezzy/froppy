@@ -53,7 +53,7 @@ userHint.o: userHint.c userHint.h minmax.h movelist.h boardstate.h
 	$(CC) $(CFLAGS) -c userHint.c -o userHint.o 
 
 boardPrep.o: boardPrep.c boardPrep.h boardstate.h fenToBoardState.h 
-	$(CC) $(CFLAGS) -c boardPrep -o boardPrep.o 
+	$(CC) $(CFLAGS) -c boardPrep.c -o boardPrep.o 
 
 spicyComments.o: spicyComments.h spicyComments.c basic_eval.h boardstate.h 
 	$(CC) $(CFLAGS) -c spicyComments.c -o spicyComments.o 
