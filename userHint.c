@@ -10,9 +10,12 @@
 #include "minmax.h"
 #include "movelist.h"
 #include "boardstate.h"
+#include "SDL/SDL.h"
 
-void giveHint(BSTATE *board)
-{  
+void giveHint(BSTATE *board, SDL_Surface *LoadingHint, SDL_Surface *screen)
+{ 
+    SDL_BlitSurface(LoadingHint, NULL, screen, NULL);
+    SDL_Flip(screen);
     assert(board);
     MENTRY* bestMove=minmax(board);
     if(bestMove==NULL)
@@ -21,7 +24,7 @@ void giveHint(BSTATE *board)
         return;
     }
 
-
+    
     // offset by 1 when printing out
     // offset by 65 to go from 0 to 'A'
     // take 9 and subtract map from 

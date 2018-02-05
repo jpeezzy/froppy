@@ -3,7 +3,8 @@
 
 #include "movelist.h"
 #include "boardstate.h"
+#include "SDL/SDL.h"
 
-void giveHint(BSTATE *board);
+void giveHint(BSTATE *board, SDL_Surface *LoadingHint, SDL_Surface *screen);
 
 #endif

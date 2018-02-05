@@ -64,6 +64,12 @@ int main(int argc, char *args[])
     highlights = SDL_LoadBMP("SquareHighlight.bmp");
     color = SDL_MapRGB(highlights->format, 0xFF, 0xFF, 0xFF);/* Filtering out all white color */
     SDL_SetColorKey(highlights, SDL_SRCCOLORKEY, color);
+
+    SDL_Surface *loadingHint = NULL;        /* Making surface for hint loading popup */
+    loadingHint = SDL_LoadBMP("LoadingHint.bmp");
+    color = SDL_MapRGB(loadingHint->format, 0xFF, 0xFF, 0xFF);
+    SDL_SetColorKey(loadingHint, SDL_SRCCOLORKEY, color);
+
     /* Setting rectangles for highlight outlines */
     SDL_Rect yellow;  /* yellow outline definitions */  
     yellow.x = 0;
@@ -85,6 +91,19 @@ int main(int argc, char *args[])
     lightning = SDL_LoadBMP("Lightning.bmp");
     color = SDL_MapRGB(lightning->format, 0xFF, 0xFF,0xFF);/* Filtering out white color */
     SDL_SetColorKey(lightning, SDL_SRCCOLORKEY, color);
+
+
+    SDL_Surface *saveMenu = NULL;       /* Save Menu Menu */
+    saveMenu = SDL_LoadBMP("SaveMenu.bmp");
+    color = SDL_MapRGB(saveMenu->format, 0xFF, 0xFF, 0xFF);
+    SDL_SetColorKey(saveMenu, SDL_SRCCOLORKEY, color);
+
+    SDL_Surface *loadMenu = NULL;       /* Load Menu Menu */
+    loadMenu = SDL_LoadBMP("LoadMenu.bmp");
+    color = SDL_MapRGB(loadMenu->format, 0xFF, 0xFF, 0xFF);
+    SDL_SetColorKey(loadMenu, SDL_SRCCOLORKEY, color);
+
+
 
     /* setting rectangles for  animation */
     SDL_Rect animation[10];
@@ -147,6 +166,8 @@ int main(int argc, char *args[])
     pieces[5] = wQ;     pieces[15] = bQ;
     pieces[6] = wK;     pieces[16] = bK;
         
+
+    
 
 
     printf("--------FROPPY CHESS GAME---------- \n"); 
@@ -416,14 +437,21 @@ int main(int argc, char *args[])
     loadStart(board);
     int score = basicEvaluation(board);
     printf("Eval score = %d\n", score);
-    printf("You are playing as white\n");
-	
+    if (turn == 0)
+    {
+        printf("You are playing as WHITE\n");
+	}
+    else if (turn == 1)
+    {
+        printf("You are playing as BLACK \n");
+    }
+
+    int menu = 0;       /* variable for bottom menu selections */
+    int menuSelect = 0; /* variable for deciding which save select button is pressed */
 
     while (quit !=1)
     {
-        /* Provide Hint to users */
-        giveHint(board);
-        if (AI == 1 && turn == 1)
+       if (AI == 1 && turn == 1)
         {    
             aiMove(board, AIMove);     
                             
@@ -451,7 +479,48 @@ int main(int argc, char *args[])
             switch (event.type)
             {
                 case SDL_MOUSEBUTTONDOWN: /* clicking on a piece */
-                    if (event.motion.y <= 640)
+                    if (menu == 2)      /* Load menu button choices */
+                    {
+                        if (event.motion.x >= 225 && event.motion.x <= 416)
+                        {
+                            if (event.motion.y >= 280 && event.motion.y <= 361)
+                            {
+                                menuSelect = 1;
+
+                            }
+                            else if (event.motion.y >= 377 && event.motion.y <= 457)
+                            {
+                                menuSelect = 2;
+                            }
+                            boardLoad(board, menuSelect);   /* Loading board with selection number */
+                            PrintBoard(board, baseBoard, pieces, chessPieces, screen, boardArray);  /* Printing new board */
+                            menu = 0;   /* menu flag down */
+                        }
+                        break;
+                    }
+       
+                   else if (menu == 3)  /* Save menu button choices */
+                    {
+                        if (event.motion.x >= 225 && event.motion.x <= 416)
+                        {
+                            if (event.motion.y >= 280 && event.motion.y <= 361)
+                            {
+                                menuSelect = 1;
+                            }
+                            else if (event.motion.y >= 377 && event.motion.y <= 457)
+                            {
+                                menuSelect = 2;
+                            }
+                            boardSave(board, menuSelect);   /* Saving board with selection number */
+                            PrintBoard(board, baseBoard, pieces, chessPieces, screen, boardArray);  /* Printing new board */
+                            Exit(screen);
+                            menu = 0;   /* menu flag down */
+                            return 0;
+                       }
+                        break;
+                    }
+ 
+                    else if (event.motion.y <= 640)
                     {
                         if (select == 0)        /* initial click to select piece */
                         {
@@ -512,26 +581,6 @@ int main(int argc, char *args[])
                                     break;
                                 }
                                 deleteMovelist(legal);
-                      /*      if (AI == 1)
-                            {    
-                                aiMove(board, AIMove);     
-                            
-                                selectX = AIMove[0]%8;   // Converting 1D array to 2D array for GUI update 
-                                selectY = AIMove[0]/8;
-                                destX   = AIMove[1]/8;
-                                destY   = AIMove[1]/8; 
-                                PrintBoard(board, baseBoard, pieces, chessPieces, screen, boardArray);
- 
-                                legal = createMovelist();
-                                allLegal(legal, board);
-                                if(legal->movenum == 0)
-                                {
-                                    printf("Checkmate!\n");
-                                    deleteMovelist(legal);
-                                    break;
-                                }
-                                deleteMovelist(legal);	
-                            }*/
             /******************** End of MinMax Integration ***********************************************************/
                                 if (AI != 0)
                                 {
@@ -542,25 +591,32 @@ int main(int argc, char *args[])
                             }
                         }
                     }
-                    if (event.motion.y > 640)   /* if user clicks on any bottom menu buttons */
+                    else if (event.motion.y > 640)   /* if user clicks on any bottom menu buttons */
                     {
-                        if (event.motion.x >= 479)                                  /* Quit button */
+                        if (event.motion.x >= 479)                                  /* Hint button */
                         {
-                            printf("You chose to quit the game! \n");
-                            Exit(screen);
-                            quit = 1;   
+                            /* Provide Hint to users */
+                            giveHint(board, loadingHint, screen);
+                            PrintBoard(board, baseBoard, pieces, chessPieces, screen, boardArray);                            
+                            break;
                         }
                         else if (event.motion.x <= 478 && event.motion.x >= 320)    /* Save button */
                         {
-                            //boardSave(board,int );
+                            SDL_BlitSurface(saveMenu, NULL, screen, NULL);
+                            SDL_Flip(screen);
+                            menu = 3;
+                            break;
                         }
                         else if (event.motion.x <= 318 && event.motion.x >= 160)    /* Load button */
                         {
-                            //boardLoad(board,int )
+                            SDL_BlitSurface(loadMenu, NULL, screen, NULL);
+                            SDL_Flip(screen);
+                            menu = 2;
+                            break;
                         }
                         else if (event.motion.x <= 159)                             /* Undo button */
                         {
-                        
+                            break;
                         }
                     }
                     break;
@@ -584,6 +640,9 @@ int main(int argc, char *args[])
     SDL_FreeSurface(explosion);         /* explosion animation   */    
     SDL_FreeSurface(lightning);         /* lightning animation   */        
     SDL_FreeSurface(chooseOpponent);    /* choose opponent screen*/
+    SDL_FreeSurface(saveMenu);          /* save menu             */
+    SDL_FreeSurface(loadMenu);          /* load menu             */
+
 //    SDL_FreeSurface(screen1);           /* intro screens         */
     return 0;
 }
