@@ -19,6 +19,9 @@ int main()
 {   
     MLIST *legal;
     int play = 1;
+    int pvp;
+    printf("0 for PvAI, 1 for PvP: \n");
+    scanf("%d", &pvp);
     BSTATE* board;
     board = createBstate();
     loadStart(board);
@@ -26,36 +29,77 @@ int main()
     int score = basicEvaluation(board);
     printf("Eval score = %d\n", score);
     printf("You are playing as white\n");
-    while(play)
+    if(pvp)
     {
-        playerMove(board);
-        GUI(board->boardarray);
-        score = basicEvaluation(board);
-        printf("Current Board Value = %d\n", score);
-        legal = createMovelist();
-        allLegal(legal, board);
-        if(legal->movenum == 0)
+        while(play)
         {
-            printf("Checkmate!\n");
+            printf("White's turn\n");
+            playerMove(board);
+            GUI(board->boardarray);
+            score = basicEvaluation(board);
+            printf("Current Board Value = %d\n", score);
+            legal = createMovelist();
+            allLegal(legal, board);
+            if(legal->movenum == 0)
+            {
+                printf("Checkmate!\n");
+                deleteMovelist(legal);
+                break;
+            }
             deleteMovelist(legal);
-            break;
+            printf("Black's turn\n");
+            playerMove(board);
+            GUI(board->boardarray);
+            score = basicEvaluation(board);
+            printf("Current Board Value = %d\n", score);
+            legal = createMovelist();
+            allLegal(legal, board);
+            if(legal->movenum == 0)
+            {
+                printf("Checkmate!\n");
+                deleteMovelist(legal);
+                break;
+            }
+            deleteMovelist(legal); 
+            printf("Enter 1 to continue, 0 to exit: ");
+            scanf("%d", &play);
+  
         }
-        deleteMovelist(legal);
-        aiMove(board);
-        GUI(board->boardarray);
-        score = basicEvaluation(board);
-        printf("Current Board Value = %d\n", score);
-        legal = createMovelist();
-        allLegal(legal, board);
-        if(legal->movenum == 0)
+    }
+    else
+    {
+        printf("You are playing as white\n");
+        while(play)
         {
-            printf("Checkmate!\n");
+            playerMove(board);
+            GUI(board->boardarray);
+            score = basicEvaluation(board);
+            printf("Current Board Value = %d\n", score);
+            legal = createMovelist();
+            allLegal(legal, board);
+            if(legal->movenum == 0)
+            {
+                printf("Checkmate!\n");
+                deleteMovelist(legal);
+                break;
+            }
             deleteMovelist(legal);
-            break;
+            aiMove(board);
+            GUI(board->boardarray);
+            score = basicEvaluation(board);
+            printf("Current Board Value = %d\n", score);
+            legal = createMovelist();
+            allLegal(legal, board);
+            if(legal->movenum == 0)
+            {
+                printf("Checkmate!\n");
+                deleteMovelist(legal);
+                break;
+            }
+            printf("Enter 1 to continue, 0 to exit: ");
+            scanf("%d", &play);
+            deleteMovelist(legal);
         }
-        printf("Enter 1 to continue, 0 to exit: ");
-        scanf("%d", &play);
-        deleteMovelist(legal);
     }    
     deleteBstate(board);
     return 0;
@@ -88,7 +132,6 @@ void playerMove(BSTATE *board)
 void aiMove(BSTATE *board)
 {
     assert(board);
-   
     MENTRY *move;
     move = minmax(board);
     assert(move);
