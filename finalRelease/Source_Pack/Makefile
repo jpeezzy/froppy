@@ -7,34 +7,34 @@ ChessGUI: ./src/main.c ./bin/ChessGUI.o ./bin/movelist.o ./bin/minmax.o ./bin/bo
 
 all: testminmax
 
-randGen.o: ./src/randGen.h ./src/randGen.c
+./bin/randGen.o: ./src/randGen.h ./src/randGen.c
 	$(CC) $(CFLAGS) -c ./src/randGen.c -o ./bin/randGen.o $(MATH)
 
-fenToBoardState.o: ./src/fenToBoardState.c fenToBoardState.h
+./bin/fenToBoardState.o: ./src/fenToBoardState.c fenToBoardState.h
 	$(CC) $(CFLAGS) -c ./src/fenToBoardState.c -o ./bin/fenToBoardState.o $(MATH)
 
-dataEntry.o: ./src/dataEntry.c ./src/dataEntry.h ./src/fenToBoardState.h ./src/dataEntry.h
+./bin/dataEntry.o: ./src/dataEntry.c ./src/dataEntry.h ./src/fenToBoardState.h ./src/dataEntry.h
 	$(CC) $(CFLAGS) -c ./src/dataEntry.c -o ./bin/dataEntry.o $(MATH)
 
-boardstate.o: ./src/boardstate.c ./src/boardstate.h
+./bin/boardstate.o: ./src/boardstate.c ./src/boardstate.h
 	$(CC) $(CFLAGS) -c ./src/boardstate.c -o ./bin/boardstate.o 
 
-movelist.o: ./src/movelist.c ./src/movelist.h ./src/boardstate.h
+./bin/movelist.o: ./src/movelist.c ./src/movelist.h ./src/boardstate.h
 	$(CC) $(CFLAGS) -c ./src/movelist.c -o ./bin/movelist.o
 
-minmax.o: ./src/minmax.c ./src/minmax.h ./src/movelist.h ./src/basic_eval.h ./src/boardstate.h
+./bin/minmax.o: ./src/minmax.c ./src/minmax.h ./src/movelist.h ./src/basic_eval.h ./src/boardstate.h
 	$(CC) $(CFLAGS) -c ./src/minmax.c -o ./bin/minmax.o
 
-userHint.o: ./src/userHint.c ./src/userHint.h ./src/minmax.h ./src/movelist.h ./src/boardstate.h 
+./bin/userHint.o: ./src/userHint.c ./src/userHint.h ./src/minmax.h ./src/movelist.h ./src/boardstate.h 
 	$(CC) $(CFLAGS) -c ./src/userHint.c -o ./bin/userHint.o 
 
-boardPrep.o: ./src/boardPrep.c ./src/boardPrep.h ./src/boardstate.h ./src/fenToBoardState.h 
+./bin/boardPrep.o: ./src/boardPrep.c ./src/boardPrep.h ./src/boardstate.h ./src/fenToBoardState.h 
 	$(CC) $(CFLAGS) -c ./src/boardPrep.c -o ./bin/boardPrep.o 
 
-spicyComments.o: ./src/spicyComments.h spicyComments.c ./src/basic_eval.h ./src/boardstate.h 
+./bin/spicyComments.o: ./src/spicyComments.h spicyComments.c ./src/basic_eval.h ./src/boardstate.h 
 	$(CC) $(CFLAGS) -c ./src/spicyComments.c -o ./bin/spicyComments.o 
 
-ChessGUI.o: ./src/ChessGUI.h ./src/ChessGUI.c
+./bin/ChessGUI.o: ./src/ChessGUI.h ./src/ChessGUI.c
 	$(CC) $(CFLAGS) -c -lSDL ./src/ChessGUI.c -o ./bin/ChessGUI.o
 
 clean:
