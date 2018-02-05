@@ -279,6 +279,17 @@ MENTRY *minmax(BSTATE *currentBoard)
     time_t start_time = time(NULL);
     time_t seconds = 3;
     endwait = start_time + seconds;
+    int threads = omp_get_max_threads();
+    if(tree->legal->movenum > threads)
+    {
+        endwait = endwait / 2.0;
+    }
+    else if(tree->legal->movenum > threads * 2)
+    {
+        endwait = endwait / 3.0;
+    }
+
+
 
 /* start parallelization */
 currentNode = tree->child;

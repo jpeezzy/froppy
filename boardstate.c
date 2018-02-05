@@ -100,3 +100,15 @@ void copyBstate(BSTATE *old, BSTATE *new)
     }
 }
 
+void updateBstate(BSTATE *board)
+{
+    assert(board);
+
+
+
+
+}
+
+
+
+
