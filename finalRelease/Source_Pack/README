@@ -12,14 +12,7 @@ Version: Release 1.0
 Date: February 5, 2018
 /*************************************************************************************/
 
-This is an alpha version of Froppy chess software. The program is meant to be a 
-Human vs AI chess game, with the AI being trained with a neural network. The foundations
-for the neural net have been created, but the main chess gameplay is still in progress. 
-
-
-*The foundation code is close to being completed, 
-so a main program integrating all of it has not been compiled yet. However, the individual
-target files are compilable separately.
+This is the source code of the final release of the Froppy chess engine, it contains all the files necessary to build the Froppy chess engine.
 
 Check the source directory for source code and test files.
 Refer to Chess_SoftwareSpec.pdf in doc/ directory for more detailed instructions.

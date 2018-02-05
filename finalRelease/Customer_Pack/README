@@ -12,6 +12,6 @@ Version: Release 1.0
 Date:    February 5, 2018
 /*****************************************************************************/
 
-This is the final release of the Froppy chess software, it has support for human vs AI, human vs human. It also has extra features like nice GUI, spicy comments, giving user hints, load and save, undo moves, different difficulty levels. 
+This is the final release of the Froppy chess software, it has support for human vs AI, human vs human. It also has extra features like nice GUI, spicy comments, giving user hints, load a board from a fen file, undo moves. 
 
 Refer to Chess_UserManual.pdf in doc/ directory for more detailed instructions.

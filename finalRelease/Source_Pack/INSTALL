@@ -1,0 +1,3 @@
+Type the following to create the chess engine executable:
+Assuming that your working directory is is the one containing this installation instruction
+make
