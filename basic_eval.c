@@ -155,7 +155,6 @@ float basicEvaluation(BSTATE* currentboard)
     eval_score += piece_value[5]*(Wking - Bking);
     //printf("\n %f \n",eval_score);
     //now adding the score for each piece
-
     
     for (int board_index = 0; board_index < 64; ++board_index)
         {
@@ -165,13 +164,14 @@ float basicEvaluation(BSTATE* currentboard)
             if (currentboard->boardarray[board_index / 8][board_index % 8] > 10)
                 {
                     eval_score +=
+                        (-1) * 
                         piece_square_table[currentboard
                                                ->boardarray[board_index / 8]
                                                            [board_index % 8] -
                                            11][63 - board_index];
                 
                 //piece value feature
-                eval_score+=piece_value[currentboard->boardarray[board_index / 8][board_index % 8]-11];
+                //eval_score+=piece_value[currentboard->boardarray[board_index / 8][board_index % 8]-11];
                 }
 
             else if (currentboard->boardarray[board_index / 8]
@@ -181,25 +181,25 @@ float basicEvaluation(BSTATE* currentboard)
                 {
                     eval_score +=
 
-                        (-1) *
+                        (1) *
                         piece_square_table[currentboard
                                                ->boardarray[board_index / 8]
                                                            [board_index % 8] -
                                            1][board_index];
                     
                     //piece value feature
-                    eval_score+=(-1)*piece_value[currentboard->boardarray[board_index / 8][board_index % 8]-1];
+                    //eval_score+=(-1)*piece_value[currentboard->boardarray[board_index / 8][board_index % 8]-1];
                 }
         }
     
     //flip if on whiteside
-    if (!currentboard->sidetomove)
+  /*if (!currentboard->sidetomove)
         {
             eval_score*=(-1);
         }
 
         //mobility feature 
-        eval_score+= all_moves->movenum*mobilWeight;
+        eval_score+= all_moves->movenum*mobilWeight;*/
         deleteMovelist(all_moves);
 
         return eval_score;
