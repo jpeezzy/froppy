@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <time.h>
 #include <assert.h>
+#include <unistd.h>
 #include "minmax.h"
 #include "basic_eval.h"
 
@@ -218,10 +219,7 @@ MENTRY *minmax(BSTATE *currentBoard)
     MENTRY *bestMove = NULL;
     NODE *tree = NULL; 
     float score;
-    // initialize timer
-    int time = 60000; 
-    clock_t start_time = clock();
-    
+
     // copies current board to avoid changing it  
     cpyBoard = createBstate();
     copyBstate(currentBoard, cpyBoard);
@@ -275,6 +273,13 @@ MENTRY *minmax(BSTATE *currentBoard)
     }
     /* finished creating first depth */
     
+    
+    // initialize timer
+    time_t endwait;
+    time_t start_time = time(NULL);
+    time_t seconds = 3;
+    endwait = start_time + seconds;
+
 /* start parallelization */
 currentNode = tree->child;
 
@@ -285,7 +290,7 @@ currentNode = tree->child;
         {
             NODE *current;
             NODE *start;
-            clock_t time_elapsed;
+            time_t time_elapsed = time(NULL);
             current = currentNode;
             for(int j = 0; j < i; j++)
             {
@@ -319,8 +324,8 @@ currentNode = tree->child;
                     {
                         break;
                     }
-                    time_elapsed = clock() - start_time;
-                }while (time_elapsed < time);
+                    time_elapsed = time(NULL);
+                }while (time_elapsed < endwait);
             }       
         }
     }
