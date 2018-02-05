@@ -8,16 +8,10 @@ Authors: Abel Jiminez
 	 Aung Thu
 	 Jeremiah Blackburn
 
-Version: Alpha 1.0
-Date:    January 29, 2018
+Version: Release 1.0
+Date:    February 5, 2018
 /*****************************************************************************/
 
-This is an alpha version of Froppy chess software. The program is meant to be a 
-Human vs AI chess game, with the AI being trained with a neural network. The foundations
-for the neural net have been created, but the main chess gameplay is still in progress. 
-
-
-*There is no user executable at the moment. The foundation code is close to being completed, 
-so a main program integrating all of it has not been compiled yet.
+This is the final release of the Froppy chess software, it has support for human vs AI, human vs human. It also has extra features like nice GUI, spicy comments, giving user hints, load and save, undo moves, different difficulty levels. 
 
 Refer to Chess_UserManual.pdf in doc/ directory for more detailed instructions.

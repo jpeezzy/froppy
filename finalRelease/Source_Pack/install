@@ -1,4 +1,3 @@
 Type the following to install the program:
-% tar -xvzf Chess Alpha src.tar.gz 
-% cd Chess Alpha src
-% make
+Assuming that your working directory is is the one containing this installation instruction
+make
