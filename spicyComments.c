@@ -28,18 +28,22 @@ void spicyAdd(BSTATE* board)
         "Is your AI missing a chromosome?",
         "You would be better off making random moves",
         "My 'Easy' difficulty chess program can do a better move than that",
-        "You are just a budget version of a bronze 5 chess engine"};
+        "You are just a budget version of a bronze 5 chess engine",
+        "Congratulations, your probablity of losing is now higher than your IQ"};
 
     char* spicyListGood[] = {
         "What a spicy move",
         "Deep blue, is that you?",
         "What does the eval function return for the move? It's over 9000!!!!!!!!!",
         "It's either you are really good or this eval function is really bad",
-        "I'm gonna need more features to make it through this game"};
+        "I'm gonna need more features to make it through this game",
+        "Finally, a decent move...",
+        "Didn't know you are capapble of doing such a move",
+        "Suprised you managed find something useful out of a trashcan"};
 
     // don't forget to adjust the total number of comments here
-    const int spicyListBadLen  = 12;
-    const int spicyListGoodLen = 5;
+    const int spicyListBadLen  = 13;
+    const int spicyListGoodLen = 8;
 
     if (basicEvaluation(board) <= THRESHOLD)
         {
