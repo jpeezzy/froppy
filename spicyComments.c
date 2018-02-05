@@ -29,7 +29,8 @@ void spicyAdd(BSTATE* board)
         "You would be better off making random moves",
         "My 'Easy' difficulty chess program can do a better move than that",
         "You are just a budget version of a bronze 5 chess engine",
-        "Congratulations, your probablity of losing is now higher than your IQ"};
+        "Congratulations, your probablity of losing is now higher than your IQ",
+        "Calling your AI trash would be an understatement"};
 
     char* spicyListGood[] = {
         "What a spicy move",
@@ -42,7 +43,7 @@ void spicyAdd(BSTATE* board)
         "Suprised you managed find something useful out of a trashcan"};
 
     // don't forget to adjust the total number of comments here
-    const int spicyListBadLen  = 13;
+    const int spicyListBadLen  = 14;
     const int spicyListGoodLen = 8;
 
     if (basicEvaluation(board) <= THRESHOLD)
