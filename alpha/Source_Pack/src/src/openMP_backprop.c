@@ -1,0 +1,295 @@
+#include <assert.h>
+#include <omp.h>
+#include <stdio.h>
+#include <stdlib.h>
+
+#include "matrix.h"
+#include "neuralnet.h"
+#include "openMP_backprop.h"
+
+#define CORE_NUM 56
+void printOutError(double* error, int lenght)
+{
+  assert(error);
+  double sum = 0.0;
+  for (int i = 0; i < lenght; ++i)
+    {
+      sum += error[i];
+    }
+  printf("The total error is %f\n", sum);
+}
+
+void calerrorOuputO(double* output, double* truth, double* res, int length)
+{
+  assert(output);
+  assert(truth);
+  assert(res);
+#pragma omp parallel num_threads(CORE_NUM)
+  {
+#pragma omp for schedule(static)
+    for (int i = 0; i < length; ++i)
+      {
+        res[i] = output[i] - truth[i];
+      }
+  }
+}
+
+// calculate derivative of error with repsect to output, take in weights and
+// derivative of error with respect to input of next layer as well as length of
+// the current node and length of the next node
+void calerrorOuput(
+    double* weightCur, double* nexterrorVAl, double* res, int lenCur, int lenNex)
+{
+  assert(nexterrorVAl);
+  assert(res);
+  assert(weightCur);
+  double* temp = NULL;
+  temp        = transposeMatrix(weightCur, lenNex, lenCur);
+  matrixMultiplication(temp, nexterrorVAl, res, lenCur, lenNex, 1);
+  free(temp);
+}
+
+// calculate the derivative of error w.r.t to value of a node
+// parameters: the current layer value, derivative of error w.r.t output
+void calerrorVal(double* layerVal, double* errorOutput, double* res, int length)
+{
+  assert(layerVal);
+  assert(errorOutput);
+  assert(res);
+  reluArray(layerVal, length, 1, 1);
+#pragma omp parallel num_threads(CORE_NUM)
+  {
+#pragma omp for schedule(static)
+    for (int i = 0; i < length; ++i)
+      {
+        res[i] = layerVal[i] * errorOutput[i];
+      }
+  }
+}
+
+// calculate the gradient descent
+// parameters: output of previous layer, derivative of error w.r.t value
+void calgrad(
+    double* curOutput, double* errorVal, double* res, int lenNext, int lenCur)
+{
+  assert(curOutput);
+  assert(errorVal);
+  assert(res);
+#pragma omp parallel num_threads(CORE_NUM)
+  {
+#pragma omp for schedule(static)
+    for (int i = 0; i < lenCur; ++i)
+      {
+        for (int j = 0; j < lenNext; ++j)
+          {
+            res[i * lenNext + j] = curOutput[j] * errorVal[i];
+          }
+      }
+  }
+}
+
+void backpropAuto(AUTOW*   autoweights,
+                  AUTOL*   autolayer,
+                  DECODEW* decodeweights,
+                  DECODEL* decodelayer,
+                  AUTOW*   autograd,
+                  DECODEW* decodegrad,
+                  int      stage)
+{
+  // temporary variables for storing numbers between layers
+  double* derErrorOutput0 = NULL;
+  double* derErrorOutput  = NULL;
+  double* derErrorVal     = NULL;
+  switch (stage)
+    {
+      case 1:
+#ifdef DEBUG
+        for (int l = 0; l < 10; ++l)
+          {
+            printf("%f ", decodelayer->output[0][l]);
+          }
+
+        for (int l = 0; l < 10; ++l)
+          {
+            printf("%f ", ((autolayer->input))[0][l]);
+          }
+#endif
+        // train decoder layer output
+        derErrorOutput0 = (double*)malloc(773 * sizeof(double));
+        calerrorOuputO((double*)(decodelayer->output),
+                       (double*)(autolayer->input),
+                       derErrorOutput0,
+                       773);
+#ifdef DEBUG
+        // for (int l = 0; l < 10; ++l)
+        //   {
+        //     printf("%f ", derErrorOutput0[l]);
+        //   }
+        // printOutError(derErrorOutput0, 773);
+
+#endif
+        derErrorVal = (double*)malloc(773 * sizeof(double));
+        calerrorVal(
+            (double*)decodelayer->output, derErrorOutput0, derErrorVal, 773);
+        for (int l = 0; l < 10; ++l)
+          {
+            printf("\nerror val: %f ", derErrorVal[l]);
+          }
+        printOutError(derErrorOutput0, 773);
+        calgrad((double*)decodelayer->layer3,
+                derErrorVal,
+                (double*)decodegrad->weight3,
+                773,
+                600);
+
+        for (int l = 0; l < 10; ++l)
+          {
+            printf("\n decode grad:%p ", decodegrad->weight3[l]);
+          }
+
+        // train input layer of encoder
+        derErrorOutput = (double*)malloc(600 * sizeof(double));
+        calerrorOuput((double*)autoweights->weight0,
+                      derErrorVal,
+                      derErrorOutput,
+                      600,
+                      773);
+        for (int l = 0; l < 10; ++l)
+          {
+            printf("\n error out%f ", derErrorOutput[l]);
+          }
+        free(derErrorVal);
+        derErrorVal = NULL;
+        derErrorVal = (double*)malloc(600 * sizeof(double));
+        calerrorVal((double*)autolayer->input, derErrorOutput, derErrorVal, 600);
+        for (int l = 0; l < 10; ++l)
+          {
+            printf("\n error val %f ", derErrorVal[l]);
+          }
+        calgrad((double*)autolayer->layer1,
+                derErrorVal,
+                (double*)autograd->weight0,
+                600,
+                773);
+        for (int l = 0; l < 10; ++l)
+          {
+            printf("\n auto grad: %p ", autograd->weight0[l]);
+          }
+
+        free(derErrorOutput0);
+        free(derErrorOutput);
+        free(derErrorVal);
+
+        break;
+      case 2:
+        // train decoder layer output
+        derErrorOutput0 = (double*)malloc(773 * sizeof(double));
+        calerrorOuputO((double*)decodelayer->output,
+                       (double*)autolayer->input,
+                       derErrorOutput0,
+                       773);
+        derErrorVal = (double*)malloc(773 * sizeof(double));
+        calerrorVal(
+            (double*)decodelayer->output, derErrorOutput0, derErrorVal, 773);
+
+        // train layer 3 of decoder
+        derErrorOutput = (double*)malloc(400 * sizeof(double));
+        calerrorOuput((double*)autoweights->weight1,
+                      derErrorVal,
+                      derErrorOutput,
+                      400,
+                      600);
+        free(derErrorVal);
+        derErrorVal = NULL;
+        derErrorVal = (double*)malloc(600 * sizeof(double));
+        calerrorVal(
+            (double*)autolayer->layer1, derErrorOutput, derErrorVal, 400);
+        calgrad(
+            derErrorOutput0, derErrorVal, (double*)autograd->weight1, 400, 600);
+        free(derErrorOutput);
+
+        // train layer 1 of encoder
+        derErrorOutput = (double*)malloc(400 * sizeof(double));
+        calerrorOuput((double*)autoweights->weight1,
+                      derErrorVal,
+                      derErrorOutput,
+                      400,
+                      600);
+        free(derErrorVal);
+        derErrorVal = NULL;
+        derErrorVal = (double*)malloc(600 * sizeof(double));
+        calerrorVal(
+            (double*)autolayer->layer1, derErrorOutput, derErrorVal, 400);
+        calgrad(
+            derErrorOutput0, derErrorVal, (double*)autograd->weight1, 400, 600);
+
+        // train input layer of encoder
+        free(derErrorOutput);
+        derErrorOutput = (double*)malloc(600 * sizeof(double));
+        calerrorOuput((double*)autoweights->weight0,
+                      derErrorVal,
+                      derErrorOutput,
+                      600,
+                      773);
+        free(derErrorVal);
+        derErrorVal = NULL;
+        derErrorVal = (double*)malloc(600 * sizeof(double));
+        calerrorVal((double*)autolayer->input, derErrorOutput, derErrorVal, 600);
+        calgrad(
+            derErrorOutput0, derErrorVal, (double*)autograd->weight0, 600, 773);
+
+        free(derErrorOutput0);
+        free(derErrorOutput);
+        free(derErrorVal);
+
+        break;
+      // case 3:
+      //   // train layer 2 of decoder
+      //   derErrorOutput0 = (double*)malloc(400 * sizeof(double));
+      //   calerrorOuputO(
+      //       decodelayer->layer2, autolayer->layer2, derErrorOutput0, 400);
+      //   derErrorVal = (double*)malloc(400 * sizeof(double));
+      //   calerrorVal(decodelayer->layer2, derErrorOutput0, derErrorVal, 400);
+      //   calgrad(decodelayer->layer1, derErrorVal, decodegrad->layer2, 400,
+      //   200);
+
+      //   derErrorOutput = (double*)malloc(200 * sizeof(double));
+      //   calerrorOuput(
+      //       autoweights->weight3, derErrorVal, derErrorOutput, 200, 400);
+      //   free(derErrorVal);
+      //   derErrorVal = NULL;
+      //   derErrorVal = (double*)malloc(200 * sizeof(double));
+      //   calerrorVal(autolayer->layer2, derErrorOutput, derErrorVal, 200);
+      //   calgrad(derErrorOutput0, derErrorVal, autograd->weight2, 200, 400);
+
+      //   free(derErrorOutput0);
+      //   free(derErrorOutput);
+      //   free(derErrorVal);
+      //   break;
+      // case 4:
+      //   // train layer 1 of decoder
+      //   derErrorOutput0 = (double*)malloc(200 * sizeof(double));
+      //   calerrorOuputO(
+      //       decodelayer->layer1, autolayer->layer3, derErrorOutput0, 200);
+      //   derErrorVal = (double*)malloc(200 * sizeof(double));
+      //   calerrorVal(decodelayer->layer1, derErrorOutput0, derErrorVal, 200);
+      //   calgrad(autolayer->output, derErrorVal, decodegrad->layer1, 200,
+      //   100);
+
+      //   derErrorOutput = (double*)malloc(100 * sizeof(double));
+      //   calerrorOuput(
+      //       autoweights->weight3, derErrorVal, derErrorOutput, 100, 200);
+      //   free(derErrorVal);
+      //   derErrorVal = NULL;
+      //   derErrorVal = (double*)malloc(100 * sizeof(double));
+      //   calerrorVal(autolayer->layer3, derErrorOutput, derErrorVal, 100);
+      //   calgrad(derErrorOutput0, derErrorVal, autograd->weight3, 100, 200);
+
+      //   free(derErrorOutput0);
+      //   free(derErrorOutput);
+      //   free(derErrorVal);
+      //   break;
+      default:
+        break;
+    }
+}
