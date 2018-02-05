@@ -5,7 +5,10 @@ MATH= -lm
 ChessGUI: ./src/main.c ./bin/ChessGUI.o ./bin/movelist.o ./bin/minmax.o ./bin/boardstate.o ./bin/basic_eval.o ./bin/userHint.o ./bin/spicyComments.o ./bin/boardPrep.o
 	$(CC) $(CFLAGS) -g -lSDL ./src/main.c ./bin/movelist.o ./bin/minmax.o ./bin/boardstate.o ./bin/ChessGUI.o ./bin/basic_eval.o ./bin/userHint.o ./bin/spicyComments.o ./bin/boardPrep.o -o ./bin/ChessGUI
 
-all: testminmax
+all: ChessGUI
+
+tar: bin doc src COPYRIGHT INSTALL README Makefile
+	gtar cvzf Chess_V1.0_src.tar.gz bin doc src COPYRIGHT INSTALL README Makefile	
 
 ./bin/randGen.o: ./src/randGen.h ./src/randGen.c
 	$(CC) $(CFLAGS) -c ./src/randGen.c -o ./bin/randGen.o $(MATH)
@@ -42,8 +45,6 @@ all: testminmax
 
 clean:
 	rm -f ./bin/*.o
-	rm -f ./bin/auto
-	rm -f ./bin/MT
-	rm -f ./bin/testminmax
 	rm -f ./bin/test
-	rm -f ./bin/Chess
+	rm -f ./bin/ChessGUI
+	rm -f Chess_V1.0_src.tar.gz
