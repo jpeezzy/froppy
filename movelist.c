@@ -1038,7 +1038,7 @@ int checkmove(BSTATE *board, int currentlocation, int newlocation)
     updateBstate(temp);
     int flag = board->sidetomove;
     int result = checkchecker(temp, flag);
-    deleteBstate(temp);
+    //deleteBstate(temp);
     if( result == 0)
     {
         return 1;
