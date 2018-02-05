@@ -10,6 +10,9 @@ all: testminmax
 ./bin/randGen.o: ./src/randGen.h ./src/randGen.c
 	$(CC) $(CFLAGS) -c ./src/randGen.c -o ./bin/randGen.o $(MATH)
 
+./bin/basic_eval.o: ./src/basic_eval.h ./src/boardstate.h ./src/movelist.h ./src/basic_eval.c
+	$(CC) $(CFLAGS) -c ./src/basic_eval.c -o ./bin/basic_eval.o
+
 ./bin/fenToBoardState.o: ./src/fenToBoardState.c fenToBoardState.h
 	$(CC) $(CFLAGS) -c ./src/fenToBoardState.c -o ./bin/fenToBoardState.o $(MATH)
 
@@ -38,9 +41,9 @@ all: testminmax
 	$(CC) $(CFLAGS) -c -lSDL ./src/ChessGUI.c -o ./bin/ChessGUI.o
 
 clean:
-	rm -f *o
-	rm -f auto
-	rm -f MT
-	rm -f testminmax
-	rm -f test
-	rm -f ChessGUI
+	rm -f ./bin/.*o
+	rm -f ./bin/auto
+	rm -f ./bin/MT
+	rm -f ./bin/testminmax
+	rm -f ./bin/test
+	rm -f ./bin/ChessGUI
