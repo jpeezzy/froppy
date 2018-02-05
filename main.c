@@ -342,8 +342,9 @@ int main(int argc, char *args[])
 
 	/* Copied and paste the testminmax.c code over */
 	MLIST *legal;
+#if AI == 1
     int AIMove[2];  /* Array to save the AI */
-//  int play = 1;	/* commented out variables/functions not used */
+#endif
     BSTATE* board;
     board = createBstate();
     loadStart(board);
@@ -393,8 +394,8 @@ int main(int argc, char *args[])
                         {
                             effectNumber = rand()%2 + 1;    /* picking random number to pick the animation */
 
-                            lastPieces[0] = board->boardarray[selectX][selectY];    /* Saves the selected piece    */
-                            lastPieces[1] = board->boardarray[destX][destY];        /* Saves the destination piece */
+                            lastPieces[0] = board->boardarray[selectX][selectY];    /* Saves the selected square    */
+                            lastPieces[1] = board->boardarray[destX][destY];        /* Saves the destination square */
 
 			/******************** Beginning of MinMax Integration ****************************************************/
                             if (playerMove(board, selectY, selectX, destY, destX) != 1)     /* If invalid move */

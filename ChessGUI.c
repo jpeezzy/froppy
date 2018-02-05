@@ -225,7 +225,8 @@ int playerMove(BSTATE *board, int selectX, int selectY, int destX, int destY)
 	        {
 		    	mov(board->boardarray, 1, 1);	/* Move piece */
                 updateBstate(board);
-	            changeSide(board);       
+	            changeSide(board);  
+                return 1;     
             }
             else 
             {
@@ -234,18 +235,16 @@ int playerMove(BSTATE *board, int selectX, int selectY, int destX, int destY)
             }
         }
     }    
-    else 
-    { 		
-	    legal = checkLegal(board, iCloc, iNloc); /* Checking if it is a legal move */
-	    if(!legal)
-	    {
-		    printf("The move entered is not legal, try again.\n");	/* If not legal, return fail */
-		    return 0;
-	    }
-	    mov(board->boardarray, iCloc, iNloc);	/* Move piece */
-	    changeSide(board);						/* Change turn */
-	    return 1;	/* Return success */
-    }							
+	legal = checkLegal(board, iCloc, iNloc); /* Checking if it is a legal move */
+	if(!legal)
+	{
+		printf("The move entered is not legal, try again.\n");	/* If not legal, return fail */
+		return 0;
+	}
+	mov(board->boardarray, iCloc, iNloc);	/* Move piece */
+    updateBstate(board);
+	changeSide(board);						/* Change turn */
+	return 1;	/* Return success */
 }
 
 void changeSide(BSTATE *board)
