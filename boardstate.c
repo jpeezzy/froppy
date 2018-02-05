@@ -131,6 +131,20 @@ void updateBstate(BSTATE *board)
             board->BQCFlag = 0;
         }
     }
+
+    //promotion 
+    int i;
+    for(i=0; i<8; ++i)
+    {
+        if(board->boardarray[0][i] == 1)
+        {
+            board->boardarray[0][i] = 5;
+        }
+        if(board->boardarray[7][i] == 11)
+        {
+            board->boardarray[7][i] = 15;
+        }
+    }
     
 }
 

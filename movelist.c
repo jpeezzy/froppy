@@ -1195,7 +1195,7 @@ int checkchecker(BSTATE *board, int flag)
                 }
                 break;
             }
-            else if( (board->boardarray[kingx-i][kingy-i]/10 != flag) && (board->boardarray[kingx-i][kingy-i] != 0))
+            else if( (board->boardarray[kingx-i][kingy-i]/10 == flag) && (board->boardarray[kingx-i][kingy-i] != 0))
             {
                 break;
             }
