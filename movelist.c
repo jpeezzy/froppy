@@ -948,6 +948,7 @@ void kingmove(MLIST *list, BSTATE *board, int currentlocation)
                 {
                     if(checkmove(board,1,1))
                     {
+                        printf("\n Move added \n");
                         appendMove(list, createMentry(1,1));
                     }
                 }
@@ -1035,6 +1036,7 @@ int checkmove(BSTATE *board, int currentlocation, int newlocation)
     temp = createBstate();
     copyBstate(board, temp);
     mov(temp->boardarray, currentlocation, newlocation);
+    updateBstate(temp);
     int flag = board->sidetomove;
     int result = checkchecker(temp, flag);
     deleteBstate(temp);
