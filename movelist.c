@@ -1063,7 +1063,7 @@ int checkchecker(BSTATE *board, int flag)
         //UP
         if(kingx != 0)
         {
-            for(i=1; i<(kingx); ++i)
+            for(i=1; i<=(kingx); ++i)
             {
                 if(board->boardarray[kingx-i][kingy]/10 == flag && board->boardarray[kingx-i][kingy] != 0)
                 {
@@ -1082,7 +1082,7 @@ int checkchecker(BSTATE *board, int flag)
         //DOWN
         if(kingx != 7)
         {
-            for(i=1; i<(7-kingx); ++i)
+            for(i=1; i<=(7-kingx); ++i)
             {
                 if(board->boardarray[kingx+i][kingy] == flag && board->boardarray[kingx+i][kingy] != 0)
                 {
@@ -1101,7 +1101,7 @@ int checkchecker(BSTATE *board, int flag)
         //Left
         if(kingy != 0)
         {
-            for(i=1; i<(kingy); ++i)
+            for(i=1; i<=(kingy); ++i)
             {
                 if(board->boardarray[kingx][kingy-i]/10 == flag && board->boardarray[kingx][kingy-i] != 0)
                 {
@@ -1120,7 +1120,7 @@ int checkchecker(BSTATE *board, int flag)
         //RIGHT
         if(kingy != 7)
         {
-            for(i=1; i<(7-kingy); ++i)
+            for(i=1; i<=(7-kingy); ++i)
             {
                 if(board->boardarray[kingx][kingy+i]/10 == flag && board->boardarray[kingx][kingy+i] != 0)
                 {
