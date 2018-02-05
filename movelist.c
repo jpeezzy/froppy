@@ -1351,7 +1351,27 @@ int checkchecker(BSTATE *board, int flag)
 
             }
         }
+        
 
+    for(i=-1; i<=1; ++i)
+    {
+        for(j=-1; j<=1; ++j)
+        {
+            if(i==0 && j==0)
+            {
+                continue;
+            }
+            newlocation = 8*(kingx+i)+(kingy+j);
+            
+            if((kingx+i >= 0) && (kingx+i <= 7) && (kingy+j >= 0) && (kingy+j<=7))
+            {
+                if( ((board->boardarray[kingx+i][kingy+j]/10  != type) && (board->boardarray[kingx+i][kingy+j] != 0) && board->boardarray[kingx+i][kingy+i]%10 == 6 ))
+                {
+                    return 1;
+                }
+            }
+        }
+    }
 
     return 0;
 }
