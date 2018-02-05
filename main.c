@@ -92,6 +92,13 @@ int main(int argc, char *args[])
     color = SDL_MapRGB(lightning->format, 0xFF, 0xFF,0xFF);/* Filtering out white color */
     SDL_SetColorKey(lightning, SDL_SRCCOLORKEY, color);
 
+    SDL_Surface *x = NULL;      /* X graphic for when invalid move is inputted */
+    x = SDL_LoadBMP("X.bmp");
+    color = SDL_MapRGB(x->format, 0xFF, 0xFF, 0xFF); 
+    SDL_SetColorKey(x, SDL_SRCCOLORKEY, color);   
+    
+    SDL_Rect xRect; 
+    xRect.x = 80;   xRect.y =0; xRect.w = 80; xRect.h = 80;
 
     SDL_Surface *saveMenu = NULL;       /* Save Menu Menu */
     saveMenu = SDL_LoadBMP("SaveMenu.bmp");
@@ -436,7 +443,7 @@ int main(int argc, char *args[])
     board = createBstate();
     
     loadStart(board);
-    copyBstate(board,undoBoard);
+    copyBstate(board, undoBoard);
 
     int score = basicEvaluation(board);
     printf("Eval score = %d\n", score);
@@ -499,6 +506,7 @@ int main(int argc, char *args[])
                             PrintBoard(board, baseBoard, pieces, chessPieces, screen, boardArray);  /* Printing new board */
                             menu = 0;   /* menu flag down */
                             copyBstate(board,undoBoard);
+                            printf("You loaded up a board! \n");
                         }
                         break;
                     }
@@ -517,6 +525,7 @@ int main(int argc, char *args[])
                             }
                             boardSave(board, menuSelect);   /* Saving board with selection number */
                             PrintBoard(board, baseBoard, pieces, chessPieces, screen, boardArray);  /* Printing new board */
+                            printf("You saved your board! Thanks for playing! \n");
                             Exit(screen);
                             menu = 0;   /* menu flag down */
                             return 0;
@@ -563,20 +572,32 @@ int main(int argc, char *args[])
                       //      lastPieces[1] = board->boardarray[destX][destY];        /* Saves the destination square */
 
 			/******************** Beginning of MinMax Integration ****************************************************/
-                                
+                                copyBstate(board,undoBoard);                               
+ 
                                 if (playerMove(board, selectY, selectX, destY, destX) != 1)     /* If invalid move */
                                 {
                                     select = 0; /* restart loop to make user select another piece to move */
 
                                     SDL_BlitSurface(baseBoard, &boardArray[selectY][selectX], screen, &boardArray[selectY][selectX]);   /* removes the yellow highlight */                            
                                     SDL_BlitSurface(chessPieces, &pieces[board->boardarray[selectX][selectY]], screen, &boardArray[selectY][selectX]);
- 
+                                    
+                                    SDL_BlitSurface(x, &xRect, screen, &boardArray[destY][destX]);  /* X'ing out the selected square */
+                                    SDL_Flip(screen);
+                                    SDL_Delay(100);
+                                    SDL_BlitSurface(baseBoard, &boardArray[selectY][selectX], screen, &boardArray[selectY][selectX]);   /* removes the yellow highlight */                            
+                                    SDL_BlitSurface(chessPieces, &pieces[board->boardarray[selectX][selectY]], screen, &boardArray[selectY][selectX]);
+                                    SDL_BlitSurface(baseBoard, &boardArray[destY][destX], screen, &boardArray[destY][destX]);   /* removes the yellow highlight */                            
+                                    SDL_BlitSurface(chessPieces, &pieces[board->boardarray[destX][destY]], screen, &boardArray[destY][destX]);
+                                    
+                                                             
                                     SDL_Flip(screen);   /* update screen*/
                                     break;   
                                 }
                                 spicyAdd(board);
                                 PrintBoard(board, baseBoard, pieces, chessPieces, screen, boardArray);
-                                
+                             //   copyBstate(board, undoBoard);
+
+ 
                                 legal = createMovelist();
                                 allLegal(legal, board);
                                 if(legal->movenum == 0)     /* Checkmate checker */
@@ -621,10 +642,12 @@ int main(int argc, char *args[])
                         }
                         else if (event.motion.x <= 159)                             /* Undo button */
                         {
-                            copyBstate(undoBoard,board);
+                            copyBstate(undoBoard, board);
+                
+                            PrintBoard(board, baseBoard, pieces, chessPieces, screen, boardArray);
+                            printf("You undid a move! \n");
                             break;
                         }
-                    copyBstate(board,undoBoard);
                     }
                     break;
                 
