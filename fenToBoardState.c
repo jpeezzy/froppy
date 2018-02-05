@@ -166,15 +166,28 @@ int main()
 	//fenToBoardState("K2Q4/pppppppp/3b4/3br3/1n1P1k2/7N/PPP1PPPP/RNB2B1R w KQkq	-", &test); 
 	//fenToBoardState("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq -", &test);
 	char* string1 = "r1bqkbnr/pppp1p1p/8/NP2pn1p/2P5/3B4/P2PPPPP/R1BQK1NR b KQkq -";
-	fenToBoardState("r1bqkbnr/pppp1p1p/8/NP2pn1p/2P5/3B4/P2PPPPP/R1BQK1NR b KQkq -", &test);
-	printf("%s \n", string1);
+	char* string2 = "rnbqkbnr/p1pppppp/8/1p6/8/3P4/PPP1PPPP/RNBQKBNR w KQkq -";
+	//fenToBoardState("r1bqkbnr/pppp1p1p/8/NP2pn1p/2P5/3B4/P2PPPPP/R1BQK1NR b KQkq -", &test);
+	fenToBoardState(string2, &test);
+	//printf(string2);
 	char *fen;
-	fen = malloc(sizeof(char)*80);
+	fen = malloc(sizeof(char)*100);
 	boardToFen(fen, &test);
+//	printf("%s \n", fen);
+	printf("\n");
+	for(int i = 0; i < 80; i++)
+	{
+		//fen[i*8+j] = (char)b->boardarray[i][j];
+		printf("%c", fen[i]);
+		//printf("%d ",b->boardarray[i][j]);
+	}
+	printf("\n");
 	free(fen);
+
 	return 0;
 }
 */
+
 char* textConverterToEight(char* stringT, BSTATE* b, int index)
 {
 	// printf("string is %s\n", stringT);
@@ -271,8 +284,8 @@ void boardToFen(char *fen, BSTATE *b)
 				{
 					if(i == 3)
 					{
-						printf("count is %c \n", count + '0');
-						printf("char is %d \n", b->boardarray[i][j]);
+						//printf("count is %c \n", count + '0');
+						//printf("char is %d \n", b->boardarray[i][j]);
 					}
 					prevCount +=count;
 					fen[prevCount] = count+'0';
@@ -300,13 +313,14 @@ void boardToFen(char *fen, BSTATE *b)
 	if(b->WQCFlag) fen[++prevCount] = 'Q';
 	if(b->BKCFlag) fen[++prevCount] = 'k';
 	if(b->BQCFlag) fen[++prevCount] = 'q';
-	for(int i = 0; i < 80; i++)
+/*	for(int i = 0; i < 80; i++)
 	{
 		//fen[i*8+j] = (char)b->boardarray[i][j];
 		printf("%c", fen[i]);
 		//printf("%d ",b->boardarray[i][j]);
-	}
-	printf("\n");
+	}*/
+//	printf("\n");
+	fen[++prevCount] = 0;
 	return;
 }
 
