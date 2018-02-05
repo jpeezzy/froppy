@@ -4,8 +4,8 @@ MATH= -lm
 
 all: testminmax
 
-ChessGUI: main.c ChessGUI.o movelist.o minmax.o boardstate.o basic_eval.o
-	$(CC) $(CFLAGS) -g -lSDL main.c movelist.o minmax.o boardstate.o ChessGUI.o basic_eval.o -o ChessGUI
+ChessGUI: main.c ChessGUI.o movelist.o minmax.o boardstate.o basic_eval.o userHint.o spicyComments.o boardPrep.o
+	$(CC) $(CFLAGS) -g -lSDL main.c movelist.o minmax.o boardstate.o ChessGUI.o basic_eval.o userHint.o spicyComments.o boardPrep.o -o ChessGUI
 
 randGen.o: randGen.h randGen.c
 	$(CC) $(CFLAGS) -c randGen.c -o randGen.o $(MATH)
