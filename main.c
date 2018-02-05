@@ -422,7 +422,7 @@ int main(int argc, char *args[])
     while (quit !=1)
     {
         /* Provide Hint to users */
-        userHint(board);
+        giveHint(board);
         if (AI == 1 && turn == 1)
         {    
             aiMove(board, AIMove);     
@@ -552,11 +552,11 @@ int main(int argc, char *args[])
                         }
                         else if (event.motion.x <= 478 && event.motion.x >= 320)    /* Save button */
                         {
-                            boardSave(board,int );
+                            //boardSave(board,int );
                         }
                         else if (event.motion.x <= 318 && event.motion.x >= 160)    /* Load button */
                         {
-                            boardLoad(board,int )
+                            //boardLoad(board,int )
                         }
                         else if (event.motion.x <= 159)                             /* Undo button */
                         {
