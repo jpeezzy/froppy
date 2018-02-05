@@ -441,6 +441,7 @@ int main(int argc, char *args[])
 	MLIST *legal;
     BSTATE *board;
     BSTATE *undoBoard;
+    undoBoard = createBstate();
     board = createBstate();
     
     loadStart(board);

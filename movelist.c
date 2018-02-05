@@ -141,6 +141,9 @@ void pawnmove(MLIST *list, BSTATE *board, int pawnlocation)
     //for white pawns
     if(type == 0)
     {
+        //en passant 
+
+
         //double step at begining of game
         if(pawnx == 6)
         {   
