@@ -158,6 +158,11 @@ void playerMove(BSTATE *board)
      scanf("%s", nloc);
      iCloc = strToInt(cloc);
      iNloc = strToInt(nloc);
+     if(iCloc == 60 && iNloc == 62 && board->boardarray[iCloc/8][iNloc%8] == 6)
+     {
+        iCloc = 1;
+        iNloc = 1;
+     }
      legal = checkLegal(board, iCloc, iNloc);
      if(!legal)
      {
