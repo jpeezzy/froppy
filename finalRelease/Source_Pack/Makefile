@@ -3,7 +3,7 @@ CFLAGS = -std=c99 -fopenmp -Wall -g -o2
 MATH= -lm
 
 ChessGUI: ./src/main.c ./bin/ChessGUI.o ./bin/movelist.o ./bin/minmax.o ./bin/boardstate.o ./bin/basic_eval.o ./bin/userHint.o ./bin/spicyComments.o ./bin/boardPrep.o
-	$(CC) $(CFLAGS) -g -lSDL ./src/main.c ./bin/movelist.o ./bin/minmax.o ./bin/boardstate.o ./bin/ChessGUI.o ./bin/basic_eval.o ./bin/userHint.o ./bin/spicyComments.o ./bin/boardPrep.o -o ./bin/Chess
+	$(CC) $(CFLAGS) -g -lSDL ./src/main.c ./bin/movelist.o ./bin/minmax.o ./bin/boardstate.o ./bin/ChessGUI.o ./bin/basic_eval.o ./bin/userHint.o ./bin/spicyComments.o ./bin/boardPrep.o -o ./bin/ChessGUI
 
 all: testminmax
 
