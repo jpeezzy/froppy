@@ -34,7 +34,7 @@ all: testminmax
 ./bin/boardPrep.o: ./src/boardPrep.c ./src/boardPrep.h ./src/boardstate.h ./src/fenToBoardState.h 
 	$(CC) $(CFLAGS) -c ./src/boardPrep.c -o ./bin/boardPrep.o 
 
-./bin/spicyComments.o: ./src/spicyComments.h spicyComments.c ./src/basic_eval.h ./src/boardstate.h 
+./bin/spicyComments.o: ./src/spicyComments.h ./src/spicyComments.c ./src/basic_eval.h ./src/boardstate.h 
 	$(CC) $(CFLAGS) -c ./src/spicyComments.c -o ./bin/spicyComments.o 
 
 ./bin/ChessGUI.o: ./src/ChessGUI.h ./src/ChessGUI.c
