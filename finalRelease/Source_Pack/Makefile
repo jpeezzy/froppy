@@ -41,9 +41,9 @@ all: testminmax
 	$(CC) $(CFLAGS) -c -lSDL ./src/ChessGUI.c -o ./bin/ChessGUI.o
 
 clean:
-	rm -f ./bin/.*o
+	rm -f ./bin/*.o
 	rm -f ./bin/auto
 	rm -f ./bin/MT
 	rm -f ./bin/testminmax
 	rm -f ./bin/test
-	rm -f ./bin/ChessGUI
+	rm -f ./bin/Chess
