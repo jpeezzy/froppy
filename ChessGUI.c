@@ -183,6 +183,27 @@ void  MovePiece(int selectX, int selectY, int destX, int destY, SDL_Surface *bas
     SDL_Flip(screen);   /* update screen */
 }
 
+
+void PrintBoard(BSTATE *board, SDL_Surface *baseBoard, SDL_Rect pieces[17], SDL_Surface *chessPieces, SDL_Surface *screen, SDL_Rect boardArray[8][8]) 
+{
+    for (int i = 0; i < 8; i++)
+    {   for (int j = 0; j < 8; j++)
+        {
+            if (board->boardarray[i][j] != 0)   /* if position is not empty, print the piece */
+            {
+                SDL_BlitSurface(baseBoard, &boardArray[j][i], screen, &boardArray[j][i]);   /* paste base square */
+                SDL_BlitSurface(chessPieces, &pieces[board->boardarray[i][j]], screen, &boardArray[j][i]);  /* paste piece */
+            }
+            else 
+            {
+                SDL_BlitSurface(baseBoard, &boardArray[j][i], screen, &boardArray[j][i]);   /* paste base square */
+            }
+        }
+    }
+
+    SDL_Flip(screen);
+}		
+
 /****************** MiniMax Functions ***************************************/
 
 int playerMove(BSTATE *board, int selectX, int selectY, int destX, int destY)
@@ -221,11 +242,13 @@ void changeSide(BSTATE *board)
     assert(board);
     if(board->sidetomove)
     {
-       board->sidetomove = 0;   /* switches from black to white */
+        board->sidetomove = 0;   /* switches from black to white */
+        printf("It is now WHITE side's turn! \n");        
 	} 
     else
     {   
-       board->sidetomove = 1;   /* switches from white to black */
+        board->sidetomove = 1;   /* switches from white to black */
+        printf("It is now BLACK side's turn! \n");
     }
 }
 
@@ -252,29 +275,30 @@ int checkLegal(BSTATE *board, int cloc, int nloc)
     return 0;   /* if not legal, return Fail and prevent the move */
 }
 
-void aiMove(BSTATE *board)
+void aiMove(BSTATE *board, int AIMove[2])
 {
-/*    assert(board);
-    MINI *mini;
-    BSTATE *temp;
-    float score;
-    temp = createBstate();
-    copyBstate(board, temp);
-    mini = createMini(temp, DEPTH);
-    score = altMax(mini, -3.4E38, 3.4E38, DEPTH);
-    assert(mini->move);
-    int legal = checkLegal(board, mini->move->CLOC, mini->move->NLOC);
+    assert(board);
+   
+    MENTRY *move;
+    move = minmax(board);
+    assert(move);
+    int legal = checkLegal(board, move->CLOC, move->NLOC);
     if(!legal)
     {
         printf("AI made invalid move\n");
     }
-    mov(board->boardarray, mini->move->CLOC, mini->move->NLOC);
-    changeSide(board);
-    removeMini(mini);
-    deleteBstate(temp);
-*/
-}
+    mov(board->boardarray, move->CLOC, move->NLOC); 
+    changeSide(board);  
 
+    assert(move);
+    assert(move->CLOC);
+
+    AIMove[0] = move->CLOC;
+    AIMove[1] = move->NLOC;
+    free(move);
+    move = NULL; 
+ 
+}
 
 void UpdateWindow(SDL_Surface *screen, int delay)
 {
