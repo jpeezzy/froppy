@@ -12,7 +12,6 @@
 
 /* Variables for MiniMax */
 #define DEPTH 5
-#define AI    0
 
 #define animations 0 /* animation control: 0 = off, 1 = on */
     

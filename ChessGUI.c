@@ -215,7 +215,25 @@ int playerMove(BSTATE *board, int selectX, int selectY, int destX, int destY)
 	iCloc = selectX + selectY*8;		 /* Converting click coordinates to board coordinates */	
 	iNloc = destX +   destY*8;		     /*													 */
 
-
+    if (board->boardarray[selectY][selectX] ==  6)  /* Castling on white side */
+    {
+        if ((iCloc == 60) && (iNloc == 58)) 
+        {
+            legal = checkLegal(board, 2, 2); /* Checking if it is a legal move */
+	        if(legal)
+	        {
+		    	mov(board->boardarray, 2, 2);	/* Move piece */
+                updateBstate(board);
+	            changeSide(board);  
+                return 1;     
+            }
+            else 
+            {
+                printf("The move entered is not legal, try again.\n");	/* If not legal, return fail */
+                return 0;
+            }
+        }
+    }  
     if (board->boardarray[selectY][selectX] ==  6)  /* Castling on white side */
     {
         if ((iCloc == 60) && (iNloc == 62)) 
@@ -235,6 +253,46 @@ int playerMove(BSTATE *board, int selectX, int selectY, int destX, int destY)
             }
         }
     }    
+
+    if (board->boardarray[selectY][selectX] ==  16)  /* Castling on black side */
+    {
+        if ((iCloc == 4) && (iNloc == 6)) 
+        {
+            legal = checkLegal(board, 3, 3); /* Checking if it is a legal move */
+	        if(legal)
+	        {
+		    	mov(board->boardarray, 3, 3);	/* Move piece */
+                updateBstate(board);
+	            changeSide(board);  
+                return 1;     
+            }
+            else 
+            {
+                printf("The move entered is not legal, try again.\n");	/* If not legal, return fail */
+                return 0;
+            }
+        }
+    }  
+
+    if (board->boardarray[selectY][selectX] ==  16)  /* Castling on black side */
+    {
+        if ((iCloc == 4) && (iNloc == 2)) 
+        {
+            legal = checkLegal(board, 4, 4); /* Checking if it is a legal move */
+	        if(legal)
+	        {
+		    	mov(board->boardarray, 4, 4);	/* Move piece */
+                updateBstate(board);
+	            changeSide(board);  
+                return 1;     
+            }
+            else 
+            {
+                printf("The move entered is not legal, try again.\n");	/* If not legal, return fail */
+                return 0;
+            }
+        }
+    }  
 	legal = checkLegal(board, iCloc, iNloc); /* Checking if it is a legal move */
 	if(!legal)
 	{
@@ -287,6 +345,7 @@ int checkLegal(BSTATE *board, int cloc, int nloc)
 
 void aiMove(BSTATE *board, int AIMove[2])
 {
+    printf("The computer is currently deciding where to move ... \n");
     assert(board);
    
     MENTRY *move;

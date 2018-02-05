@@ -14,9 +14,10 @@ int main(int argc, char *args[])
     SDL_Surface *screen = NULL;     /* Main surface to be displayed */
     SDL_Surface *baseBoard = NULL;  /* Surface that will be the reference chess board */
 
-    int lastMove[4];            /* Array to save the last move's coordinates in serial */ 
-    int lastPieces[2];     /* Array to save the last 2 pieces that moved */
-
+    int AI = 0;         /* Flag to turn on/off AI. 0 = off, 1 = on */
+//    int lastMove[4];    /* Array to save the last move's coordinates in serial */ 
+//    int lastPieces[2];  /* Array to save the last 2 pieces that moved */
+    
     SDL_Init(SDL_INIT_VIDEO);   /* Initializes SDL Environment */
 
     screen = SDL_SetVideoMode(WIDTH, HEIGHT, BPP, SDL_SWSURFACE); /* Inputs settings for screen */
@@ -42,6 +43,9 @@ int main(int argc, char *args[])
         Exit(whiteBoard);
         return 0;
     }
+
+    SDL_Surface *chooseOpponent = NULL;     /* Making surface for opponent-choosing screen */
+    chooseOpponent = SDL_LoadBMP("ChooseOpponent.bmp");
 
     SDL_Surface *chessPieces = NULL;         /* Making surface for chess pieces */
     chessPieces = SDL_LoadBMP("ChessPiecesRedraw.bmp");
@@ -210,7 +214,7 @@ int main(int argc, char *args[])
                         else if (event.motion.y >= 346 && event.motion.y <= 449)    /* Play button */    
                         {    
                             printf("You chose to play! \n");
-                            Add_BoxFile("ChooseColor.bmp", screen, 0,0);    /* moves to colorchoice screen  */
+                            Add_BoxFile("ChooseOpponent.bmp", screen, 0,0);    /* moves to colorchoice screen  */
                             SDL_Flip(screen);
                             quit = 1;
                             break;
@@ -230,6 +234,46 @@ int main(int argc, char *args[])
        
     quit = 0; /* resetting quit flag */
 
+    while (quit != 1)   /************* Opponent Choice Loop ******************/
+    {
+        while (SDL_PollEvent(&event))
+        {
+            switch(event.type)
+            {
+                case SDL_MOUSEBUTTONUP:
+                    if (event.motion.x >= 162 && event.motion.x <= 480)
+                    {
+                        if (event.motion.y >= 321 && event.motion.y <= 430)      /* if "HUMAN" button is pressed */
+                        {
+                            printf("You chose to play Human vs. Human! \n");
+                            AI = 0;
+                            quit = 1;
+                            break;
+                        }
+                        else if ( event.motion.y >= 441 && event.motion.y <= 550)/* if "COMPUTER" button is pressed */
+                        {
+                            printf("You chose to play Human vs. Computer! \n");
+                            AI = 1;
+                            quit = 1;
+                            break;
+                        }
+                    }
+                case SDL_QUIT:
+                    quit = 1;
+                    return 0;
+
+            }
+        }
+    }           
+        
+    Add_BoxFile("ChooseColor.bmp", screen, 0,0); 
+    SDL_Flip(screen);
+
+    int AIMove[2];  /* Array to save the AI */
+    int turn = 0;   /* variable to decide who goes goes first */
+    quit = 0; /* resetting quit flag */
+    int go = 0; /* dirty workaround to fix a loop issue */
+
     while (quit != 1)
     {
         while (SDL_PollEvent(&event))   /******* COLORCHOICE & BOARD INSTANTIATION  LOOP *********/
@@ -240,35 +284,45 @@ int main(int argc, char *args[])
                     if (event.motion.x >= 182 && event.motion.x <= 458      /* if "BLACK" button is pressed */
                      && event.motion.y >= 58  && event.motion.y <= 161)
                     {
-                        color = 1;  /* setting side color to black */
-                        printf("You chose to play as BLACK side \n\n");
+                        if (AI != 0)
+                        {
+                            turn = 1;  /* setting side color to black */
+                            printf("You chose to play as BLACK side \n\n");
+                        }
+                        go = 1;
                     }
                     else if (event.motion.x >= 179 && event.motion.x <= 515 /* if "WHITE" button is pressed */
                           && event.motion.y >= 478 && event.motion.y <= 581)
                     {
-                        color = 0;  /* seting side color to white */
-                        printf("You chose to play as WHITE side. \n\n");
+                        if (AI != 0)
+                        {
+                            turn = 0;  /* seting side color to white */
+                            printf("You chose to play as WHITE side. \n\n");
+                        }
+                        go = 1;
                     }    
 
-                    CreateBoard(greenBoard, whiteBoard, screen);    /* Making board graphics */ 
-                    baseBoard = SDL_DisplayFormat(screen);          /* Copying board for reference */ 
-                    SDL_BlitSurface(screen, NULL, baseBoard, NULL); 
+                    if (go == 1)               
+                    {
+                        CreateBoard(greenBoard, whiteBoard, screen);    /* Making board graphics */ 
+                        baseBoard = SDL_DisplayFormat(screen);          /* Copying board for reference */ 
+                        SDL_BlitSurface(screen, NULL, baseBoard, NULL); 
 
 
-                    /* Putting initial pieces on the board */
-                    printf("[ Creating & Initializing the Board ] \n");
+                        /* Putting initial pieces on the board */
+                        printf("[ Creating & Initializing the Board ] \n");
             
-                          /* Pawns */
-                 	for (int i = 0; i < 8; i++) 
-                	{ 
-                 	    SDL_BlitSurface(chessPieces, &bP, screen, &boardArray[i][1]); 
-                            pieceArray[i][1] = bP; 
-                	    SDL_BlitSurface(chessPieces, &wP, screen, &boardArray[i][6]);
-                            pieceArray[i][6] = wP;
-                 	}
-                    printf("    Initializing: Pawns   ... \n");
+                            /* Pawns */
+                     	for (int i = 0; i < 8; i++) 
+                    	{ 
+                 	        SDL_BlitSurface(chessPieces, &bP, screen, &boardArray[i][1]); 
+                                pieceArray[i][1] = bP; 
+                	        SDL_BlitSurface(chessPieces, &wP, screen, &boardArray[i][6]);
+                                pieceArray[i][6] = wP;
+                 	    }
+                        printf("    Initializing: Pawns   ... \n");
 
-	                    /* Rooks */
+	                        /* Rooks */
         	            SDL_BlitSurface(chessPieces, &bR, screen, &boardArray[0][0]);
                             pieceArray[0][0] = bR;   
         	            SDL_BlitSurface(chessPieces, &bR, screen, &boardArray[7][0]);
@@ -277,9 +331,9 @@ int main(int argc, char *args[])
                             pieceArray[0][7] = wR;
                		    SDL_BlitSurface(chessPieces, &wR, screen, &boardArray[7][7]);
                             pieceArray[7][7] = wR;
-                    printf("    Initializing: Rooks   ... \n");
+                        printf("    Initializing: Rooks   ... \n");
 
-			            /* Knights */
+			                /* Knights */
                	 	    SDL_BlitSurface(chessPieces, &bH, screen, &boardArray[1][0]);
                             pieceArray[1][0] = bH;
                	        SDL_BlitSurface(chessPieces, &bH, screen, &boardArray[6][0]);
@@ -288,9 +342,9 @@ int main(int argc, char *args[])
                 	        pieceArray[1][7] = wH;
                         SDL_BlitSurface(chessPieces, &wH, screen, &boardArray[6][7]);
                             pieceArray[6][7] = wH;                       
-                    printf("    Initializing: Knights ... \n");         
+                        printf("    Initializing: Knights ... \n");         
 
-		      	    	/* Bishops */
+		      	    	    /* Bishops */
              		    SDL_BlitSurface(chessPieces, &bB, screen, &boardArray[2][0]);
               	            pieceArray[2][0] = bB;
                         SDL_BlitSurface(chessPieces, &bB, screen, &boardArray[5][0]);
@@ -299,23 +353,24 @@ int main(int argc, char *args[])
                	            pieceArray[2][7] = wB;
                         SDL_BlitSurface(chessPieces, &wB, screen, &boardArray[5][7]);
                             pieceArray[5][7] = wB;	
-                    printf("    Initializing: Bishops ... \n");
+                        printf("    Initializing: Bishops ... \n");
 
-                    	/* Queens */
+                    	    /* Queens */
                    	    SDL_BlitSurface(chessPieces, &bQ, screen, &boardArray[3][0]);
                             pieceArray[3][0] = bQ;
                    	    SDL_BlitSurface(chessPieces, &wQ, screen, &boardArray[3][7]);
                             pieceArray[3][7] = wQ;
-                    printf("    Initializing: Queens  ... \n");
+                        printf("    Initializing: Queens  ... \n");
 
-				        /* Kings */
+				            /* Kings */
                    	    SDL_BlitSurface(chessPieces, &bK, screen, &boardArray[4][0]);
                             pieceArray[4][0] = bK;
                    	    SDL_BlitSurface(chessPieces, &wK, screen, &boardArray[4][7]);
                             pieceArray[4][7] = wK;
-                    printf("    Initializing: Kings   ... \n");
-                    printf("[               Done!               ]\n");
+                        printf("    Initializing: Kings   ... \n");
+                        printf("[               Done!               ]\n");
                         quit = 1;
+                    }
                     break;
 
            
@@ -342,13 +397,9 @@ int main(int argc, char *args[])
 
 	/* Copied and paste the testminmax.c code over */
 	MLIST *legal;
-#if AI == 1
-    int AIMove[2];  /* Array to save the AI */
-#endif
     BSTATE* board;
     board = createBstate();
     loadStart(board);
-//  GUI(board->boardarray);
     int score = basicEvaluation(board);
     printf("Eval score = %d\n", score);
     printf("You are playing as white\n");
@@ -356,6 +407,29 @@ int main(int argc, char *args[])
 
     while (quit !=1)
     {
+        if (AI == 1 && turn == 1)
+        {    
+            aiMove(board, AIMove);     
+                            
+            selectX = AIMove[0]%8;   /* Converting 1D array to 2D array for GUI update */
+            selectY = AIMove[0]/8;
+            destX   = AIMove[1]/8;
+            destY   = AIMove[1]/8; 
+            PrintBoard(board, baseBoard, pieces, chessPieces, screen, boardArray);
+ 
+            legal = createMovelist();
+            allLegal(legal, board);
+            if(legal->movenum == 0)
+            {
+                printf("Checkmate!\n");
+                deleteMovelist(legal);
+                break;
+            }
+            deleteMovelist(legal);
+            turn = 0;	
+        }
+        else if (turn == 0)
+        {
         while (SDL_PollEvent(&event))   /****** MAIN GAME LOOP ******/
         {
             switch (event.type)
@@ -394,8 +468,8 @@ int main(int argc, char *args[])
                         {
                             effectNumber = rand()%2 + 1;    /* picking random number to pick the animation */
 
-                            lastPieces[0] = board->boardarray[selectX][selectY];    /* Saves the selected square    */
-                            lastPieces[1] = board->boardarray[destX][destY];        /* Saves the destination square */
+                      //      lastPieces[0] = board->boardarray[selectX][selectY];    /* Saves the selected square    */
+                      //      lastPieces[1] = board->boardarray[destX][destY];        /* Saves the destination square */
 
 			/******************** Beginning of MinMax Integration ****************************************************/
                             if (playerMove(board, selectY, selectX, destY, destX) != 1)     /* If invalid move */
@@ -418,37 +492,31 @@ int main(int argc, char *args[])
                                 break;
                             }
                             deleteMovelist(legal);
-#if AI == 1
-                            aiMove(board, AIMove);     
+                      /*      if (AI == 1)
+                            {    
+                                aiMove(board, AIMove);     
                             
-                            selectX = AIMove[0]%8;   /* Converting 1D array to 2D array for GUI update */
-                            selectY = AIMove[0]/8;
-                            destX   = AIMove[1]/8;
-                            destY   = AIMove[1]/8; 
-                            PrintBoard(board, baseBoard, pieces, chessPieces, screen, boardArray);
+                                selectX = AIMove[0]%8;   // Converting 1D array to 2D array for GUI update 
+                                selectY = AIMove[0]/8;
+                                destX   = AIMove[1]/8;
+                                destY   = AIMove[1]/8; 
+                                PrintBoard(board, baseBoard, pieces, chessPieces, screen, boardArray);
  
-                            legal = createMovelist();
-                            allLegal(legal, board);
-                            if(legal->movenum == 0)
-                            {
-                                printf("Checkmate!\n");
-                                deleteMovelist(legal);
-                                break;
-                            }
-                            deleteMovelist(legal);	
-#endif 							
+                                legal = createMovelist();
+                                allLegal(legal, board);
+                                if(legal->movenum == 0)
+                                {
+                                    printf("Checkmate!\n");
+                                    deleteMovelist(legal);
+                                    break;
+                                }
+                                deleteMovelist(legal);	
+                            }*/
             /******************** End of MinMax Integration ***********************************************************/
-                        /*  if (effectNumber == 1)       Moving piece + exposion */
-                        //    {   
-                        //        MovePiece(selectX, selectY, destX, destY, baseBoard, chessPieces, pieceArray,
-                        //                  boardArray, screen, empty, explosion, animation, effectNumber, lastMove);
-                        //    }
-                        //    else if (effectNumber == 2) /* Moving Piece + lightning */
-                        /*    {
-                                MovePiece(selectX, selectY, destX, destY, baseBoard, chessPieces, pieceArray,
-                                          boardArray, screen, empty, lightning, animation, effectNumber, lastMove); 
-                            } 
-						*/
+                            if (AI != 0)
+                            {
+                                turn = 1;  /* set turn back to AI */
+                            }
                             select = 0;         /* select flag down */
                             break;
                         }
@@ -460,19 +528,20 @@ int main(int argc, char *args[])
                     Exit(screen);
                     quit = 1;
                     break;
-            }/* end switch */
-        }/* end PollEvent loop */
-    }/* end main while loop */       
-
+                }/* end switch */
+            }/* end PollEvent loop */
+        }/* end main while loop */       
+    }/* end of first if */
 
     /* Freeing used surfaces */
-    SDL_FreeSurface(baseBoard);  /* board copy          */
-    SDL_FreeSurface(whiteBoard); /* white board surface */ 
-    SDL_FreeSurface(greenBoard); /* green board surface */
-    SDL_FreeSurface(chessPieces);/* chess pieces surface*/ 
-    SDL_FreeSurface(highlights); /* square outlines     */
-    SDL_FreeSurface(explosion);  /* explosion animation */    
-    SDL_FreeSurface(lightning);  /* lightning animation */        
+    SDL_FreeSurface(baseBoard);         /* board copy            */
+    SDL_FreeSurface(whiteBoard);        /* white board surface   */ 
+    SDL_FreeSurface(greenBoard);        /* green board surface   */
+    SDL_FreeSurface(chessPieces);       /* chess pieces surface  */ 
+    SDL_FreeSurface(highlights);        /* square outlines       */
+    SDL_FreeSurface(explosion);         /* explosion animation   */    
+    SDL_FreeSurface(lightning);         /* lightning animation   */        
+    SDL_FreeSurface(chooseOpponent);    /* choose opponent screen*/
     return 0;
 }
 
