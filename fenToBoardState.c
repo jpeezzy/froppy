@@ -198,7 +198,7 @@ char* textConverterToEight(char* stringT, BSTATE* b, int index)
 	int temp2        = 0;
 	int positionTemp = 0;
 	//	int spaceCounter = textConverterToEight0;
-	while (stringT[count] != NULL || stringT[count] != '\0')
+	while (stringT[count] || stringT[count] != '\0')
 	{
 		count++;
 	}
