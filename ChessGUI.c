@@ -210,31 +210,42 @@ int playerMove(BSTATE *board, int selectX, int selectY, int destX, int destY)
 {
 	assert(board);
 	int iCloc, iNloc;		
-//  char cloc[2], nloc[2];
 	int legal = 0;
-/*	do
-	{
-	printf("Enter location of piece to move: ");
-	scanf("%s", cloc);
-	printf("Enter destination location: ");
-	scanf("%s", nloc);
-	iCloc = strToInt(cloc);
-	iNloc = strToInt(nloc);	
-*/
 
 	iCloc = selectX + selectY*8;		 /* Converting click coordinates to board coordinates */	
-	iNloc = destX +   destY*8;		 /*													 */
-     		
-	legal = checkLegal(board, iCloc, iNloc); /* Checking if it is a legal move */
-	if(!legal)
-	{
-		printf("The move entered is not legal, try again.\n");	/* If not legal, return fail */
-		return 0;
-	}
-//	}while(!legal);
-	mov(board->boardarray, iCloc, iNloc);	/* Move piece */
-	changeSide(board);						/* Change turn */
-	return 1;								/* Return success */
+	iNloc = destX +   destY*8;		     /*													 */
+
+
+    if (board->boardarray[selectY][selectX] ==  6)  /* Castling on white side */
+    {
+        if ((iCloc == 60) && (iNloc == 62)) 
+        {
+            legal = checkLegal(board, 1, 1); /* Checking if it is a legal move */
+	        if(legal)
+	        {
+		    	mov(board->boardarray, 1, 1);	/* Move piece */
+                updateBstate(board);
+	            changeSide(board);       
+            }
+            else 
+            {
+                printf("The move entered is not legal, try again.\n");	/* If not legal, return fail */
+                return 0;
+            }
+        }
+    }    
+    else 
+    { 		
+	    legal = checkLegal(board, iCloc, iNloc); /* Checking if it is a legal move */
+	    if(!legal)
+	    {
+		    printf("The move entered is not legal, try again.\n");	/* If not legal, return fail */
+		    return 0;
+	    }
+	    mov(board->boardarray, iCloc, iNloc);	/* Move piece */
+	    changeSide(board);						/* Change turn */
+	    return 1;	/* Return success */
+    }							
 }
 
 void changeSide(BSTATE *board)
@@ -288,6 +299,7 @@ void aiMove(BSTATE *board, int AIMove[2])
         printf("AI made invalid move\n");
     }
     mov(board->boardarray, move->CLOC, move->NLOC); 
+    updateBstate(board);
     changeSide(board);  
 
     assert(move);

@@ -381,39 +381,33 @@ int main(int argc, char *args[])
                     {
                         destX = event.motion.y/80;  /* assigning the square coordinates of the click to DESTINATION */
                         destY = event.motion.x/80;
-                        if (selectX == destX && selectY == destY/*&pieceArray[selectX][selectY] ==  &pieceArray[destX][destY]*/)    /* if user clicks on the same square as desination */
+                        if (selectX == destX && selectY == destY)    /* if user clicks on the same square as desination */
                         {
                             SDL_BlitSurface(baseBoard, &boardArray[selectY][selectX], screen, &boardArray[selectY][selectX]);   /* removes the yellow highlight */
-                            SDL_BlitSurface(chessPieces, &pieces[board->boardarray[selectX][selectY]]/*&pieceArray[selectY][selectX]*/, 
-                                            screen, &boardArray[selectY][selectX]);
+                            SDL_BlitSurface(chessPieces, &pieces[board->boardarray[selectX][selectY]], screen, &boardArray[selectY][selectX]);
                             SDL_Flip(screen);   /* update screen*/
                             select = 0;         /* select flag down */
                             break;
                         }
-                        else //if (selectX != destX && selectY != destY/*pieceArray[selectX][selectY].h != 1*/)    /* in the case of clicking on a new square  */ 
+                        else    /* in the case of clicking on a new square  */ 
                         {
                             effectNumber = rand()%2 + 1;    /* picking random number to pick the animation */
 
-                            lastPieces[0] = board->boardarray[selectX][selectY];/*pieceArray[selectX][selectY];*/   /* Saves the selected piece    */
-                            lastPieces[1] = board->boardarray[destX][destY];/*pieceArray[destX][destY];*/       /* Saves the destination piece */
+                            lastPieces[0] = board->boardarray[selectX][selectY];    /* Saves the selected piece    */
+                            lastPieces[1] = board->boardarray[destX][destY];        /* Saves the destination piece */
 
 			/******************** Beginning of MinMax Integration ****************************************************/
-		                    if (playerMove(board, selectY, selectX, destY, destX) != 1)
+                            if (playerMove(board, selectY, selectX, destY, destX) != 1)     /* If invalid move */
                             {
                                 select = 0; /* restart loop to make user select another piece to move */
 
                                 SDL_BlitSurface(baseBoard, &boardArray[selectY][selectX], screen, &boardArray[selectY][selectX]);   /* removes the yellow highlight */                            
-                                SDL_BlitSurface(chessPieces, &pieces[board->boardarray[selectX][selectY]]/*&pieceArray[selectY][selectX]*/, 
-                                            screen, &boardArray[selectY][selectX]);
+                                SDL_BlitSurface(chessPieces, &pieces[board->boardarray[selectX][selectY]], screen, &boardArray[selectY][selectX]);
  
-//                              SDL_BlitSurface(baseBoard, &boardArray[selectX][selectY], screen, &boardArray[selectX][selectY]);   /* removes the yellow highlight */
-//                              SDL_BlitSurface(chessPieces, &pieceArray[selectX][selectY], screen, &boardArray[selectX][selectY]); /*                              */
                                 SDL_Flip(screen);   /* update screen*/
                                 break;   
                             }
                             PrintBoard(board, baseBoard, pieces, chessPieces, screen, boardArray);
-                         //   MovePiece(selectX, selectY, destX, destY, baseBoard, chessPieces, pieceArray,   /* function to move the piece on the GUI */
-                         //          boardArray, screen, empty, explosion, animation, effectNumber, lastMove);
                             legal = createMovelist();
                             allLegal(legal, board);
                             if(legal->movenum == 0)     /* Checkmate checker */
@@ -431,10 +425,7 @@ int main(int argc, char *args[])
                             destX   = AIMove[1]/8;
                             destY   = AIMove[1]/8; 
                             PrintBoard(board, baseBoard, pieces, chessPieces, screen, boardArray);
-                          //  MovePiece(selectX, selectY, destX, destY, baseBoard, chessPieces, pieceArray,   /* function to move the piece on the GUI */
-                          //         boardArray, screen, empty, explosion, animation, effectNumber, lastMove);
  
-                            //GUI(board->boardarray);
                             legal = createMovelist();
                             allLegal(legal, board);
                             if(legal->movenum == 0)
