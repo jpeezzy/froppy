@@ -3,6 +3,7 @@
 
 #include "boardstate.h"
 #include "SDL/SDL.h"
+#include "movelist.h"
 
 /* Global Variables for Screen settings */
 #define  WIDTH   640 /* width of screen */
@@ -11,6 +12,7 @@
 
 /* Variables for MiniMax */
 #define DEPTH 5
+#define AI    0
 
 #define animations 0 /* animation control: 0 = off, 1 = on */
     
@@ -41,6 +43,9 @@ void MovePiece(int selectX, int selectY, int destX, int destY, SDL_Surface *base
 SDL_Surface *chessPieces, SDL_Rect pieceArray[8][8], SDL_Rect boardArray[8][8], SDL_Surface *screen, 
 SDL_Rect empty, SDL_Surface *effect, SDL_Rect animation[10], int effectNumber, int lastMove[4]);
 
+/* Printing board based on the BSTATE instead of the GUI board */
+void PrintBoard(BSTATE *board, SDL_Surface *baseBoard, SDL_Rect pieces[17], SDL_Surface *chessPieces, SDL_Surface *screen, SDL_Rect boardArray[8][8]);
+
 /*************** MiniMax Functions ************************/
 /* Moves the pieces on the minimax board */
 int playerMove(BSTATE *board, int selectX, int selectY, int destX, int destY);
@@ -52,7 +57,7 @@ void changeSide(BSTATE *board);
 int checkLegal(BSTATE *board, int cloc, int nloc);
 
 /* Prompts the AI to move */
-void aiMove(BSTATE *board);
+void aiMove(BSTATE *board, int AIMove[2]);
 
 /* Exit protocol */
 void Exit(SDL_Surface *screen);
