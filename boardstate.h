@@ -28,4 +28,7 @@ void loadStart(BSTATE *currentboard);
 // This will copy the board to another board
 void copyBstate(BSTATE *old, BSTATE *new);
 
+//run this after everymove
+void updateBstate(BSTATE *board);
+
 #endif

@@ -103,10 +103,35 @@ void copyBstate(BSTATE *old, BSTATE *new)
 void updateBstate(BSTATE *board)
 {
     assert(board);
-
-
-
-
+    if(board->WKCFlag == 1)
+    {
+        if(board->boardarray[7][4] != 6 || board->boardarray[7][7] != 4)
+        {
+            board->WKCFlag = 0;
+        }
+    }
+    if(board->WQCFlag == 1)
+    {
+        if(board->boardarray[7][4] != 6 || board->boardarray[7][0] != 4)
+        {
+            board->WQCFlag = 0;
+        }
+    }
+    if(board->BKCFlag == 1)
+    {
+        if(board->boardarray[0][4] != 16 || board->boardarray[0][7] != 14)
+        {
+            board->BKCFlag = 0;
+        }
+    }
+    if(board->BQCFlag == 1)
+    {
+        if(board->boardarray[0][4] != 6 || board->boardarray[0][0] != 4)
+        {
+            board->BQCFlag = 0;
+        }
+    }
+    
 }
 
 
