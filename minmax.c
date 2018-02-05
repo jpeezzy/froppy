@@ -307,7 +307,17 @@ currentNode = tree->child;
                     assert(current->child == NULL);
                     while(current)
                     {
+                        time_elapsed = time(NULL);
+                        if(time_elapsed < endwait)
+                        {
+                            break;
+                        }
                         start = generateLayer(current);
+                        time_elapsed = time(NULL);
+                        if(time_elapsed < endwait)
+                        {
+                            break;
+                        }
                         if (current->next)
                         {
                             // moves onto next sibling node
