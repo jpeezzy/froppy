@@ -948,7 +948,6 @@ void kingmove(MLIST *list, BSTATE *board, int currentlocation)
                 {
                     if(checkmove(board,1,1))
                     {
-                        printf("\n Move added \n");
                         appendMove(list, createMentry(1,1));
                     }
                 }
