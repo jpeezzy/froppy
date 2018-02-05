@@ -49,6 +49,15 @@ testminmax.o: testminmax.c testgui.h minmax.h movelist.h basic_eval.h boardstate
 testgui.o: testgui.c testgui.h
 	$(CC) $(CFLAGS) -c testgui.c -o testgui.o
 
+userHint.o: userHint.c userHint.h minmax.h movelist.h boardstate.h 
+	$(CC) $(CFLAGS) -c userHint.c -o userHint.o 
+
+boardPrep.o: boardPrep.c boardPrep.h boardstate.h fenToBoardState.h 
+	$(CC) $(CFLAGS) -c boardPrep -o boardPrep.o 
+
+spicyComments.o: spicyComments.h spicyComments.c basic_eval.h boardstate.h 
+	$(CC) $(CFLAGS) -c spicyComments.c -o spicyComments.o 
+
 auto: matrix.o fenToBoardState.o boardToVector.o neuralnet.o openMP_backprop.o dataEntry.o autoencoder.o randGen.o neuralsave.o
 	$(CC) $(CFLAGS) matrix.o fenToBoardState.o boardToVector.o neuralnet.o openMP_backprop.o dataEntry.o randGen.o autoencoder.o neuralsave.o -o Auto $(MATH)
 
