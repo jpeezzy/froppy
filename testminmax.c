@@ -19,17 +19,16 @@ int main()
 {   
     MLIST *legal;
     int play = 1;
-    int pvp, bw;
-    printf("0 for PvAI, 1 for PvP: \n");
-    scanf("%d", &pvp);
+    int p, bw;
+    printf("0 for P vs AI, 1 for P vs P, 2 for AI vs AI: ");
+    scanf("%d", &p);
     BSTATE* board;
     board = createBstate();
     loadStart(board);
     GUI(board->boardarray);
     int score = basicEvaluation(board);
     printf("Eval score = %d\n", score);
-    printf("You are playing as white\n");
-    if(pvp)
+    if(p == 1)
     {
         while(play)
         {
@@ -65,7 +64,7 @@ int main()
             scanf("%d", &play);
         }
     }
-    else
+    else if (p == 0)
     {
         printf("Enter Black(1) or White(0)?: ");
         scanf("%d",&bw);
@@ -139,6 +138,26 @@ int main()
                 scanf("%d", &play);
             }
         }
+    }
+    else if (p == 2)
+    {
+        while(play)
+        {
+            aiMove(board);
+            GUI(board->boardarray);
+            score = basicEvaluation(board);
+            printf("Current Board Value = %d\n", score);
+            legal = createMovelist();
+            allLegal(legal, board);
+            if(legal->movenum == 0)
+            {
+                printf("Checkmate!\n");
+                deleteMovelist(legal);
+                printf("Enter 1 to simulate another game, 0 to exit: ");
+                scanf("%d", &play);
+            }
+            deleteMovelist(legal);
+        }
     }    
     deleteBstate(board);
     return 0;
@@ -158,10 +177,25 @@ void playerMove(BSTATE *board)
      scanf("%s", nloc);
      iCloc = strToInt(cloc);
      iNloc = strToInt(nloc);
-     if(iCloc == 60 && iNloc == 62 && board->boardarray[iCloc/8][iNloc%8] == 6)
+     if(iCloc == 60 && iNloc == 62 && board->boardarray[iCloc/8][iCloc%8] == 6)
      {
         iCloc = 1;
         iNloc = 1;
+     }
+     if(iCloc == 60 && iNloc == 58 && board->boardarray[iCloc/8][iCloc%8] == 6)
+     {
+        iCloc = 2;
+        iNloc = 2;
+     }
+     if(iCloc == 4 && iNloc == 6 && board->boardarray[iCloc/8][iCloc%8] == 16)
+     {
+        iCloc = 3;
+        iNloc = 3;
+     }
+     if(iCloc == 4 && iNloc == 2 && board->boardarray[iCloc/8][iCloc%8] == 16)
+     {
+        iCloc = 4;
+        iNloc = 4;
      }
      legal = checkLegal(board, iCloc, iNloc);
      if(!legal)
