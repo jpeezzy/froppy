@@ -1109,7 +1109,7 @@ int checkchecker(BSTATE *board, int flag)
         {
             for(i=1; i<=(7-kingx); ++i)
             {
-                if(board->boardarray[kingx+i][kingy] == flag && board->boardarray[kingx+i][kingy] != 0)
+                if(board->boardarray[kingx+i][kingy]/10 == flag && board->boardarray[kingx+i][kingy] != 0)
                 {
                     break;
                 }
