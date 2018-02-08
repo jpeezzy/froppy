@@ -1352,7 +1352,7 @@ int checkchecker(BSTATE *board, int flag)
         //for black king
         if(flag == 1)
         {
-            if(kingx != 0)
+            if(kingx != 7)
             {
                 //left
                 if(kingy > 0)
