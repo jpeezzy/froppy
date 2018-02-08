@@ -1093,7 +1093,7 @@ int checkchecker(BSTATE *board, int flag)
                 {
                     break;
                 }
-                else if(board->boardarray[kingx-i][kingy]/10 != flag)
+                else if(board->boardarray[kingx-i][kingy]/10 != flag && board->boardarray[kingx-i][kingy] != 0)
                 {
                     if(board->boardarray[kingx-i][kingy]%10 == 5 || board->boardarray[kingx-i][kingy]%10 == 4)
                     {
@@ -1113,7 +1113,7 @@ int checkchecker(BSTATE *board, int flag)
                 {
                     break;
                 }
-                else if(board->boardarray[kingx+i][kingy]/10 != flag)
+                else if(board->boardarray[kingx+i][kingy]/10 != flag && board->boardarray[kingx+i][kingy] != 0)
                 {
                     if(board->boardarray[kingx+i][kingy]%10 == 5 || board->boardarray[kingx+i][kingy]%10 == 4)
                     {
@@ -1133,7 +1133,7 @@ int checkchecker(BSTATE *board, int flag)
                 {
                     break;
                 }
-                else if(board->boardarray[kingx][kingy-i]/10 != flag)
+                else if(board->boardarray[kingx][kingy-i]/10 != flag && board->boardarray[kingx][kingy-i] != 0)
                 {
                     if(board->boardarray[kingx][kingy-i]%10 == 5 || board->boardarray[kingx][kingy-i]%10 == 4)
                     {
@@ -1153,7 +1153,7 @@ int checkchecker(BSTATE *board, int flag)
                 {
                     break;
                 }
-                else if(board->boardarray[kingx][kingy+i]/10 != flag)
+                else if(board->boardarray[kingx][kingy+i]/10 != flag && board->boardarray[kingx][kingy+i] != 0)
                 {
                     if(board->boardarray[kingx][kingy+i]%10 == 5 || board->boardarray[kingx][kingy+i]%10 == 4)
                     {

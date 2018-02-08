@@ -260,11 +260,11 @@ if((tb+tw)>7)
                 {
                     if(j != 0 && i != 7 && currentboard->boardarray[i+1][j-1] == 1)
                     {
-                        eval_score += 1;   
+                        eval_score += 2;   
                     }
                     if(j != 7 && i != 7 && currentboard->boardarray[i+1][j+1] == 1)
                     {
-                        eval_score += 1;
+                        eval_score += 2;
                     }
 
                 }
@@ -272,11 +272,11 @@ if((tb+tw)>7)
                 {
                     if(j != 0 && i != 0 && currentboard->boardarray[i-1][j-1] == 11)
                     {
-                        eval_score -= 1;   
+                        eval_score -= 2;   
                     }
                     if(j != 7 && i != 0 && currentboard->boardarray[i-1][j+1] == 11)
                     {
-                        eval_score -= 1;
+                        eval_score -= 2;
                     }
 
                 }
@@ -322,6 +322,21 @@ if((tb+tw)>7)
     }
     //printf(" Wmob: %d Bmob: %d \n ", Wmob, Bmob);
     eval_score += (Wmob - Bmob) *  .5; 
+
+    if(currentboard->sidetomove == 0)
+    {
+        if(Wmob == 0)
+        {
+            eval_score -= 1000000; 
+        }
+    }
+    if(currentboard->sidetomove == 1)
+    {
+        if(Bmob == 0)
+        {
+            eval_score += 1000000;
+        }
+    }
 
 
 
