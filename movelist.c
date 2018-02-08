@@ -1043,15 +1043,20 @@ int checkmove(BSTATE *board, int currentlocation, int newlocation)
     int result = checkchecker(temp, flag);
     deleteBstate(temp);
     int i,j;
+    int kingtemp = 0;
     for(i=0; i < 8; ++i)
     {
         for(j=0; j < 8; ++j)
         {
-            if(board->boardarray[i][j]%10 == 6 && board->boardarray[i][j]/10 != flag)
+            if(board->boardarray[i][j]%10 == 6)
             {
-                return 0;
+                kingtemp++;
             }
         }
+    }
+    if(kingtemp != 2)
+    {
+        return 0;
     }
     if( result == 0)
     {
