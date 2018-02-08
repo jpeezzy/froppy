@@ -13,6 +13,7 @@
 #include "userHint.h"
 #include "boardPrep.h"
 #include "spicyComments.h"
+
 int main(int argc, char *args[])
 {
     SDL_Surface *screen = NULL;     /* Main surface to be displayed */
@@ -460,6 +461,8 @@ int main(int argc, char *args[])
 
     int menu = 0;       /* variable for bottom menu selections */
     int menuSelect = 0; /* variable for deciding which save select button is pressed */
+    int checkmatePause = 0;
+    
 
     while (quit !=1)
     {
@@ -477,7 +480,8 @@ int main(int argc, char *args[])
             allLegal(legal, board);
             if(legal->movenum == 0)
             {
-                printf("Checkmate!\n");
+                printf("You've been put into Checkmate!\n");
+                checkmatePause = 1;
                 deleteMovelist(legal);
                 break;
             }
@@ -599,13 +603,16 @@ int main(int argc, char *args[])
                                 PrintBoard(board, baseBoard, pieces, chessPieces, screen, boardArray);
                              //   copyBstate(board, undoBoard);
 
- 
+                            
                                 legal = createMovelist();
+                           
+                                printf("Checking if CheckMate... \n");
                                 allLegal(legal, board);
                                 if(legal->movenum == 0)     /* Checkmate checker */
                                 {   
-                                    printf("Checkmate!\n");
+                                    printf("You've been put into Checkmate!\n");
                                     deleteMovelist(legal);
+                                    checkmatePause = 1;
                                     break;
                                 }
                                 deleteMovelist(legal);
@@ -662,6 +669,27 @@ int main(int argc, char *args[])
             }/* end PollEvent loop */
         }/* end main while loop */       
     }/* end of first if */
+
+
+    if (checkmatePause == 1)     /* tiny loop to hold the screen in case of check mate. click to end */
+    {
+        quit = 0; /* resetting quit flag */
+        printf("\n\nThanks for playing! Press the X button the window to exit. \n \n ");
+        while (quit != 1)
+        {   while (SDL_PollEvent(&event))
+            {
+                switch(event.type)
+                {
+                    
+                    case SDL_QUIT:
+                        Exit(screen);
+                        quit = 1;
+                        break;
+                }
+            }
+        }
+    }
+
 
     /* Freeing used surfaces */
     SDL_FreeSurface(baseBoard);         /* board copy            */
