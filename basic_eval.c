@@ -15,7 +15,7 @@
 #include "movelist.h"
 
 // material value of a piece
-static int piece_value[6] = {100, 280, 320, 479, 929, 60000};
+static int piece_value[6] = {100, 320, 330, 500, 900, 20000};
 
 // Pawn, Knight, Bishop, Rook Queen, King is the order in the
 // piece square table
@@ -73,6 +73,8 @@ float basicEvaluation(BSTATE *currentboard)
     assert(all_moves);
 
     // find total number of pieces
+    int tb, tw;
+    tb = tw = 0;
     int Bpawn, Bknight, Bbishop, Brook, Bqueen, Bking;
     int Wpawn, Wknight, Wbishop, Wrook, Wqueen, Wking;
     Bpawn = Bknight = Bbishop = Brook = Bqueen = Bking = 0;
@@ -94,31 +96,37 @@ float basicEvaluation(BSTATE *currentboard)
                                     if (currentboard->boardarray[c][d] == 1)
                                         {
                                             Wpawn++;
+                                            tw++;
                                         }
                                     else if (currentboard->boardarray[c][d] ==
                                              2)
                                         {
                                             Wknight++;
+                                            tw++;
                                         }
                                     else if (currentboard->boardarray[c][d] ==
                                              3)
                                         {
                                             Wbishop++;
+                                            tw++;
                                         }
                                     else if (currentboard->boardarray[c][d] ==
                                              4)
                                         {
                                             Wrook++;
+                                            tw++;
                                         }
                                     else if (currentboard->boardarray[c][d] ==
                                              5)
                                         {
                                             Wqueen++;
+                                            tw++;
                                         }
                                     else if (currentboard->boardarray[c][d] ==
                                              6)
                                         {
                                             Wking++;
+                                            tw++;
                                         }
                                 }
                             else if (a == 1)
@@ -126,31 +134,37 @@ float basicEvaluation(BSTATE *currentboard)
                                     if (currentboard->boardarray[c][d] == 11)
                                         {
                                             Bpawn++;
+                                            tb++;
                                         }
                                     else if (currentboard->boardarray[c][d] ==
                                              12)
                                         {
                                             Bknight++;
+                                            tb++;
                                         }
                                     else if (currentboard->boardarray[c][d] ==
                                              13)
                                         {
                                             Bbishop++;
+                                            tb++;
                                         }
                                     else if (currentboard->boardarray[c][d] ==
                                              14)
                                         {
                                             Brook++;
+                                            tb++;
                                         }
                                     else if (currentboard->boardarray[c][d] ==
                                              15)
                                         {
                                             Bqueen++;
+                                            tb++;
                                         }
                                     else if (currentboard->boardarray[c][d] ==
                                              16)
                                         {
                                             Bking++;
+                                            tb++;
                                         }
                                 }
                         }
@@ -212,6 +226,46 @@ float basicEvaluation(BSTATE *currentboard)
 
         //mobility feature
         eval_score+= all_moves->movenum*mobilWeight;*/
+    
+        // pawn strcutre bonus
+        int i,j;
+        for(i=0; i<8; ++i)
+        {
+            for(j=0; j<8; ++j)
+            {
+                if(currentboard->boardarray[i][j] == 1)
+                {
+                    if(j != 0 && i != 7 && currentboard->boardarray[i+1][j-1] == 1)
+                    {
+                        eval_score += 2;   
+                    }
+                    if(j != 7 && i != 7 && currentboard->boardarray[i+1][j+1] == 1)
+                    {
+                        eval_score += 2;
+                    }
+
+                }
+                if(currentboard->boardarray[i][j] == 11)
+                {
+                    if(j != 0 && i != 0 && currentboard->boardarray[i-1][j-1] == 11)
+                    {
+                        eval_score -= 2;   
+                    }
+                    if(j != 7 && i != 0 && currentboard->boardarray[i-1][j+1] == 11)
+                    {
+                        eval_score -= 2;
+                    }
+
+                }
+
+            }
+        }
+
+
+
+
+
+
     deleteMovelist(all_moves);
 
     return eval_score;

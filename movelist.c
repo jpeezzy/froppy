@@ -1026,7 +1026,7 @@ int searchforking(BSTATE *board, int flag)
             }
         }
     }
-    return 0;
+    return 999;
 }
 
 
@@ -1056,6 +1056,10 @@ int checkmove(BSTATE *board, int currentlocation, int newlocation)
 int checkchecker(BSTATE *board, int flag)
 {
     int s = searchforking(board, flag);
+    if(s == 999)
+    {
+        return 1;
+    }
     int kingx = s/8;
     int kingy = s%8;
     int i,j;
