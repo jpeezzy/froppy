@@ -1042,6 +1042,17 @@ int checkmove(BSTATE *board, int currentlocation, int newlocation)
     int flag = board->sidetomove;
     int result = checkchecker(temp, flag);
     deleteBstate(temp);
+    int i,j;
+    for(i=0; i < 8; ++i)
+    {
+        for(j=0; j < 8; ++j)
+        {
+            if(board->boardarray[i][j]%10 == 6 && board->boardarray[i][j]/10 != flag)
+            {
+                return 0;
+            }
+        }
+    }
     if( result == 0)
     {
         return 1;
