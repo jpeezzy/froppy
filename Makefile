@@ -2,7 +2,7 @@ CC = gcc
 CFLAGS = -std=c99 -fopenmp -Wall -g -o2
 MATH= -lm
 
-all: testminmax
+all: testminmax ChessGUI
 
 ChessGUI: main.c ChessGUI.o movelist.o minmax.o boardstate.o basic_eval.o userHint.o spicyComments.o boardPrep.o
 	$(CC) $(CFLAGS) -g -lSDL main.c movelist.o minmax.o boardstate.o ChessGUI.o basic_eval.o userHint.o spicyComments.o boardPrep.o -o ChessGUI
