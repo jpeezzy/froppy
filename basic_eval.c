@@ -284,6 +284,36 @@ if((tb+tw)>7)
             }
         }
 }
+if((tb+tw) < 7)
+{
+    for (int board_index = 0; board_index < 64; ++board_index)
+        {
+            // black case
+            // 63-board_index will flip the board
+
+            if (currentboard->boardarray[board_index / 8][board_index % 8] == 11)
+                {
+                    eval_score -= piece_square_table[currentboard->boardarray[board_index / 8][board_index % 8] -11][63 - board_index];
+
+                    // piece value feature
+                    // eval_score+=piece_value[currentboard->boardarray[board_index
+                    // / 8][board_index % 8]-11];
+                }
+
+            else if (currentboard->boardarray[board_index / 8]
+                                             [board_index % 8] == 1)
+                {
+                    eval_score += piece_square_table[currentboard->boardarray[board_index / 8][board_index % 8] -1][board_index];
+
+                    // piece value feature
+                    // eval_score+=(-1)*piece_value[currentboard->boardarray[board_index
+                    // / 8][board_index % 8]-1];
+                }
+        }
+
+
+
+}
 
     //mobility
     int Wmob, Bmob;
