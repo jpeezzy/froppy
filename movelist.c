@@ -940,7 +940,7 @@ void kingmove(MLIST *list, BSTATE *board, int currentlocation)
             }
         }
     }
-    if(type == 0)
+    if(type == 0 && checkmove(board,currentlocation,currentlocation))
     {
         //castling
         if(board->WKCFlag == 1)
@@ -971,7 +971,7 @@ void kingmove(MLIST *list, BSTATE *board, int currentlocation)
             }
         }
     }
-    else if(type == 1)
+    else if(type == 1 && checkmove(board,currentlocation,currentlocation))
     {
         //castling
         if(board->BKCFlag == 1)
