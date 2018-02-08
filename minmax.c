@@ -7,6 +7,8 @@
 #include "minmax.h"
 #include "basic_eval.h"
 
+#define TIME 10
+
 /* create Node */
 NODE *createNode(MENTRY *move, BSTATE *board)
 {
@@ -280,7 +282,7 @@ MENTRY *minmax(BSTATE *currentBoard)
     // initialize timer
     time_t endwait;
     time_t start_time = time(NULL);
-    time_t seconds = 10;
+    time_t seconds = TIME;
     endwait = start_time + seconds;
     int threads = omp_get_max_threads();
     if(tree->legal->movenum > threads)
