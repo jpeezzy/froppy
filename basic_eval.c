@@ -70,7 +70,7 @@ float basicEvaluation(BSTATE *currentboard)
     all_moves         = createMovelist();
 
     allLegal(all_moves, currentboard);
-    assert(all_moves);
+    //assert(all_moves);
 
     // find total number of pieces
     int tb, tw;
@@ -263,7 +263,27 @@ if((tb+tw)>7)
         }
 }
 
-
+    //mobility
+    int Wmob, Bmob;
+    Wmob = Bmob = 0;
+    int px, py;
+    MENTRY *temp;
+    temp = all_moves->First;
+    while(temp)
+    {
+        px = temp->CLOC/8;
+        py = temp->CLOC%8;
+        if(currentboard->boardarray[px][py]/10 == 1)
+        {
+            Bmob++;
+        }
+        if(currentboard->boardarray[px][py]/10 == 0)
+        {
+            Wmob++;
+        }
+        temp = temp->Next;
+    }
+    eval_score += (Wmob - Bmob) *  .5; 
 
 
 
