@@ -1041,19 +1041,20 @@ int checkmove(BSTATE *board, int currentlocation, int newlocation)
     updateBstate(temp);
     int flag = board->sidetomove;
     int result = checkchecker(temp, flag);
-    deleteBstate(temp);
+    //deleteBstate(temp);
     int i,j;
     int kingtemp = 0;
     for(i=0; i < 8; ++i)
     {
         for(j=0; j < 8; ++j)
         {
-            if(board->boardarray[i][j]%10 == 6)
+            if(temp->boardarray[i][j]%10 == 6)
             {
                 kingtemp++;
             }
         }
     }
+    deleteBstate(temp);
     if(kingtemp != 2)
     {
         return 0;
