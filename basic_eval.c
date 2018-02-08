@@ -79,7 +79,7 @@ float basicEvaluation(BSTATE *currentboard)
     int Wpawn, Wknight, Wbishop, Wrook, Wqueen, Wking;
     Bpawn = Bknight = Bbishop = Brook = Bqueen = Bking = 0;
     Wpawn = Wknight = Wbishop = Wrook = Wqueen = Wking = 0;
-    ;
+    
 
     int a, c, d;
     // two sides
@@ -179,7 +179,8 @@ float basicEvaluation(BSTATE *currentboard)
     eval_score += piece_value[5] * (Wking - Bking);
     // printf("\n %f \n",eval_score);
     // now adding the score for each piece
-
+if((tb+tw)>7)
+{
     for (int board_index = 0; board_index < 64; ++board_index)
         {
             // black case
@@ -260,7 +261,7 @@ float basicEvaluation(BSTATE *currentboard)
 
             }
         }
-
+}
 
 
 
