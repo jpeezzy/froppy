@@ -154,6 +154,12 @@ int main()
                 printf("Checkmate!\n");
                 printf("Enter 1 to simulate another game, 0 to exit: ");
                 scanf("%d", &play);
+                if(play)
+                {
+                    deleteBstate(board);
+                    board = createBstate();
+                    loadStart(board);
+                }
             }
             deleteMovelist(legal);
         }
