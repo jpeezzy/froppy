@@ -11,6 +11,7 @@
 #include "basic_eval.h"
 #include <assert.h>
 #include <stdio.h>
+#include <math.h>
 #include "boardstate.h"
 #include "movelist.h"
 
@@ -311,7 +312,36 @@ if((tb+tw) < 7)
                 }
         }
 
+    //king distance
+    int wx,wy,bx,by;
+    int xx,yy;
+    for(xx=0; xx<8; ++xx)
+    {
+        for(yy=0; yy<8; ++yy)
+        {
+            if(currentboard->boardarray[xx][yy] == 6)
+            {
+                wx = xx;
+                wy = yy;
+            }
+            if(currentboard->boardarray[xx][yy] == 16)
+            {
+                bx = xx;
+                by = yy;
+            }
+        }
 
+    }
+    int kingd = sqrt(pow(wx-bx,2) + pow(wy-by,2)); 
+
+    if(tw > tb)
+    {
+        eval_score -= .5*kingd; 
+    }
+    if(tb > tw)
+    {
+        eval_score += .5*kingd;
+    }
 
 }
 

@@ -40,10 +40,10 @@ boardstate.o: boardstate.c boardstate.h
 movelist.o: movelist.c movelist.h boardstate.h
 	$(CC) $(CFLAGS) -c movelist.c -o movelist.o
 
-minmax.o: minmax.c minmax.h movelist.h basic_eval.h boardstate.h
+minmax.o: minmax.c minmax.h movelist.h basic_eval.h boardstate.h $(MATH)
 	$(CC) $(CFLAGS) -c minmax.c -o minmax.o
 
-testminmax.o: testminmax.c testgui.h minmax.h movelist.h basic_eval.h boardstate.h
+testminmax.o: testminmax.c testgui.h minmax.h movelist.h basic_eval.h boardstate.h $(MATH) 
 	$(CC) $(CFLAGS) -c testminmax.c -o testminmax.o 
 
 testgui.o: testgui.c testgui.h
@@ -80,7 +80,7 @@ ChessGUI.o: ChessGUI.h ChessGUI.c
 	$(CC) $(CFLAGS) -c -lSDL ChessGUI.c -o ChessGUI.o
 
 clean:
-	rm -f *o
+	rm -f *.o
 	rm -f auto
 	rm -f MT
 	rm -f testminmax
