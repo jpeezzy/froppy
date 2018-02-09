@@ -7,7 +7,7 @@
 #include "minmax.h"
 #include "basic_eval.h"
 
-#define TIME 10
+#define TIME 20
 
 /* create Node */
 NODE *createNode(MENTRY *move, BSTATE *board)
